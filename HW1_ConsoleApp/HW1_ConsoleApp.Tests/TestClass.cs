@@ -1,4 +1,5 @@
 ﻿// <copyright file="TestClass.cs" company="Benjamin Michaelis">
+// Copyright (c) Benjamin Michaelis. All rights reserved.
 // </copyright>
 
 namespace HW1_ConsoleApp.Tests
