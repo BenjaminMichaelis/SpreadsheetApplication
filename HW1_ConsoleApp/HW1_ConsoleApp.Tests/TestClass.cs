@@ -1,5 +1,5 @@
-﻿// HelloWorld NUnit 3 tests
-// See documentation :
+﻿// <copyright file="TestClass.cs" company="Benjamin Michaelis">
+// </copyright>
 
 namespace HW1_ConsoleApp.Tests
 {
