@@ -2,7 +2,7 @@
 // Copyright (c) Benjamin Michaelis. All rights reserved.
 // </copyright>
 
-namespace HW1_ConsoleApp
+namespace ConsoleApp
 {
     using System;
 
