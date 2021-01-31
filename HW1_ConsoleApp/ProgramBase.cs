@@ -4,9 +4,7 @@
 
 namespace HW1_ConsoleApp
 {
-    using System;
-
-    class Program
+    internal class ProgramBase
     {
         private static void Main(string[] args)
         {
