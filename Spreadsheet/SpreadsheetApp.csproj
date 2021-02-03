@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <!--<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    --><!--<PlatformTarget>x86</PlatformTarget>--><!--
+    --><!--<OutputPath>/DotNet/bin/$(Configuration)</OutputPath>--><!--
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    --><!--<OutputPath>/DotNet/bin/$(Configuration)</OutputPath>--><!--
+  </PropertyGroup>-->
+
+  <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo%28Framework%29.cs" />
+  </ItemGroup>
+
+</Project>

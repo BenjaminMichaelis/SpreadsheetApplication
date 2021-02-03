@@ -48,7 +48,7 @@
     <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HW1_ConsoleApp\ConsoleApp.csproj">
+    <ProjectReference Include="..\ConsoleApp\ConsoleApp.csproj">
       <Project>{1d735763-18f8-4e1c-a1c6-649175748cbd}</Project>
       <Name>ConsoleApp</Name>
     </ProjectReference>

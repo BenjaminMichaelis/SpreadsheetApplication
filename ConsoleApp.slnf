@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "CPTS321.sln",
+    "projects": [
+      "ConsoleApp.Tests\\ConsoleApp.Tests.csproj",
+      "ConsoleApp\\ConsoleApp.csproj"
+    ]
+  }
+}

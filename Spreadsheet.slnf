@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "CPTS321.sln",
+    "projects": [
+      "SpreadsheetApp.Tests\\SpreadsheetApp.Tests.csproj",
+      "Spreadsheet\\SpreadsheetApp.csproj"
+    ]
+  }
+}
