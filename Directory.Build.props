@@ -7,6 +7,7 @@
         <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <CodeAnalysisTreatWarningsAsErrors> false</CodeAnalysisTreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     
     <!-- StyleCop Analyzers configuration -->
