@@ -1,10 +1,17 @@
 <Project>
+    <!-- Cross Build Configuration -->
     <PropertyGroup>
         <TargetFrameworks>net5.0-windows;net472</TargetFrameworks>
         <LangVersion>9.0</LangVersion>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
-        <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+        <CodeAnalysisTreatWarningsAsErrors> false</CodeAnalysisTreatWarningsAsErrors>
     </PropertyGroup>
+    
+    <!-- StyleCop Analyzers configuration -->
+    <ItemGroup>
+        <AdditionalFiles Include="../stylecop.json" />
+        <PackageReference Include="StyleCop.Analyzers" Version="$(StyleCopAnalyzersVersion)" PrivateAssets="all" />
+    </ItemGroup>
 </Project>

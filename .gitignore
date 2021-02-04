@@ -554,45 +554,11 @@ fabric.properties
 # Since there are multiple workflows, uncomment next line to ignore bower_components
 # (https://github.com/github/gitignore/pull/1529#issuecomment-104372622)
 
-# RIA/Silverlight projects
-
-# Backup & report files from converting an old project file
-# to a newer Visual Studio version. Backup files are not needed,
-# because we have git ;-)
-
-# SQL Server files
-
-# Business Intelligence projects
-
-# Microsoft Fakes
-
-# GhostDoc plugin setting file
-
 # Node.js Tools for Visual Studio
-
-# Visual Studio 6 build log
-
-# Visual Studio 6 workspace options file
-
-# Visual Studio 6 auto-generated workspace file (contains which files were open etc.)
-
-# Visual Studio LightSwitch build output
-
-# Paket dependency manager
-
-# FAKE - F# Make
-
-# CodeRush personal settings
-
-# Python Tools for Visual Studio (PTVS)
 
 # Cake - Uncomment if you are using it
 # tools/**
 # !tools/packages.config
-
-# Tabs Studio
-
-# Telerik's JustMock configuration file
 
 # BizTalk build output
 
@@ -602,14 +568,8 @@ fabric.properties
 
 # MSBuild Binary and Structured Log
 
-# NVidia Nsight GPU debugger configuration file
-
 # MFractors (Xamarin productivity tool) working folder
 
 # Local History for Visual Studio
 
 # BeatPulse healthcheck temp database
-
-# Backup folder for Package Reference Convert tool in Visual Studio 2017
-
-# Ionide (cross platform F# VS Code tools) working folder
