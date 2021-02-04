@@ -3,6 +3,9 @@
     "settings": {
         "documentationRules": {
             "companyName": "Benjamin Michaelis"
+        },
+        "orderingRules": {
+            "usingDirectivesPlacement":  "outsideNamespace"
         }
     }
 }
