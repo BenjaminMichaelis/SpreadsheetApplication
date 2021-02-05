@@ -2,7 +2,11 @@
     "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
     "settings": {
         "documentationRules": {
-            "companyName": "Benjamin Michaelis"
+            "companyName": "Benjamin Michaelis",
+            "copyrightText": "Copyright (c) {companyName} ID: {studentID}. All rights reserved.",
+            "variables": {
+                "studentID": "11620581"
+            }
         },
         "orderingRules": {
             "usingDirectivesPlacement":  "outsideNamespace"
