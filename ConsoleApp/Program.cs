@@ -1,10 +1,21 @@
-﻿using System;
+﻿// <copyright file="Program.cs" company="Benjamin Michaelis">
+// Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
+// </copyright>
+
+using System;
 
 namespace ConsoleApp
 {
-    class Program
+    /// <summary>
+    /// Is main entry point class.
+    /// </summary>
+    public class Program
     {
-        static void Main(string[] args)
+        /// <summary>
+        /// Is the main entry point.
+        /// </summary>
+        /// <param name="args">Allow user inputed args.</param>
+        public static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
         }
