@@ -9,7 +9,9 @@
         <CodeAnalysisTreatWarningsAsErrors> false</CodeAnalysisTreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
-    
+    <ItemGroup>
+        <AdditionalFiles Include="../.editorconfig" />
+    </ItemGroup>
     <!-- StyleCop Analyzers configuration -->
     <ItemGroup>
         <AdditionalFiles Include="../stylecop.json" />
