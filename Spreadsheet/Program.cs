@@ -8,7 +8,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Spreadsheet
+/*
+ * WinForms Info:
+ * Model - defines the data and your business logic.
+ * View - specifies the UI, including all visual elements (buttons, labels, editors, etc.) bound to properties and commands in the ViewModel.
+ * ViewModel - connects Model and View. This layer is an abstraction of the View that exposes public properties and commands used to bind your data to GUI elements and manage this data.
+ * MVVM Implementation for WinForms: https://www.c-sharpcorner.com/uploadfile/yougerthen/mvvm-implementation-for-windows-forms/
+ */
+
+namespace SpreadsheetApp
 {
     /// <summary>
     /// Is the main entry point class.
@@ -23,8 +31,20 @@ namespace Spreadsheet
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
-            Console.WriteLine("test");
+            Initialize();
+        }
+
+        private static void Initialize()
+        {
+            Type type = typeof(MainForm);
+
+            object[] attributes = type.GetCustomAttributes(typeof(ViewModelAttribute), false);
+
+            // if (attributes.Length > 0 && (attributes[0] as ViewModelAttribute).Activated == true)
+            MainForm mainForm = new MainForm();
+            MainViewModel viewModel = new(mainForm);
+
+            Application.Run(mainForm);
         }
     }
 }
