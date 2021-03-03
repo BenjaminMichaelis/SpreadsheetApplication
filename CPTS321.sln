@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "ConsoleApp\Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp.Tests", "ConsoleApp.Tests\ConsoleApp.Tests.csproj", "{4D924511-2B1E-434F-A7DB-B89075E8078A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetEngine", "SpreadsheetEngine\SpreadsheetEngine.csproj", "{F70CF450-D909-4AF9-836A-7D7D4E679631}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{4D924511-2B1E-434F-A7DB-B89075E8078A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D924511-2B1E-434F-A7DB-B89075E8078A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D924511-2B1E-434F-A7DB-B89075E8078A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F70CF450-D909-4AF9-836A-7D7D4E679631}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F70CF450-D909-4AF9-836A-7D7D4E679631}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F70CF450-D909-4AF9-836A-7D7D4E679631}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F70CF450-D909-4AF9-836A-7D7D4E679631}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
