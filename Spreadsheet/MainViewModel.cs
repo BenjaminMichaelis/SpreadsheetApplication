@@ -24,7 +24,20 @@ namespace SpreadsheetApp
         /// <param name="mainForm">pass in the Form to bind.</param>
         public MainViewModel(MainForm mainForm)
         {
+            char[] alphabet = Enumerable.Range('A', 'Z' - 'A' + 1).Select(i => (char)i).ToArray();
             this.MainForm = mainForm;
+            this.MainForm.dataGridView1.Columns.Clear();
+            foreach (char c in alphabet)
+            {
+                this.MainForm.dataGridView1.Columns.Add(c.ToString(), c.ToString());
+            }
+
+            this.MainForm.dataGridView1.Rows.Clear();
+            this.MainForm.dataGridView1.Rows.Add(50);
+            for (int rowNumber = 0; rowNumber < 50; rowNumber++)
+            {
+                this.MainForm.dataGridView1.Rows[rowNumber].HeaderCell.Value = string.Format($"{this.MainForm.dataGridView1.Rows[rowNumber].Index + 1}");
+            }
         }
 
         /// <summary>
