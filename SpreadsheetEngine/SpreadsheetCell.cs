@@ -3,43 +3,104 @@
 // </copyright>
 
 using System;
+using System.ComponentModel;
 
 namespace SpreadsheetEngine
 {
     /// <summary>
     /// Represents one cell in the worksheet.
     /// </summary>
-    public abstract class SpreadsheetCell
+    public abstract class SpreadsheetCell : INotifyPropertyChanged
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SpreadsheetCell"/> class.
         /// </summary>
-        /// <param name="columnIndex">sets the readonly columnIndex.</param>
-        /// <param name="rowIndex">sets the readonly rowIndex.</param>
-        public SpreadsheetCell(int rowIndex, int columnIndex)
+        /// <param name="columnIndex">int for the readonly columnIndex.</param>
+        /// <param name="rowIndex">int for the readonly rowIndex.</param>
+        /// <param name="text">string for the Text property.</param>
+        /// <param name="value">If a value is assigned to Value property then it sets its variable, otherwise sets value to text.</param>
+        public SpreadsheetCell(int rowIndex, int columnIndex, string text, string value)
         {
-            this._rowIndex = rowIndex;
-            this._columnIndex = columnIndex;
+            this.RowIndex = rowIndex;
+            this.ColumnIndex = columnIndex;
+            this.Text = text;
+            this.Value = value;
         }
-
-        private readonly int _rowIndex;
 
         /// <summary>
         /// Gets (read-only) row index.
         /// </summary>
-        public int RowIndex
-        {
-            get { return this._rowIndex; }
-        }
-
-        private readonly int _columnIndex;
+        public int RowIndex { get; }
 
         /// <summary>
         /// Gets (read-only) column index.
         /// </summary>
-        public int ColumnIndex
+        public int ColumnIndex { get; }
+
+        /// <summary>
+        /// Throw Property changed if text in cell is changed.
+        /// </summary>
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private string? _text;
+
+        /// <summary>
+        /// Gets or Sets Text thats typed into the cell.
+        /// </summary>
+        protected string Text
         {
-            get { return this._columnIndex; }
+            get
+            {
+                if (string.IsNullOrEmpty(this._text))
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    return this._text;
+                }
+            }
+
+            set
+            {
+                if (this._text != value)
+                {
+                    this._text = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Text)));
+                }
+            }
+        }
+
+        private string? _value;
+
+        /// <summary>
+        /// Gets or sets Value which is text if not set or function if it is.
+        /// </summary>
+        protected string Value
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(this._value))
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    return this._value;
+                }
+            }
+
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    this._value = this.Text;
+                }
+                else
+                {
+                    this._value = value;
+                }
+            }
         }
     }
 }
