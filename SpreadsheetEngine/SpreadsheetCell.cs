@@ -23,7 +23,6 @@ namespace SpreadsheetEngine
             this.RowIndex = rowIndex;
             this.ColumnIndex = columnIndex;
             this.Text = string.Empty;
-            this.Value = this.Text;
         }
 
         /// <summary>
@@ -44,7 +43,7 @@ namespace SpreadsheetEngine
         /// <summary>
         /// stores protected string text.
         /// </summary>
-#pragma warning disable SA1401 // Fields should be private
+#pragma warning disable SA1401 // Fields should be private - We want it private in this case.
         protected string? _text;
 #pragma warning restore SA1401 // Fields should be private
 
@@ -76,6 +75,17 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        /// Gets the Cell name by converting the column to a letter and adding on the row number, and returning as a string.
+        /// </summary>
+        public string IndexName
+        {
+            get
+            {
+                return this.ColumnIntToLetter(this.ColumnIndex) + (this.RowIndex + 1).ToString();
+            }
+        }
+
+        /// <summary>
         /// stores protected value string.
         /// </summary>
 #pragma warning disable SA1401 // Fields should be private
@@ -83,7 +93,7 @@ namespace SpreadsheetEngine
 #pragma warning restore SA1401 // Fields should be private
 
         /// <summary>
-        /// Gets or sets Value which is text if not set or function if it is.
+        /// Gets Value which is text if not set or function if it is.
         /// </summary>
         public string Value
         {
@@ -98,20 +108,22 @@ namespace SpreadsheetEngine
                     return this._value;
                 }
             }
+        }
 
-            set
+        private char[] chars = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+
+        string ColumnIntToLetter(int index)
+        {
+            index -= 1;
+
+            int quotient = index / 26;
+            if (quotient > 0)
             {
-                // // evaluated value of cell
-                // if(this.Text[0] == '=')
-                // {
-                //     DataTable dt = new DataTable();
-                //     int answer = (int)dt.Compute(this.Text, string.Empty);
-                //     this._value = answer.ToString();
-                // }
-                if (this._value != value)
-                {
-                    this._value = this.Text;
-                }
+                return ColumnIntToLetter(quotient - 1) + (char)((index % 26) + 65);
+            }
+            else
+            {
+                return string.Empty + (char)((index % 26) + 65);
             }
         }
     }
