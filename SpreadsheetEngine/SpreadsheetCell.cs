@@ -44,7 +44,9 @@ namespace SpreadsheetEngine
         /// <summary>
         /// stores protected string text.
         /// </summary>
+#pragma warning disable SA1401 // Fields should be private
         protected string? _text;
+#pragma warning restore SA1401 // Fields should be private
 
         /// <summary>
         /// Gets or Sets Text thats typed into the cell.
@@ -76,7 +78,9 @@ namespace SpreadsheetEngine
         /// <summary>
         /// stores protected value string.
         /// </summary>
+#pragma warning disable SA1401 // Fields should be private
         protected string? _value;
+#pragma warning restore SA1401 // Fields should be private
 
         /// <summary>
         /// Gets or sets Value which is text if not set or function if it is.

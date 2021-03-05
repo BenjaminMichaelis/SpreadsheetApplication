@@ -33,10 +33,18 @@ namespace SpreadsheetEngine
         /// <summary>
         /// Notifies for  when any property for any cell in the worksheet has changed.
         /// </summary>
-        /// <param name="cell">Cell object.</param>
+        /// <param name="sender">Object that called object.</param>
         /// <param name="e">The property changed arg.</param>
         public void CellPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            SpreadsheetCell? evaluatingCell = sender as SpreadsheetCell;
+            if (string.IsNullOrEmpty(evaluatingCell.Text))
+            {
+                if (evaluatingCell.Text.StartsWith("="))
+                {
+                    
+                }
+            }
         }
 
         /// <summary>
