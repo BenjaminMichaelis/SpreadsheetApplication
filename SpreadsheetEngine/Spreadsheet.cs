@@ -85,9 +85,11 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="cellName">The name of the cell (ex: AA33).</param>
         /// <returns>Int of Cell.</returns>
-        public int ColumnLetterToNumber(string cellName)
+        public int ColumnLetterToInt(string cellName)
         {
-            return 1;
+            string columnLetters = string.Concat(cellName.TakeWhile(char.IsLetter));
+            int columnLocation = columnLetters.ToCharArray().Select(c => c - 'A' + 1).Reverse().Select((v, i) => v * (int)Math.Pow(26, i)).Sum();
+            return columnLocation;
         }
 
         /// <summary>
@@ -97,7 +99,7 @@ namespace SpreadsheetEngine
         /// <returns>Returns cell in spreadsheet that matches the index of the cell.</returns>
         private Cell? GetCell(string cellName)
         {
-            int columnLocation = this.ColumnLetterToNumber(cellName);
+            int columnLocation = this.ColumnLetterToInt(cellName);
             string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
             int rowLocation = int.Parse(rowLocationString);
             return this.GetCell(rowLocation, columnLocation);

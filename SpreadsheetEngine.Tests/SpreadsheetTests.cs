@@ -19,7 +19,7 @@ namespace SpreadsheetEngine.Tests
         public void ColumnLetterToNumber_A_return1()
         {
             Spreadsheet sut = new(1, 1);
-            Assert.Equal(1, sut.ColumnLetterToNumber("A"));
+            Assert.Equal(1, sut.ColumnLetterToInt("A"));
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace SpreadsheetEngine.Tests
         public void ColumnLetterToNumber_AH_return34()
         {
             Spreadsheet sut = new(1, 1);
-            Assert.Equal(34, sut.ColumnLetterToNumber("AH"));
+            Assert.Equal(34, sut.ColumnLetterToInt("AH"));
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace SpreadsheetEngine.Tests
         public void ColumnLetterToNumber_XFD_return16384()
         {
             Spreadsheet sut = new(1, 1);
-            Assert.Equal(16384, sut.ColumnLetterToNumber("XFD"));
+            Assert.Equal(16384, sut.ColumnLetterToInt("XFD"));
         }
     }
 }
