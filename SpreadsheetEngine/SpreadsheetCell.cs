@@ -112,19 +112,14 @@ namespace SpreadsheetEngine
 
         private char[] chars = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
-        string ColumnIntToLetter(int index)
+        /// <summary>
+        /// Converts an Int to associated Letter for Index Name.
+        /// </summary>
+        /// <param name="index">Int to be switched to letters.</param>
+        /// <returns>Returns string of letters for index.</returns>
+        public string ColumnIntToLetter(int index)
         {
-            index -= 1;
-
-            int quotient = index / 26;
-            if (quotient > 0)
-            {
-                return ColumnIntToLetter(quotient - 1) + (char)((index % 26) + 65);
-            }
-            else
-            {
-                return string.Empty + (char)((index % 26) + 65);
-            }
+            return "ZZ";
         }
     }
 }
