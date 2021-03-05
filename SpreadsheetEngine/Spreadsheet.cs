@@ -16,7 +16,21 @@ namespace SpreadsheetEngine
     /// </summary>
     public class Spreadsheet
     {
-        private SpreadsheetCell[,] _cellsOfSpreadsheet;
+        private class Cell : SpreadsheetCell
+        {
+            private Cell(int rowIndex, int columnIndex)
+                : base(rowIndex, columnIndex)
+            {
+            }
+
+            public void SetCellValue(string value)
+            {
+                // this. or base.
+                this._value = value;
+            }
+        }
+
+        private Cell[,] _cellsOfSpreadsheet;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
@@ -27,7 +41,9 @@ namespace SpreadsheetEngine
         {
             this.ColumnCount = columns;
             this.RowCount = rows;
-            this._cellsOfSpreadsheet = new SpreadsheetCell[rows, columns];
+            this._cellsOfSpreadsheet = new Cell[rows, columns];
+
+            // this._cellsOfSpreadsheet[rownum, colnum].PropertyChanged += this.CellPropertyChanged;
         }
 
         /// <summary>
@@ -37,14 +53,54 @@ namespace SpreadsheetEngine
         /// <param name="e">The property changed arg.</param>
         public void CellPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            SpreadsheetCell? evaluatingCell = sender as SpreadsheetCell;
-            if (string.IsNullOrEmpty(evaluatingCell.Text))
+            Cell? evaluatingCell = sender as Cell;
+            if (evaluatingCell != null)
             {
-                if (evaluatingCell.Text.StartsWith("="))
+                if (e.PropertyName == "Text")
                 {
-                    
+                    if (!string.IsNullOrEmpty(evaluatingCell.Text))
+                    {
+                        if (evaluatingCell.Text.StartsWith("="))
+                        {
+                            // evaluatingCell.SetCellValue();
+                        }
+                        else
+                        {
+                            evaluatingCell.SetCellValue(evaluatingCell.Text);
+                        }
+
+                        this.OnCellPropertyChanged.Invoke(sender, e);
+                    }
                 }
             }
+        }
+
+        /// <summary>
+        /// Event handler to connect to UI level.
+        /// </summary>
+        public event PropertyChangedEventHandler OnCellPropertyChanged = (sender, e) => { };
+
+        /// <summary>
+        /// Converts the first letters in a string to numbers.
+        /// </summary>
+        /// <param name="cellName">The name of the cell (ex: AA33).</param>
+        /// <returns>Int of Cell.</returns>
+        public int ColumnLetterToNumber(string cellName)
+        {
+            return 1;
+        }
+
+        /// <summary>
+        /// Get the cell from the cell name.
+        /// </summary>
+        /// <param name="cellName">Letter/number combo of cell.</param>
+        /// <returns>Returns cell in spreadsheet that matches the index of the cell.</returns>
+        private Cell? GetCell(string cellName)
+        {
+            int columnLocation = this.ColumnLetterToNumber(cellName);
+            string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
+            int rowLocation = int.Parse(rowLocationString);
+            return this.GetCell(rowLocation, columnLocation);
         }
 
         /// <summary>
@@ -52,17 +108,10 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="rowIndex">Pass in the row of the cell you want to access.</param>
         /// <param name="colIndex">Pass in the column of the cell you want to access.</param>
-        /// <returns>Returns a Cell of SpreadsheetCell.</returns>
-        public SpreadsheetCell? GetCell(int rowIndex, int colIndex)
+        /// <returns>Returns a Cell of Cell.</returns>
+        private Cell? GetCell(int rowIndex, int colIndex)
         {
-            try
-            {
-                return this._cellsOfSpreadsheet[rowIndex, colIndex];
-            }
-            catch
-            {
-                return null;
-            }
+            return this._cellsOfSpreadsheet[rowIndex, colIndex];
         }
 
         /// <summary>

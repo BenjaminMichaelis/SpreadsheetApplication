@@ -17,7 +17,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "ConsoleApp\Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp.Tests", "ConsoleApp.Tests\ConsoleApp.Tests.csproj", "{4D924511-2B1E-434F-A7DB-B89075E8078A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetEngine", "SpreadsheetEngine\SpreadsheetEngine.csproj", "{F70CF450-D909-4AF9-836A-7D7D4E679631}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpreadsheetEngine", "SpreadsheetEngine\SpreadsheetEngine.csproj", "{F70CF450-D909-4AF9-836A-7D7D4E679631}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetEngine.Tests", "SpreadsheetEngine.Tests\SpreadsheetEngine.Tests.csproj", "{0F495D80-42B5-4874-AABA-3B40A081ED1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{F70CF450-D909-4AF9-836A-7D7D4E679631}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F70CF450-D909-4AF9-836A-7D7D4E679631}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F70CF450-D909-4AF9-836A-7D7D4E679631}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F495D80-42B5-4874-AABA-3B40A081ED1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F495D80-42B5-4874-AABA-3B40A081ED1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F495D80-42B5-4874-AABA-3B40A081ED1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F495D80-42B5-4874-AABA-3B40A081ED1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
