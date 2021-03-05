@@ -18,13 +18,11 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="columnIndex">int for the readonly columnIndex.</param>
         /// <param name="rowIndex">int for the readonly rowIndex.</param>
-        /// <param name="text">string for the Text property.</param>
-        /// <param name="value">If a value is assigned to Value property then it sets its variable, otherwise sets value to text.</param>
         public SpreadsheetCell(int rowIndex, int columnIndex)
         {
             this.RowIndex = rowIndex;
             this.ColumnIndex = columnIndex;
-            this.Text = string.empty;
+            this.Text = string.Empty;
             this.Value = this.Text;
         }
 
