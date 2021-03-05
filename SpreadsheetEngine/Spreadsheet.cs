@@ -25,6 +25,8 @@ namespace SpreadsheetEngine
         /// <param name="columns">Number of columns.</param>
         public Spreadsheet(int rows, int columns)
         {
+            this.ColumnCount = columns;
+            this.RowCount = rows;
             this._cellsOfSpreadsheet = new SpreadsheetCell[rows, columns];
         }
 
@@ -33,8 +35,36 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="cell">Cell object.</param>
         /// <param name="e">The property changed arg.</param>
-        public void CellPropertyChanged(object cell, PropertyChangedEventArgs e)
+        public void CellPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
         }
+
+        /// <summary>
+        /// GetCell function that takes a row and column index and returns the cell at that location or null if there is no such cell.
+        /// </summary>
+        /// <param name="rowIndex">Pass in the row of the cell you want to access.</param>
+        /// <param name="colIndex">Pass in the column of the cell you want to access.</param>
+        /// <returns>Returns a Cell of SpreadsheetCell.</returns>
+        public SpreadsheetCell? GetCell(int rowIndex, int colIndex)
+        {
+            try
+            {
+                return this._cellsOfSpreadsheet[rowIndex, colIndex];
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets returns number of columns in spreadsheet.
+        /// </summary>
+        public int ColumnCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets returns number of rows in spreadsheet.
+        /// </summary>
+        public int RowCount { get; set; }
     }
 }

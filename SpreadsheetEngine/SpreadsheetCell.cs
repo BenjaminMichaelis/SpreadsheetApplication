@@ -41,12 +41,15 @@ namespace SpreadsheetEngine
         /// </summary>
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private string? _text;
+        /// <summary>
+        /// stores protected string text.
+        /// </summary>
+        protected string? _text;
 
         /// <summary>
         /// Gets or Sets Text thats typed into the cell.
         /// </summary>
-        protected string Text
+        public string Text
         {
             get
             {
@@ -70,12 +73,15 @@ namespace SpreadsheetEngine
             }
         }
 
-        private string? _value;
+        /// <summary>
+        /// stores protected value string.
+        /// </summary>
+        protected string? _value;
 
         /// <summary>
         /// Gets or sets Value which is text if not set or function if it is.
         /// </summary>
-        protected string Value
+        public string Value
         {
             get
             {
