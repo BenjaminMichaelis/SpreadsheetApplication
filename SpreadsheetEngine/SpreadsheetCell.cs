@@ -119,7 +119,17 @@ namespace SpreadsheetEngine
         /// <returns>Returns string of letters for index.</returns>
         public string ColumnIntToLetter(int index)
         {
-            return "ZZ";
+            index -= 1;
+
+            int quotient = index / 26;
+            if (quotient > 0)
+            {
+                return this.ColumnIntToLetter(quotient - 1) + (char)((index % 26) + 65);
+            }
+            else
+            {
+                return string.Empty + (char)((index % 26) + 65);
+            }
         }
     }
 }
