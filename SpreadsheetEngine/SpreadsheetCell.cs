@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Data;
 
 namespace SpreadsheetEngine
 {
@@ -19,12 +20,12 @@ namespace SpreadsheetEngine
         /// <param name="rowIndex">int for the readonly rowIndex.</param>
         /// <param name="text">string for the Text property.</param>
         /// <param name="value">If a value is assigned to Value property then it sets its variable, otherwise sets value to text.</param>
-        public SpreadsheetCell(int rowIndex, int columnIndex, string text, string value)
+        public SpreadsheetCell(int rowIndex, int columnIndex)
         {
             this.RowIndex = rowIndex;
             this.ColumnIndex = columnIndex;
-            this.Text = text;
-            this.Value = value;
+            this.Text = string.empty;
+            this.Value = this.Text;
         }
 
         /// <summary>
@@ -92,13 +93,16 @@ namespace SpreadsheetEngine
 
             set
             {
-                if (string.IsNullOrEmpty(value))
+                // // evaluated value of cell
+                // if(this.Text[0] == '=')
+                // {
+                //     DataTable dt = new DataTable();
+                //     int answer = (int)dt.Compute(this.Text, string.Empty);
+                //     this._value = answer.ToString();
+                // }
+                if (this._value != value)
                 {
                     this._value = this.Text;
-                }
-                else
-                {
-                    this._value = value;
                 }
             }
         }
