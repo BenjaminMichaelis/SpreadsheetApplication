@@ -56,9 +56,9 @@ namespace SpreadsheetApp
             //// 
             //// button1
             //// 
-            this.button1.Location = new System.Drawing.Point(0, 641);
+            this.button1.Location = new System.Drawing.Point(0, 61);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(858, 38);
+            this.button1.Size = new System.Drawing.Size(400, 200);
             this.button1.TabIndex = 1;
             this.button1.Text = "Perform Demo";
             this.button1.UseVisualStyleBackColor = true;

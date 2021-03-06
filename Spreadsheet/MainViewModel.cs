@@ -51,8 +51,6 @@ namespace SpreadsheetApp
             {
                 this.MainForm.dataGridView1.Rows[rowNumber].HeaderCell.Value = string.Format($"{this.MainForm.dataGridView1.Rows[rowNumber].Index + 1}");
             }
-
-            this.sheet.Demo();
         }
 
         /// <summary>
