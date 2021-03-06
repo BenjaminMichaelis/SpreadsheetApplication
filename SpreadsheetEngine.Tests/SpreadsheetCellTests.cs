@@ -48,5 +48,25 @@ namespace SpreadsheetEngine.Tests
             CellTests sut = new(1, 1);
             Assert.Equal("Z", sut.ColumnIntToLetter(26));
         }
+
+        /// <summary>
+        /// Test that when given the int 34 for a column number it returns AH.
+        /// </summary>
+        [Fact]
+        public void ColumnLetterToNumber_34_returnAH()
+        {
+            CellTests sut = new(1, 1);
+            Assert.Equal("AH", sut.ColumnIntToLetter(34));
+        }
+
+        /// <summary>
+        /// Test that when given the int 34 for a column number it returns AH.
+        /// </summary>
+        [Fact]
+        public void ColumnLetterToNumber_16384_returnXFD()
+        {
+            CellTests sut = new(1, 1);
+            Assert.Equal("XFD", sut.ColumnIntToLetter(16384));
+        }
     }
 }

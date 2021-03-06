@@ -110,8 +110,6 @@ namespace SpreadsheetEngine
             }
         }
 
-        private char[] chars = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
-
         /// <summary>
         /// Converts an Int to associated Letter for Index Name.
         /// </summary>
@@ -119,17 +117,18 @@ namespace SpreadsheetEngine
         /// <returns>Returns string of letters for index.</returns>
         public string ColumnIntToLetter(int index)
         {
-            index -= 1;
+            int dividend = index;
+            string columnName = string.Empty;
+            int modulo;
 
-            int quotient = index / 26;
-            if (quotient > 0)
+            while (dividend > 0)
             {
-                return this.ColumnIntToLetter(quotient - 1) + (char)((index % 26) + 65);
+                modulo = (dividend - 1) % 26;
+                columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
+                dividend = (int)((dividend - modulo) / 26);
             }
-            else
-            {
-                return string.Empty + (char)((index % 26) + 65);
-            }
+
+            return columnName;
         }
     }
 }
