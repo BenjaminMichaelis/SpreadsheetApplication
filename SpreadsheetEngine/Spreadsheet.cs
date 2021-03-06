@@ -18,7 +18,7 @@ namespace SpreadsheetEngine
     {
         private class Cell : SpreadsheetCell
         {
-            private Cell(int rowIndex, int columnIndex)
+            public Cell(int rowIndex, int columnIndex)
                 : base(rowIndex, columnIndex)
             {
             }
@@ -42,8 +42,32 @@ namespace SpreadsheetEngine
             this.ColumnCount = columns;
             this.RowCount = rows;
             this._cellsOfSpreadsheet = new Cell[rows, columns];
+            for (int rowNum = 0; rowNum < rows; rowNum++)
+            {
+                for (int colNum = 0; colNum < columns; colNum++)
+                {
+                    this._cellsOfSpreadsheet[rowNum, colNum] = new Cell(rowNum, colNum);
+                    this._cellsOfSpreadsheet[rowNum, colNum].PropertyChanged += this.OnCellPropertyChanged;
+                }
+            }
 
             // this._cellsOfSpreadsheet[rownum, colnum].PropertyChanged += this.CellPropertyChanged;
+        }
+
+        public void Demo()
+        {
+            Random randomRow = new();
+            Random randomColumn = new();
+
+            for (int i = 0; i < 50; i++)
+            {
+                Cell? temp = this.GetCell(randomRow.Next(1, 23), randomColumn.Next(1, 48));
+                if (temp != null)
+                {
+                    temp.Text = "Hello World";
+                }
+            }
+
         }
 
         /// <summary>
@@ -117,7 +141,14 @@ namespace SpreadsheetEngine
         /// <returns>Returns a Cell of Cell.</returns>
         private Cell? GetCell(int rowIndex, int colIndex)
         {
-            return this._cellsOfSpreadsheet[rowIndex, colIndex];
+            if ((rowIndex <= this.RowCount && rowIndex >= 0) && colIndex <= this.ColumnCount && colIndex >= 0)
+            {
+                return this._cellsOfSpreadsheet[rowIndex, colIndex];
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
