@@ -31,6 +31,10 @@ namespace SpreadsheetApp
             char[] alphabet = Enumerable.Range('A', 'Z' - 'A' + 1).Select(i => (char)i).ToArray();
             this.MainForm = mainForm;
 
+#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+            this.MainForm.button1.Click += new System.EventHandler(this.Button_Click);
+#pragma warning restore CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+
             this.sheet = new(50, 26);
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
             this.sheet.OnCellPropertyChanged += this.UpdateCell;
@@ -47,9 +51,7 @@ namespace SpreadsheetApp
             {
                 this.MainForm.dataGridView1.Rows[rowNumber].HeaderCell.Value = string.Format($"{this.MainForm.dataGridView1.Rows[rowNumber].Index + 1}");
             }
-#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-            this.MainForm.button1.Click += new System.EventHandler(this.Button_Click);
-#pragma warning restore CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+
             this.sheet.Demo();
         }
 
@@ -60,6 +62,11 @@ namespace SpreadsheetApp
         /// <param name="e">Property changed event.</param>
         public void Button_Click(object sender, System.EventArgs e)
         {
+            this.MainForm.button1.Enabled = false;
+            this.MainForm.button1.Hide();
+            this.MainForm.button1.Visible = false;
+            this.MainForm.button1.UseVisualStyleBackColor = false;
+            this.MainForm.button1.SendToBack();
             this.sheet.Demo();
         }
 

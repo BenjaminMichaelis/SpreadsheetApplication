@@ -71,7 +71,7 @@ namespace SpreadsheetEngine
                 if (this._text != value)
                 {
                     this._text = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Text"));
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Text)));
                 }
             }
         }
@@ -83,7 +83,7 @@ namespace SpreadsheetEngine
         {
             get
             {
-                return this.ColumnIntToLetter(this.ColumnIndex) + (this.RowIndex + 1).ToString();
+                return ColumnIntToLetter(this.ColumnIndex) + (this.RowIndex + 1).ToString();
             }
         }
 
@@ -117,7 +117,7 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="index">Int to be switched to letters.</param>
         /// <returns>Returns string of letters for index.</returns>
-        public string ColumnIntToLetter(int index)
+        public static string ColumnIntToLetter(int index)
         {
             int dividend = index;
             string columnName = string.Empty;

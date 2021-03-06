@@ -68,6 +68,18 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        /// Converts the first letters in a string to numbers.
+        /// </summary>
+        /// <param name="cellName">The name of the cell (ex: AA33).</param>
+        /// <returns>Int of Cell.</returns>
+        public static int ColumnLetterToInt(string cellName)
+        {
+            string columnLetters = string.Concat(cellName.TakeWhile(char.IsLetter));
+            int columnLocation = columnLetters.ToCharArray().Select(c => c - 'A' + 1).Reverse().Select((v, i) => v * (int)Math.Pow(26, i)).Sum();
+            return columnLocation;
+        }
+
+        /// <summary>
         /// Runs a demo of the code with 50 cells displaying "Hello World".
         /// </summary>
         public void Demo()
@@ -125,18 +137,6 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        /// Converts the first letters in a string to numbers.
-        /// </summary>
-        /// <param name="cellName">The name of the cell (ex: AA33).</param>
-        /// <returns>Int of Cell.</returns>
-        public int ColumnLetterToInt(string cellName)
-        {
-            string columnLetters = string.Concat(cellName.TakeWhile(char.IsLetter));
-            int columnLocation = columnLetters.ToCharArray().Select(c => c - 'A' + 1).Reverse().Select((v, i) => v * (int)Math.Pow(26, i)).Sum();
-            return columnLocation;
-        }
-
-        /// <summary>
         /// GetCell function that takes a row and column index and returns the cell at that location or null if there is no such cell.
         /// </summary>
         /// <param name="rowIndex">Pass in the row of the cell you want to access.</param>
@@ -161,7 +161,7 @@ namespace SpreadsheetEngine
         /// <returns>Returns cell in spreadsheet that matches the index of the cell.</returns>
         private Cell? GetCell(string cellName)
         {
-            int columnLocation = this.ColumnLetterToInt(cellName);
+            int columnLocation = ColumnLetterToInt(cellName);
             string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
             int rowLocation = int.Parse(rowLocationString);
             return this.GetCell(rowLocation, columnLocation);
