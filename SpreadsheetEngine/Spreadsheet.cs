@@ -18,6 +18,11 @@ namespace SpreadsheetEngine
     {
         private class Cell : SpreadsheetCell
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Cell"/> class.
+            /// </summary>
+            /// <param name="rowIndex">Row index of cell.</param>
+            /// <param name="columnIndex">Column index of cell.</param>
             public Cell(int rowIndex, int columnIndex)
                 : base(rowIndex, columnIndex)
             {
@@ -29,6 +34,11 @@ namespace SpreadsheetEngine
                 this._value = value;
             }
         }
+
+        /// <summary>
+        /// Event handler to connect to UI level.
+        /// </summary>
+        public event PropertyChangedEventHandler? OnCellPropertyChanged;
 
         private Cell[,] _cellsOfSpreadsheet;
 
@@ -47,27 +57,38 @@ namespace SpreadsheetEngine
                 for (int colNum = 0; colNum < columns; colNum++)
                 {
                     this._cellsOfSpreadsheet[rowNum, colNum] = new Cell(rowNum, colNum);
-                    this._cellsOfSpreadsheet[rowNum, colNum].PropertyChanged += this.OnCellPropertyChanged;
+#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+                    this._cellsOfSpreadsheet[rowNum, colNum].PropertyChanged += this.CellPropertyChanged;
+#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+
                 }
             }
 
             // this._cellsOfSpreadsheet[rownum, colnum].PropertyChanged += this.CellPropertyChanged;
         }
 
+        /// <summary>
+        /// Runs a demo of the code with 50 cells displaying "Hello World".
+        /// </summary>
         public void Demo()
         {
-            Random randomRow = new();
-            Random randomColumn = new();
+            int randomRow = 0, randomCol = 0;
+            Random random = new Random();
 
             for (int i = 0; i < 50; i++)
             {
-                Cell? temp = this.GetCell(randomRow.Next(1, 23), randomColumn.Next(1, 48));
-                if (temp != null)
-                {
-                    temp.Text = "Hello World";
-                }
+                randomCol = random.Next(0, 25);
+                randomRow = random.Next(0, 49);
+
+                Cell temp = this.GetCell(randomRow!, randomCol!);
+                temp!.Text = "Hello World";
+                this._cellsOfSpreadsheet[randomRow, randomCol] = temp;
             }
 
+            for (int i = 0; i < 50; i++)
+            {
+                this._cellsOfSpreadsheet[i, 1].Text = $"This is Cell B{i.ToString()}";
+            }
         }
 
         /// <summary>
@@ -97,16 +118,11 @@ namespace SpreadsheetEngine
                             evaluatingCell.SetCellValue(evaluatingCell.Text);
                         }
 
-                        this.OnCellPropertyChanged.Invoke(sender, e);
+                        this.OnCellPropertyChanged!.Invoke(sender, e);
                     }
                 }
             }
         }
-
-        /// <summary>
-        /// Event handler to connect to UI level.
-        /// </summary>
-        public event PropertyChangedEventHandler OnCellPropertyChanged = (sender, e) => { };
 
         /// <summary>
         /// Converts the first letters in a string to numbers.
@@ -118,19 +134,6 @@ namespace SpreadsheetEngine
             string columnLetters = string.Concat(cellName.TakeWhile(char.IsLetter));
             int columnLocation = columnLetters.ToCharArray().Select(c => c - 'A' + 1).Reverse().Select((v, i) => v * (int)Math.Pow(26, i)).Sum();
             return columnLocation;
-        }
-
-        /// <summary>
-        /// Get the cell from the cell name.
-        /// </summary>
-        /// <param name="cellName">Letter/number combo of cell.</param>
-        /// <returns>Returns cell in spreadsheet that matches the index of the cell.</returns>
-        private Cell? GetCell(string cellName)
-        {
-            int columnLocation = this.ColumnLetterToInt(cellName);
-            string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
-            int rowLocation = int.Parse(rowLocationString);
-            return this.GetCell(rowLocation, columnLocation);
         }
 
         /// <summary>
@@ -149,6 +152,19 @@ namespace SpreadsheetEngine
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Get the cell from the cell name.
+        /// </summary>
+        /// <param name="cellName">Letter/number combo of cell.</param>
+        /// <returns>Returns cell in spreadsheet that matches the index of the cell.</returns>
+        private Cell? GetCell(string cellName)
+        {
+            int columnLocation = this.ColumnLetterToInt(cellName);
+            string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
+            int rowLocation = int.Parse(rowLocationString);
+            return this.GetCell(rowLocation, columnLocation);
         }
 
         /// <summary>

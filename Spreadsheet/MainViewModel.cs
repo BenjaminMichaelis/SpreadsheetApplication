@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using SpreadsheetEngine;
 
 namespace SpreadsheetApp
@@ -30,14 +31,10 @@ namespace SpreadsheetApp
             char[] alphabet = Enumerable.Range('A', 'Z' - 'A' + 1).Select(i => (char)i).ToArray();
             this.MainForm = mainForm;
 
-            // private Spreadsheet sut = new(26, 50);
-            // this.MainForm.dataGridView = Spreadsheet
-            // need to subscribe dataGridView1 ui to spreadsheet / spreadsheet events
-            // maybe here: https://www.bing.com/search?q=datagridview+instantiate&PC=U316&FORM=CHROMN
-            // https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.datagridview.datasource?view=net-5.0
-            // https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.bindingsource?view=net-5.0
-            // https://social.msdn.microsoft.com/Forums/en-US/70138a82-1ab7-4556-af6c-7c31350d091b/new-object-instance-for-datagridview
             this.sheet = new(50, 26);
+#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+            this.sheet.OnCellPropertyChanged += this.UpdateCell;
+#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
             this.MainForm.dataGridView1.Columns.Clear();
             foreach (char c in alphabet)
             {
@@ -50,11 +47,20 @@ namespace SpreadsheetApp
             {
                 this.MainForm.dataGridView1.Rows[rowNumber].HeaderCell.Value = string.Format($"{this.MainForm.dataGridView1.Rows[rowNumber].Index + 1}");
             }
+#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+            this.MainForm.button1.Click += new System.EventHandler(this.Button_Click);
+#pragma warning restore CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+            this.sheet.Demo();
+        }
 
-            this.sheet.OnCellPropertyChanged += this.UpdateCell;
-
-            this.MainForm.dataGridView1.Rows[1].Cells[1].Value = "temp";
-            // this.sheet.Demo();
+        /// <summary>
+        /// Runs Demo.
+        /// </summary>
+        /// <param name="sender">sender object.</param>
+        /// <param name="e">Property changed event.</param>
+        public void Button_Click(object sender, System.EventArgs e)
+        {
+            this.sheet.Demo();
         }
 
         private void UpdateCell(object sender, PropertyChangedEventArgs e)
@@ -62,7 +68,7 @@ namespace SpreadsheetApp
             SpreadsheetEngine.SpreadsheetCell temp = sender as SpreadsheetEngine.SpreadsheetCell;
             if (e.PropertyName != null)
             {
-                this.MainForm.dataGridView1.Rows[temp.RowIndex].Cells[temp.ColumnIndex].Value = temp.Value;
+                this.MainForm.dataGridView1.Rows[temp!.RowIndex].Cells[temp.ColumnIndex].Value = temp.Value;
             }
         }
 

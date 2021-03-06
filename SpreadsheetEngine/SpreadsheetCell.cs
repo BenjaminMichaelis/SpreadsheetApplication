@@ -60,7 +60,9 @@ namespace SpreadsheetEngine
                 }
                 else
                 {
+#pragma warning disable CS8603 // Logic is correct, following up with microsoft
                     return this._text;
+#pragma warning disable CS8603 // Logic is correct, following up with microsoft
                 }
             }
 
@@ -69,7 +71,7 @@ namespace SpreadsheetEngine
                 if (this._text != value)
                 {
                     this._text = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Text)));
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Text"));
                 }
             }
         }

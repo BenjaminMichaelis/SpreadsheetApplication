@@ -40,6 +40,17 @@ namespace SpreadsheetApp
             this.G = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
+
+            // 
+            // mainmenu
+            // 
+            this.mainmenu.AllowDrop = true;
+            this.mainmenu.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.mainmenu.Location = new System.Drawing.Point(0, 0);
+            this.mainmenu.Name = "mainmenu";
+            this.mainmenu.Size = new System.Drawing.Size(800, 28);
+            this.mainmenu.TabIndex = 0;
+            this.mainmenu.Text = "Main Menu";
             // 
             // dataGridView1
             // 
@@ -100,13 +111,24 @@ namespace SpreadsheetApp
             this.G.HeaderText = "G";
             this.G.Name = "G";
             this.G.Width = 125;
+            //// 
+            //// button1
+            //// 
+            this.button1.Location = new System.Drawing.Point(0, 641);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(858, 38);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "Perform Demo";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.dataGridView1);
+            this.MainMenuStrip = this.mainmenu;
             this.Name = "MainForm";
             this.Text = "Benjamin Michaelis - 11620581";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -125,6 +147,14 @@ namespace SpreadsheetApp
         private DataGridViewTextBoxColumn E;
         private DataGridViewTextBoxColumn F;
         private DataGridViewTextBoxColumn G;
+        /// <summary>
+        /// Button for running demo.
+        /// </summary>
+        public System.Windows.Forms.Button button1 { get; } = new();
+        /// <summary>
+        /// Creates menustrip.
+        /// </summary>
+        public MenuStrip mainmenu { get; } = new();
 
         #endregion
 
