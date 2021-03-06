@@ -26,6 +26,14 @@ namespace SpreadsheetApp
         {
             char[] alphabet = Enumerable.Range('A', 'Z' - 'A' + 1).Select(i => (char)i).ToArray();
             this.MainForm = mainForm;
+
+            // private Spreadsheet sut = new(26, 50);
+            // this.MainForm.dataGridView = Spreadsheet
+            // need to subscribe dataGridView1 ui to spreadsheet / spreadsheet events
+            // maybe here: https://www.bing.com/search?q=datagridview+instantiate&PC=U316&FORM=CHROMN
+            // https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.datagridview.datasource?view=net-5.0
+            // https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.bindingsource?view=net-5.0
+            // https://social.msdn.microsoft.com/Forums/en-US/70138a82-1ab7-4556-af6c-7c31350d091b/new-object-instance-for-datagridview
             this.MainForm.dataGridView1.Columns.Clear();
             foreach (char c in alphabet)
             {

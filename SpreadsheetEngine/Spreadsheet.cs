@@ -62,7 +62,11 @@ namespace SpreadsheetEngine
                     {
                         if (evaluatingCell.Text.StartsWith("="))
                         {
-                            // evaluatingCell.SetCellValue();
+                            Cell? targetCell = this.GetCell(evaluatingCell.Text.Substring(1).ToString());
+                            if (targetCell != null)
+                            {
+                                evaluatingCell.SetCellValue(targetCell.Value);
+                            }
                         }
                         else
                         {
