@@ -54,16 +54,7 @@ namespace SpreadsheetEngine
         {
             get
             {
-                if (string.IsNullOrEmpty(this._text))
-                {
-                    return string.Empty;
-                }
-                else
-                {
-#pragma warning disable CS8603 // Logic is correct, following up with microsoft
-                    return this._text;
-#pragma warning disable CS8603 // Logic is correct, following up with microsoft
-                }
+                return this._text is { } result ? result : string.Empty;
             }
 
             set
