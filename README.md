@@ -27,3 +27,9 @@ ex:
                             || item.Description.Contains(word)
                             );
 If it was on the preceding line with item.Description then if I wanted to comment out that line to debug it would break.
+
+# Underscores/numbers in test method names
+Numbers or underscores in the test names only there to follow the MethodName_StateUnderTest_ExpectedBehavior naming convention, for example shown here 
+https://osherove.com/blog/2005/4/3/naming-standards-for-unit-tests.html
+
+That is my general reasoning for having numbers in my naming conventions for tests, and it quickly allows me to view from even just the description in the test explorer, what the method is that is being tested, what I am passing in or what state in which im testing it at, and what result I expect to get from the tests, so I can quickly identify the scenarios in which tests are failing and what cases are not being covered.
