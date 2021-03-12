@@ -74,7 +74,7 @@ namespace SpreadsheetEngine
         {
             get
             {
-                return ColumnIntToLetter(this.ColumnIndex) + (this.RowIndex + 1).ToString();
+                return this.ColumnIntToLetter(this.ColumnIndex) + (this.RowIndex + 1).ToString();
             }
         }
 
@@ -92,14 +92,7 @@ namespace SpreadsheetEngine
         {
             get
             {
-                if (string.IsNullOrEmpty(this._value))
-                {
-                    return string.Empty;
-                }
-                else
-                {
-                    return this._value;
-                }
+                return this._value is { } result ? result : string.Empty;
             }
         }
 
@@ -108,7 +101,7 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="index">Int to be switched to letters.</param>
         /// <returns>Returns string of letters for index.</returns>
-        public static string ColumnIntToLetter(int index)
+        public string ColumnIntToLetter(int index)
         {
             int dividend = index;
             string columnName = string.Empty;
