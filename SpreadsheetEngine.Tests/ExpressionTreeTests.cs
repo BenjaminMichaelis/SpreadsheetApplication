@@ -67,16 +67,22 @@ namespace SpreadsheetEngine.Tests
         /// </summary>
         /// <param name="expression">Pass in expression to test.</param>
         [Theory]
-        [InlineData("A+B+C")]
-        public void GetSymbols(string expression)
+        [MemberData(nameof(Data))]
+        // [InlineData("A+B+C",)]
+        public void GetSymbols(string expression, List<string> expected)
         {
-            StringBuilder result = new (string.Empty);
-            foreach(string symbol in ExpressionTree.GetSymbols(expression))
+            List<string> result = new();
+            foreach (string symbol in ExpressionTree.GetSymbols(expression))
             {
-                result.Append(symbol);
+                result.Add(symbol);
             }
 
-            Assert.Equal(expression, result.ToString());
+            Assert.Equal(expected, result);
         }
+
+        public static IEnumerable<object[]> Data => new List<object[]>
+        {
+            new object[] { "A+B+C", new List<string> { "A","B","C" } },
+        };
     }
 }
