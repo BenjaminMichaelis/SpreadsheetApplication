@@ -18,35 +18,35 @@ namespace CptS321
         private Dictionary<string, double> variables = new();
         private OperatorNode? rootNode;
 
-
-
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ExpressionTree"/> class.
         /// </summary>
         /// <param name="expression">The string representing the new expression to construct tree from.</param>
         public ExpressionTree(string expression)
         {
-
             // expression take off from front first.length
             // expression next char == operator node
             // second == next Get symbols
             // repeat
-            //OperatorNode = GetSymbols(expression)
-            //operatorNode = operatorFactory.CreateOperatorNode()
-            //foreach(string symbol in GetSymbols(expression) )
-            //{
-                
-            //}
+            // OperatorNode = GetSymbols(expression)
+            // operatorNode = operatorFactory.CreateOperatorNode()
+            // foreach(string symbol in GetSymbols(expression) )
+            // {
+            // }
         }
 
+        /// <summary>
+        /// Parses an expression string into the correct nodes.
+        /// </summary>
+        /// <param name="expression">The expression to be parsed.</param>
+        /// <returns>Returns the correct node.</returns>
         public static Node ParseExpression(string expression)
         {
             string? operand = null;
             Node? node = null;
             string symbol;
             while ((symbol = GetNextSymbol(ref expression)) is { })
-            { 
+            {
                 if (operand is null)
                 {
                     operand = symbol;
@@ -58,12 +58,29 @@ namespace CptS321
                     operatorNode.Right = ParseExpression(expression);
                 }
             }
+
             return node;
         }
 
+        /// <summary>
+        /// Checks if a string contains an operator.
+        /// </summary>
+        /// <param name="item">The string to check is passed in.</param>
+        /// <returns>True or false if it contains an operator.</returns>
         public static bool IsOperator(string item) => "+-/*".Contains(item);
+
+        /// <summary>
+        /// Checks if a char is an operator.
+        /// </summary>
+        /// <param name="item">Passes in the char to check and uses string IsOperator logic.</param>
+        /// <returns>True or false if it contains an operator.</returns>
         public static bool IsOperator(char item) => IsOperator(item.ToString());
 
+        /// <summary>
+        /// Get the next symbol in the expression.
+        /// </summary>
+        /// <param name="expression">The string expression to get the next symbol from.</param>
+        /// <returns>Returns static string.</returns>
         public static string GetNextSymbol(ref string expression)
         {
             StringBuilder result = new();
@@ -78,19 +95,28 @@ namespace CptS321
                         charactersProcessed++;
                         break;
                     }
-                    else break;
+                    else
+                    {
+                        break;
+                    }
                 }
                 else
                 {
                     result.Append(symbol);
                 }
+
                 charactersProcessed++;
             }
+
             expression = expression[charactersProcessed..];
             return result.ToString();
         }
 
-
+        /// <summary>
+        /// Gets the first symbols before an operator in a expression string.
+        /// </summary>
+        /// <param name="expression">Expression string to get first variable symbols from.</param>
+        /// <returns>Returns a string (IEnumberable type) with the string until the operator.</returns>
         public static IEnumerable<string> GetSymbols(string expression)
         {
             StringBuilder operand = new();
@@ -106,6 +132,7 @@ namespace CptS321
                     operand.Append(symbol);
                 }
             }
+
             yield return operand.ToString();
         }
 
@@ -130,12 +157,14 @@ namespace CptS321
         /// <returns>The evaluation of the expression.</returns>
         public double Evaluate()
         {
-            double result = variables.Values.First();
-            foreach(int value in variables.Values.Skip(1))
-            {
-                result = result + value;
-            }
-            return result;
+            // double result = this.variables.Values.First();
+            // foreach(int value in this.variables.Values.Skip(1))
+            // {
+            //     result = result + value;
+            // }
+
+            // return result;
+            return this.rootNode.Evaluate();
         }
     }
 }

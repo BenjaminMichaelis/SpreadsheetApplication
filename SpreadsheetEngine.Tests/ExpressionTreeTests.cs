@@ -20,6 +20,7 @@ namespace SpreadsheetEngine.Tests
         /// Tests Evaluate.
         /// </summary>
         /// <param name="expression">The expression passed into the test.</param>
+        /// <param name="valuesExpression">The value to assign to each variable.</param>
         /// <param name="expected">The expected result from the input.</param>
         [Theory]
 
@@ -71,9 +72,9 @@ namespace SpreadsheetEngine.Tests
         /// Test get symbols function.
         /// </summary>
         /// <param name="expression">Pass in expression to test.</param>
+        /// <param name="expected">Expected List result.</param>
         [Theory]
         [MemberData(nameof(Data))]
-        // [InlineData("A+B+C",)]
         public void GetSymbols(string expression, List<string> expected)
         {
             List<string> result = new();
@@ -85,6 +86,9 @@ namespace SpreadsheetEngine.Tests
             Assert.Equal(expected, result);
         }
 
+        /// <summary>
+        /// Gets Member data for GetSymbols function.
+        /// </summary>
         public static IEnumerable<object[]> Data => new List<object[]>
         {
             new object[] { "A+B+C", new List<string> { "A", "B", "C" } },
@@ -92,21 +96,29 @@ namespace SpreadsheetEngine.Tests
             new object[] { "AA+BBB+Hello", new List<string> { "AA", "BBB", "Hello" } },
         };
 
+        /// <summary>
+        /// Tests getNextSymbol.
+        /// </summary>
+        /// <param name="expression">Expression that is being passed in.</param>
+        /// <param name="firstSymbol">The first symbol that should be passed from the method.</param>
+        /// <param name="remainingExpression">The remainder of the expression that should be passed from the method.</param>
         [Theory]
-        //[InlineData("A+B","A","+B")]
-        //[InlineData("AB+B", "AB", "+B")]
-        //[InlineData("ABC+BC", "ABC", "+BC")]
-        //[InlineData("ABC+BC+D", "ABC", "+BC+D")]
+
+        // [InlineData("A+B","A","+B")]
+        // [InlineData("AB+B", "AB", "+B")]
+        // [InlineData("ABC+BC", "ABC", "+BC")]
+        // [InlineData("ABC+BC+D", "ABC", "+BC+D")]
         [InlineData("+BC+D", "+", "BC+D")]
         public void GetNextSymbol(string expression, string firstSymbol, string remainingExpression)
         {
             string actual = ExpressionTree.GetNextSymbol(ref expression);
             Assert.Equal(firstSymbol, actual);
             Assert.Equal(remainingExpression, expression);
-
         }
 
-
+        /// <summary>
+        /// Tests ParseExpressionNode.
+        /// </summary>
         [Fact]
         public void ParseExpressionNode()
         {
