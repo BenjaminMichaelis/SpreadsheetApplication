@@ -1,7 +1,7 @@
 <Project>
     <!-- Cross Build Configuration -->
     <PropertyGroup>
-        <TargetFrameworks>net5.0-windows;net472</TargetFrameworks>
+        <TargetFramework>net5.0-windows</TargetFramework>
         <LangVersion>9.0</LangVersion>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>false</TreatWarningsAsErrors>

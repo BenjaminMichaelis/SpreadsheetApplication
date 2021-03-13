@@ -41,8 +41,8 @@ namespace SpreadsheetEngine.Tests
         // [InlineData("2 + 3 * 5", 17.0)]
         // [InlineData("A-B-C", 0)]
         // [InlineData("3+5", 8.0)]
-        [InlineData("A", "0", 0)]
-        [InlineData("A", "5", 5)]
+        // [InlineData("A", "0", 0)]
+        // [InlineData("A", "5", 5)]
         [InlineData("A+B", "5+7", 12)]
         [InlineData("A+B", "100+70", 170)]
         [InlineData("Hello+World", "100+70", 170)]
@@ -91,5 +91,28 @@ namespace SpreadsheetEngine.Tests
             new object[] { "1+2+3", new List<string> { "1", "2", "3" } },
             new object[] { "AA+BBB+Hello", new List<string> { "AA", "BBB", "Hello" } },
         };
+
+        [Theory]
+        //[InlineData("A+B","A","+B")]
+        //[InlineData("AB+B", "AB", "+B")]
+        //[InlineData("ABC+BC", "ABC", "+BC")]
+        //[InlineData("ABC+BC+D", "ABC", "+BC+D")]
+        [InlineData("+BC+D", "+", "BC+D")]
+        public void GetNextSymbol(string expression, string firstSymbol, string remainingExpression)
+        {
+            string actual = ExpressionTree.GetNextSymbol(ref expression);
+            Assert.Equal(firstSymbol, actual);
+            Assert.Equal(remainingExpression, expression);
+
+        }
+
+
+        [Fact]
+        public void ParseExpressionNode()
+        {
+            OperatorNode actual = ExpressionTree.ParseExpression("A+B");
+            Assert.Equal("A", ((VariableNode)actual.Left).Name);
+            Assert.Equal("B", ((VariableNode)actual.Right).Name);
+        }
     }
 }
