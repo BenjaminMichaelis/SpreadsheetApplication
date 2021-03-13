@@ -14,17 +14,17 @@ namespace CptS321
         /// <summary>
         /// CreateOperatorNode will return an OperatorNode.
         /// </summary>
-        /// <param name="operatr">A string with the operator to create a node type of.</param>
+        /// <param name="operator">A string with the operator to create a node type of.</param>
         /// <returns></returns>
-        public OperatorNode CreateOperatorNode(string operatr)
+        public static OperatorNode CreateOperatorNode(string @operator)
         {
-            switch (operatr)
+            switch (@operator)
             {
                 case "*": return new MultiplicationOperatorNode();
                 case "/": return new DivisionOperatorNode();
                 case "-": return new SubtractionOperatorNode();
                 case "+": return new AdditionOperatorNode();
-                default: return null;
+                default: throw new InvalidOperationException("Operator is not supported.");
             }
         }
     }

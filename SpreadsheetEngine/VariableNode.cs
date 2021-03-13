@@ -7,19 +7,20 @@ namespace CptS321
     /// </summary>
     public class VariableNode : Node
     {
-        private string Name { get; set; }
+        public string Name { get; set; }
 
-        private Dictionary<string, double> vars;
+        public double Value { get; set; }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="VariableNode"/> class.
         /// Variable Node constructor.
         /// </summary>
         /// <param name="name">name of node.</param>
         /// <param name="vars">variables for dictionary.</param>
-        public VariableNode (string name, ref Dictionary<string,double> vars)
+        public VariableNode (string name, double value)
         {
             this.Name = name;
-            this.vars = vars;
+            this.Value = value;
         }
 
         /// <summary>
@@ -28,12 +29,7 @@ namespace CptS321
         /// <returns>Returns a double if it is found in the dictionary.</returns>
         public override double Evaluate()
         {
-            double value = 0.0;
-            if (this.vars.ContainsKey(this.Name))
-            {
-                value = this.vars[(this.Name)];
-            }
-            return value;
+            return Value;
         }
     }
 }

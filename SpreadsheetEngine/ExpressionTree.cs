@@ -16,7 +16,10 @@ namespace CptS321
     public class ExpressionTree
     {
         private Dictionary<string, double> variables = new();
-        private OperatorNodeFactory operatorFactory = new();
+        private OperatorNode? rootNode;
+
+
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExpressionTree"/> class.
@@ -24,26 +27,69 @@ namespace CptS321
         /// <param name="expression">The string representing the new expression to construct tree from.</param>
         public ExpressionTree(string expression)
         {
-            foreach(string symbol in GetSymbols(expression) )
-            {
-                switch (symbol)
-                {
-                    case "+":
-                    case "-":
-                    case "*":
-                    case "/":
-                        this.operatorFactory.CreateOperatorNode(symbol);
-                        break;
-                    default:
-                        this.variables.Add(symbol, 0.0);
-                        break;
-                }
 
+            // expression take off from front first.length
+            // expression next char == operator node
+            // second == next Get symbols
+            // repeat
+            //OperatorNode = GetSymbols(expression)
+            //operatorNode = operatorFactory.CreateOperatorNode()
+            //foreach(string symbol in GetSymbols(expression) )
+            //{
+                
+            //}
+        }
+
+        public static Node ParseExpression(string expression)
+        {
+            string? operand = null;
+            Node? node = null;
+            string symbol;
+            while ((symbol = GetNextSymbol(ref expression)) is { })
+            { 
+                if (operand is null)
+                {
+                    operand = symbol;
+                }
+                else
+                {
+                    OperatorNode operatorNode = OperatorNodeFactory.CreateOperatorNode(symbol);
+                    operatorNode.Left = new VariableNode(operand, 0);
+                    operatorNode.Right = ParseExpression(expression);
+                }
             }
+            return node;
         }
 
         public static bool IsOperator(string item) => "+-/*".Contains(item);
         public static bool IsOperator(char item) => IsOperator(item.ToString());
+
+        public static string GetNextSymbol(ref string expression)
+        {
+            StringBuilder result = new();
+            int charactersProcessed = 0;
+            foreach (char symbol in expression)
+            {
+                if (IsOperator(symbol))
+                {
+                    if (result.Length == 0)
+                    {
+                        result.Append(symbol);
+                        charactersProcessed++;
+                        break;
+                    }
+                    else break;
+                }
+                else
+                {
+                    result.Append(symbol);
+                }
+                charactersProcessed++;
+            }
+            expression = expression[charactersProcessed..];
+            return result.ToString();
+        }
+
 
         public static IEnumerable<string> GetSymbols(string expression)
         {
