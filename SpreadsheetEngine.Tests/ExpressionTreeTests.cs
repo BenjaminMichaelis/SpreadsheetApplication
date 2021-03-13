@@ -82,7 +82,9 @@ namespace SpreadsheetEngine.Tests
 
         public static IEnumerable<object[]> Data => new List<object[]>
         {
-            new object[] { "A+B+C", new List<string> { "A","B","C" } },
+            new object[] { "A+B+C", new List<string> { "A", "B", "C" } },
+            new object[] { "1+2+3", new List<string> { "1", "2", "3" } },
+            new object[] { "AA+BBB+Hello", new List<string> { "AA", "BBB", "Hello" } },
         };
     }
 }
