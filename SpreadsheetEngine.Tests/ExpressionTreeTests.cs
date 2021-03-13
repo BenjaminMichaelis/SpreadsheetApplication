@@ -44,6 +44,10 @@ namespace SpreadsheetEngine.Tests
         [InlineData("A", "0", 0)]
         [InlineData("A", "5", 5)]
         [InlineData("A+B", "5+7", 12)]
+        [InlineData("A+B", "100+70", 170)]
+        [InlineData("Hello+World", "100+70", 170)]
+        [InlineData("Hello+World+Everywhere", "100+70+30", 200)]
+        [InlineData("Hello-World-Everywhere", "100-70-20", 10)]
         public void EvaluateTests(string expression, string valuesExpression, double expected)
         {
             ExpressionTree tree = new ExpressionTree(expression);
@@ -59,6 +63,7 @@ namespace SpreadsheetEngine.Tests
             {
                 tree.SetVariable(operand, value);
             }
+
             Assert.Equal(expected, tree.Evaluate());
         }
 
