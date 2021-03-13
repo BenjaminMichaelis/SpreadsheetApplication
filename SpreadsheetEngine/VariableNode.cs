@@ -16,7 +16,7 @@ namespace CptS321
         /// Variable Node constructor.
         /// </summary>
         /// <param name="name">name of node.</param>
-        /// <param name="vars">variables for dictionary.</param>
+        /// <param name="value">Value of the node.</param>
         public VariableNode (string name, double value)
         {
             this.Name = name;
@@ -29,7 +29,7 @@ namespace CptS321
         /// <returns>Returns a double if it is found in the dictionary.</returns>
         public override double Evaluate()
         {
-            return Value;
+            return this.Value;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace CptS321
         /// <summary>
         /// To be implemented and overriden in operator nodes.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>will return double of the evaluation result.</returns>
         public abstract double Evaluate();
     }
 }

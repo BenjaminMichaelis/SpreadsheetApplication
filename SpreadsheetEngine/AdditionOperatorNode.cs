@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="AdditionOperatorNode.cs" company="Benjamin Michaelis">
+// Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +37,7 @@ namespace CptS321
         /// <returns>Returns addition of left and right.</returns>
         public override double Evaluate()
         {
-            return Left.Evaluate() + Right.Evaluate();
+            return this.Left.Evaluate() + this.Right.Evaluate();
         }
     }
 }
