@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CptS321;
@@ -42,14 +43,21 @@ namespace SpreadsheetEngine.Tests
         // [InlineData("3+5", 8.0)]
         [InlineData("A", "0", 0)]
         [InlineData("A", "5", 5)]
-        [InlineData("A+B", "10+100", 110)]
-        public void EvaluateTests(string expression, string values, double expected)
+        [InlineData("A+B", "5+7", 12)]
+        public void EvaluateTests(string expression, string valuesExpression, double expected)
         {
             ExpressionTree tree = new ExpressionTree(expression);
-            foreach (int value in ExpressionTree.GetSymbols(values).Where(item => !ExpressionTree.IsOperator(item))
-                .Select(item => int.Parse(item)))
+            IEnumerable<string>? operands = ExpressionTree.GetSymbols(expression)
+                    .Where(item => !ExpressionTree.IsOperator(item));
+            IEnumerable<int>? values = ExpressionTree.GetSymbols(valuesExpression)
+                    .Where(item => !ExpressionTree.IsOperator(item))
+                    .Select(item => int.Parse(item));
+
+            IEnumerable<(string operand, int value)>? operandValues =
+                operands.Zip(values, (operand, value) => (operand, value));
+            foreach ((string operand, int value) in operandValues)
             {
-                tree.SetVariable(expression, value);
+                tree.SetVariable(operand, value);
             }
             Assert.Equal(expected, tree.Evaluate());
         }
