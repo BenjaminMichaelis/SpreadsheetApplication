@@ -53,6 +53,7 @@ namespace CptS321
                 if(IsOperator(symbol))
                 {
                     yield return operand.ToString();
+                    operand.Clear();
                 }
                 else
                 {
