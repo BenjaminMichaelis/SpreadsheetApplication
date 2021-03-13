@@ -72,7 +72,7 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="cellName">The name of the cell (ex: AA33).</param>
         /// <returns>Int of Cell.</returns>
-        public static int ColumnLetterToInt(string cellName)
+        public int ColumnLetterToInt(string cellName)
         {
             string columnLetters = string.Concat(cellName.TakeWhile(char.IsLetter));
             int columnLocation = columnLetters.ToCharArray().Select(c => c - 'A' + 1).Reverse().Select((v, i) => v * (int)Math.Pow(26, i)).Sum();
