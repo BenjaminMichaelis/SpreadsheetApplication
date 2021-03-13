@@ -12,11 +12,12 @@ namespace CptS321
         private Dictionary<string, double> vars;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="VariableNode"/> class.
         /// Variable Node constructor.
         /// </summary>
         /// <param name="name">name of node.</param>
         /// <param name="vars">variables for dictionary.</param>
-        public VariableNode (string name, ref Dictionary<string,double> vars)
+        public VariableNode(string name, ref Dictionary<string, double> vars)
         {
             this.Name = name;
             this.vars = vars;
@@ -33,6 +34,7 @@ namespace CptS321
             {
                 value = this.vars[(this.Name)];
             }
+
             return value;
         }
     }

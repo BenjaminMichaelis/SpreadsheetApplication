@@ -40,6 +40,10 @@ namespace ConsoleApp
 
                     // 2. Set a variable value
                     case 2:
+                        Console.WriteLine("Enter new Variable Name:");
+                        string VariableName = Console.ReadLine();
+                        Console.WriteLine("Enter new Variable Value:");
+                        string VariableValue = Console.ReadLine();
                         break;
 
                     // 3. Evaluate tree
@@ -59,9 +63,10 @@ namespace ConsoleApp
                 // Skip a line for clarity
                 Console.WriteLine();
 
-                // if we want to give the user time to read the result before showing the menu again:
-                Console.WriteLine("Press any key to continue.\n");
-                Console.ReadKey();
+                // Remove ReadKey for automated grading.
+                //// if we want to give the user time to read the result before showing the menu again:
+                // Console.WriteLine("Press any key to continue.\n");
+                // Console.ReadKey();
             }
             while (!exitApplication);
         }

@@ -16,9 +16,9 @@ namespace CptS321
         /// </summary>
         /// <param name="operatr">A string with the operator to create a node type of.</param>
         /// <returns></returns>
-        public OperatorNode CreateOperatorNode(string operatr)
+        public OperatorNode CreateOperatorNode(string @operator)
         {
-            switch (operatr)
+            switch (@operator)
             {
                 case "*": return new MultiplicationOperatorNode();
                 case "/": return new DivisionOperatorNode();

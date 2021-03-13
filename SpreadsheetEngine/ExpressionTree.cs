@@ -60,6 +60,7 @@ namespace CptS321
                     operand.Append(symbol);
                 }
             }
+
             yield return operand.ToString();
         }
 
