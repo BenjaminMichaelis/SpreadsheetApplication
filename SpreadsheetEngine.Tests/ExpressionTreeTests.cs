@@ -126,5 +126,23 @@ namespace SpreadsheetEngine.Tests
             Assert.Equal("A", ((VariableNode)actual.Left).Name);
             Assert.Equal("B", ((VariableNode)actual.Right).Name);
         }
+
+        /// <summary>
+        /// Tests searching for a variableNode.
+        /// </summary>
+        [Fact]
+        public void SearchForVariableNode_TestTree_FindDesiredVariable()
+        {
+            ExpressionTree searcher = new("testing");
+            AdditionOperatorNode sut = new();
+            sut.Left = new MultiplicationOperatorNode();
+            sut.Right = new VariableNode("test", 0.0);
+            VariableNode? result = searcher.SearchForVariableNode(sut, "test");
+            Assert.NotNull(result);
+            if (result != null)
+            {
+                Assert.Equal("Test", result.Name);
+            }
+        }
     }
 }
