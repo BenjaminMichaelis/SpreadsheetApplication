@@ -35,32 +35,32 @@ namespace CptS321
             // }
         }
 
-        /// <summary>
-        /// Parses an expression string into the correct nodes.
-        /// </summary>
-        /// <param name="expression">The expression to be parsed.</param>
-        /// <returns>Returns the correct node.</returns>
-        public static Node ParseExpression(string expression)
-        {
-            string? operand = null;
-            Node? node = null;
-            string symbol;
-            while ((symbol = GetNextSymbol(ref expression)) is { })
-            {
-                if (operand is null)
-                {
-                    operand = symbol;
-                }
-                else
-                {
-                    OperatorNode operatorNode = OperatorNodeFactory.CreateOperatorNode(symbol);
-                    operatorNode.Left = new VariableNode(operand, 0);
-                    operatorNode.Right = ParseExpression(expression);
-                }
-            }
+        ///// <summary>
+        ///// Parses an expression string into the correct nodes.
+        ///// </summary>
+        ///// <param name="expression">The expression to be parsed.</param>
+        ///// <returns>Returns the correct node.</returns>
+        // public static Node ParseExpression(string expression)
+        // {
+        //    string? operand = null;
+        //    Node? node = null;
+        //    string symbol;
+        //    while ((symbol = GetNextSymbol(ref expression)) is { })
+        //    {
+        //        if (operand is null)
+        //        {
+        //            operand = symbol;
+        //        }
+        //        else
+        //        {
+        //            OperatorNode operatorNode = OperatorNodeFactory.CreateOperatorNode(symbol);
+        //            operatorNode.Left = new VariableNode(operand, 0);
+        //            operatorNode.Right = ParseExpression(expression);
+        //        }
+        //    }
 
-            return node;
-        }
+        // return node;
+        // }
 
         /// <summary>
         /// Checks if a string contains an operator.
@@ -157,14 +157,21 @@ namespace CptS321
         /// <returns>The evaluation of the expression.</returns>
         public double Evaluate()
         {
-            // double result = this.variables.Values.First();
+            // double result = this.variable node.s.First();
             // foreach(int value in this.variables.Values.Skip(1))
             // {
             //     result = result + value;
             // }
 
             // return result;
-            return this.rootNode.Evaluate();
+            if (this.rootNode != null)
+            {
+                return this.rootNode.Evaluate();
+            }
+            else
+            {
+                return 0.0;
+            }
         }
     }
 }

@@ -31,7 +31,7 @@ namespace CptS321
         /// <returns>Returns multiplication of left by right.</returns>
         public override double Evaluate()
         {
-            return Left.Evaluate() * Right.Evaluate();
+            return this.Left.Evaluate() * this.Right.Evaluate();
         }
     }
 }

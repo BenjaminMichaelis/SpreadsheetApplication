@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿// <copyright file="VariableNode.cs" company="Benjamin Michaelis">
+// Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
+// </copyright>
+
+using System.Collections.Generic;
 
 namespace CptS321
 {
@@ -7,20 +11,22 @@ namespace CptS321
     /// </summary>
     public class VariableNode : Node
     {
+        /// <summary>
+        /// Gets or sets name of variable node.
+        /// </summary>
         public string Name { get; set; }
 
-        public double Value { get; set; }
+        private Dictionary<string, double> vars;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VariableNode"/> class.
-        /// Variable Node constructor.
         /// </summary>
         /// <param name="name">name of node.</param>
-        /// <param name="value">Value of the node.</param>
-        public VariableNode (string name, double value)
+        /// <param name="vars">variables for dictionary.</param>
+        public VariableNode(string name, ref Dictionary<string, double> vars)
         {
             this.Name = name;
-            this.Value = value;
+            this.vars = vars;
         }
 
         /// <summary>
@@ -29,7 +35,13 @@ namespace CptS321
         /// <returns>Returns a double if it is found in the dictionary.</returns>
         public override double Evaluate()
         {
-            return this.Value;
+            double value = 0.0;
+            if (this.vars.ContainsKey(this.Name))
+            {
+                value = this.vars[this.Name];
+            }
+
+            return value;
         }
     }
 }

@@ -116,15 +116,15 @@ namespace SpreadsheetEngine.Tests
             Assert.Equal(remainingExpression, expression);
         }
 
-        /// <summary>
-        /// Tests ParseExpressionNode.
-        /// </summary>
-        [Fact]
-        public void ParseExpressionNode()
-        {
-            OperatorNode actual = (OperatorNode)ExpressionTree.ParseExpression("A+B");
-            Assert.Equal("A", ((VariableNode)actual.Left).Name);
-            Assert.Equal("B", ((VariableNode)actual.Right).Name);
-        }
+        ///// <summary>
+        ///// Tests ParseExpressionNode.
+        ///// </summary>
+        // [Fact]
+        // public void ParseExpressionNode()
+        // {
+        //    OperatorNode actual = (OperatorNode)ExpressionTree.ParseExpression("A+B");
+        //    Assert.Equal("A", ((VariableNode)actual.Left).Name);
+        //    Assert.Equal("B", ((VariableNode)actual.Right).Name);
+        // }
     }
 }
