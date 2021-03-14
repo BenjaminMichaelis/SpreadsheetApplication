@@ -157,21 +157,7 @@ namespace CptS321
         /// <returns>The evaluation of the expression.</returns>
         public double Evaluate()
         {
-            // double result = this.variable node.s.First();
-            // foreach(int value in this.variables.Values.Skip(1))
-            // {
-            //     result = result + value;
-            // }
-
-            // return result;
-            if (this.rootNode != null)
-            {
-                return this.rootNode.Evaluate();
-            }
-            else
-            {
-                return 0.0;
-            }
+            return this.rootNode?.Evaluate() ?? 0.0f;
         }
     }
 }
