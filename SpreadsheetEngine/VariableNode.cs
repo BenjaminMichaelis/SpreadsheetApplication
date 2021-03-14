@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿// <copyright file="VariableNode.cs" company="Benjamin Michaelis">
+// Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
+// </copyright>
+
+using System.Collections.Generic;
 
 namespace CptS321
 {
@@ -7,7 +11,7 @@ namespace CptS321
     /// </summary>
     public class VariableNode : Node
     {
-        public string Name { get; set; }
+        public override string Name { get; set; }
 
         public double Value { get; set; }
 
@@ -17,7 +21,7 @@ namespace CptS321
         /// </summary>
         /// <param name="name">name of node.</param>
         /// <param name="value">Value of the node.</param>
-        public VariableNode (string name, double value)
+        public VariableNode(string name, double value)
         {
             this.Name = name;
             this.Value = value;

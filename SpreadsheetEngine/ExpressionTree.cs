@@ -149,6 +149,63 @@ namespace CptS321
             }
 
             this.variables[variableName] = variableValue;
+
+        }
+
+        /// <summary>
+        /// Searches for a specific variable node in tree.
+        /// </summary>
+        /// <param name="root">The root node to search from.</param>
+        /// <param name="name">The name of the node to search for.</param>
+        /// <returns>Returns a variable node.</returns>
+        public VariableNode? SearchForVariableNode(OperatorNode root, string name)
+        {
+            if (root is null)
+            {
+                return null;
+            }
+
+            if (root.Left != null)
+            {
+                if (root.Left.GetType() == typeof(VariableNode))
+                {
+                    if (root.Left.Name == name)
+                    {
+                        return (VariableNode)root.Left;
+                    }
+                }
+            }
+
+            if (root.Right != null)
+            {
+                if (root.Right.GetType() == typeof(VariableNode))
+                {
+                    if (root.Right.Name == name)
+                    {
+                        return (VariableNode)root.Right;
+                    }
+                }
+            }
+            else
+            {
+                if (root.Left != null)
+                {
+                    if (root.Left.GetType() == typeof(OperatorNode))
+                    {
+                        return this.SearchForVariableNode((OperatorNode)root.Left, name);
+                    }
+                }
+
+                if (root.Right != null)
+                {
+                    if (root.Right.GetType() == typeof(OperatorNode))
+                    {
+                        return this.SearchForVariableNode((OperatorNode)root.Right, name);
+                    }
+                }
+            }
+
+            return null;
         }
 
         /// <summary>

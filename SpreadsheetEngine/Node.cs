@@ -16,5 +16,10 @@ namespace CptS321
         /// </summary>
         /// <returns>will return double of the evaluation result.</returns>
         public abstract double Evaluate();
+
+        /// <summary>
+        /// Gets or sets property to be implemented and override in Variable nodes.
+        /// </summary>
+        public abstract string Name { get; set; }
     }
 }
