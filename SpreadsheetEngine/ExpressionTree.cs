@@ -24,43 +24,59 @@ namespace CptS321
         /// <param name="expression">The string representing the new expression to construct tree from.</param>
         public ExpressionTree(string expression)
         {
-            // expression take off from front first.length
-            // expression next char == operator node
-            // second == next Get symbols
-            // repeat
-            // OperatorNode = GetSymbols(expression)
-            // operatorNode = operatorFactory.CreateOperatorNode()
-            // foreach(string symbol in GetSymbols(expression) )
-            // {
-            // }
+            this.rootNode = this.ParseNodes(expression);
         }
 
-        ///// <summary>
-        ///// Parses an expression string into the correct nodes.
-        ///// </summary>
-        ///// <param name="expression">The expression to be parsed.</param>
-        ///// <returns>Returns the correct node.</returns>
-        // public static Node ParseExpression(string expression)
-        // {
-        //    string? operand = null;
-        //    Node? node = null;
-        //    string symbol;
-        //    while ((symbol = GetNextSymbol(ref expression)) is { })
-        //    {
-        //        if (operand is null)
-        //        {
-        //            operand = symbol;
-        //        }
-        //        else
-        //        {
-        //            OperatorNode operatorNode = OperatorNodeFactory.CreateOperatorNode(symbol);
-        //            operatorNode.Left = new VariableNode(operand, 0);
-        //            operatorNode.Right = ParseExpression(expression);
-        //        }
-        //    }
+        /// <summary>
+        /// Check that the expression has matching Parenthesis.
+        /// </summary>
+        /// <param name="expression">Expression to check.</param>
+        /// <returns>True if expression has matching parenthesis, false if not.</returns>
+        public static bool MatchingParenthesis(string expression)
+        {
+            Dictionary<char, char> bracketPairs = new Dictionary<char, char>()
+            {
+                { '[', ']' },
+                { '{', '}' },
+                { '(', ')' },
+            };
 
-        // return node;
-        // }
+            Stack<char> matchingBrackets = new Stack<char>();
+
+            try
+            {
+                foreach (char currentChar in expression)
+                {
+                    if (bracketPairs.Keys.Contains(currentChar))
+                    {
+                        matchingBrackets.Push(currentChar);
+                    }
+                    else
+                        if (bracketPairs.Values.Contains(currentChar))
+                        {
+                            if (currentChar == bracketPairs[matchingBrackets.First()])
+                            {
+                                matchingBrackets.Pop();
+                            }
+                            else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
+            catch
+            {
+                // Exception will be caught in case a closing bracket is found first, prior to opening brackets. This implies that the string is not balanced.
+                return false;
+            }
+
+            return matchingBrackets.Count == 0 ? true : false;
+        }
 
         /// <summary>
         /// Checks if a string contains an operator.
@@ -137,17 +153,106 @@ namespace CptS321
         }
 
         /// <summary>
+        /// ParseNodes takes an expression and creates a tree of nodes from it.
+        /// </summary>
+        /// <param name="expression">string expression to create tree from.</param>
+        /// <returns>Returns an operator node that is the root of the tree.</returns>
+        public OperatorNode ParseNodes(string expression)
+        {
+            string trimmedExpression = string.Concat(expression.Where(c => !char.IsWhiteSpace(c)));
+            StringBuilder firstVariableString = new();
+            StringBuilder secondVariableString = new();
+            int currentNodeIndex = 0;
+            int operatorSplitIndex = 0;
+            int operatorsInSubstringCount = 0;
+            OperatorNode? tempRoot = null;
+
+            if (MatchingParenthesis(expression) == false)
+            {
+                throw new Exception("Parenthesis in expression do not match.");
+            }
+
+            for (int i = 0; i < trimmedExpression.Length; i++)
+            {
+                if (IsOperator(trimmedExpression[i]) || i == trimmedExpression.Length - 1)
+                {
+                    if (operatorsInSubstringCount < 1)
+                    {
+                        operatorSplitIndex = i;
+                    }
+
+                    if (i == trimmedExpression.Length - 1)
+                    {
+                        secondVariableString.Append(trimmedExpression[i]);
+                    }
+
+                    operatorsInSubstringCount++;
+                }
+
+                if (operatorsInSubstringCount == 2)
+                {
+                    if (tempRoot == null)
+                    {
+                        OperatorNode newNode = OperatorNodeFactory.CreateOperatorNode(trimmedExpression[operatorSplitIndex].ToString());
+                        newNode.Left = this.VariableNodeCreator(firstVariableString);
+                        newNode.Right = this.VariableNodeCreator(secondVariableString);
+                        tempRoot = newNode;
+                    }
+                    else
+                    {
+                        OperatorNode newNode = OperatorNodeFactory.CreateOperatorNode(trimmedExpression[operatorSplitIndex].ToString());
+                        newNode.Left = this.VariableNodeCreator(firstVariableString);
+                        newNode.Right = tempRoot;
+                        tempRoot = newNode;
+                    }
+
+                    operatorsInSubstringCount = 0;
+                    currentNodeIndex = i;
+                    firstVariableString.Clear();
+                    secondVariableString.Clear();
+                }
+                else
+                {
+                    if (operatorsInSubstringCount < 1)
+                    {
+                        firstVariableString.Append(trimmedExpression[i]);
+                    }
+
+                    if (operatorsInSubstringCount == 1 && !IsOperator(trimmedExpression[i]))
+                    {
+                        secondVariableString.Append(trimmedExpression[i]);
+                    }
+                }
+            }
+
+            return tempRoot;
+        }
+
+        /// <summary>
+        /// Creates a variable node or constant node depending on the string passed in.
+        /// </summary>
+        /// <param name="variableString">String to create node from.</param>
+        /// <returns>Returns constantNode or VariableNode.</returns>
+        public Node VariableNodeCreator(StringBuilder variableString)
+        {
+            double constant;
+            if (double.TryParse(variableString.ToString(), out constant))
+            {
+                return new ConstantNode(constant);
+            }
+            else
+            {
+                return new VariableNode(variableString.ToString(), ref this.variables);
+            }
+        }
+
+        /// <summary>
         /// Sets the specified variable within the ExpressionTree variables dictionary.
         /// </summary>
         /// <param name="variableName">Passes in the variable name.</param>
         /// <param name="variableValue">Passes in the variable value.</param>
         public void SetVariable(string variableName, double variableValue)
         {
-            if(!this.variables.ContainsKey(variableName))
-            {
-                throw new Exception("Variable name doesn't exist to set.");
-            }
-
             this.variables[variableName] = variableValue;
         }
 

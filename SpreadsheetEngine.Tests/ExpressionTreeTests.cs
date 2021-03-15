@@ -23,6 +23,7 @@ namespace SpreadsheetEngine.Tests
         /// <param name="valuesExpression">The value to assign to each variable.</param>
         /// <param name="expected">The expected result from the input.</param>
         [Theory]
+
         // [InlineData("(((((2+3)-(4+5)))))", -4.0)]
         // [InlineData("100/10*10", 100.0)]
         // [InlineData("0/0", double.NaN)]
@@ -39,9 +40,9 @@ namespace SpreadsheetEngine.Tests
         // [InlineData("2*3+5", 11.0)]
         // [InlineData("2+3*5", 17.0)]
         // [InlineData("2 + 3 * 5", 17.0)]
-        [InlineData("A-B-C", "5-7-2", -4)]
         // [InlineData("A", "0", 0)]
         // [InlineData("A", "5", 5)]
+        [InlineData("A-B-C", "5-7-2", -4)]
         [InlineData("3+5", "3+5", 8.0)]
         [InlineData("A+B", "5+7", 12)]
         [InlineData("A*B", "5+7", 35)]
@@ -58,18 +59,6 @@ namespace SpreadsheetEngine.Tests
             tree.SetVariable("C", 2);
             tree.SetVariable("Hello", 100);
             tree.SetVariable("World", 70);
-            //IEnumerable<string>? operands = ExpressionTree.GetSymbols(expression)
-            //        .Where(item => !ExpressionTree.IsOperator(item));
-            //IEnumerable<int>? values = ExpressionTree.GetSymbols(valuesExpression)
-            //        .Where(item => !ExpressionTree.IsOperator(item))
-            //        .Select(item => int.Parse(item));
-
-            //IEnumerable<(string operand, int value)>? operandValues =
-            //    operands.Zip(values, (operand, value) => (operand, value));
-            //foreach ((string operand, int value) in operandValues)
-            //{
-            //    tree.SetVariable(operand, value);
-            //}
 
             Assert.Equal(expected, tree.Evaluate());
         }
