@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using CptS321;
 using SpreadsheetEngine;
 
 namespace ConsoleApp
@@ -18,10 +19,12 @@ namespace ConsoleApp
         /// <param name="args">additional argument to add into Main.</param>
         public static void Main(string[] args)
         {
+            ExpressionTree currentTree = null;
+            string currentExpression = string.Empty;
             bool exitApplication = false;
             do
             {
-                ShowMenu();
+                ShowMenu(currentExpression);
 
                 string? userInput = Console.ReadLine();
                 if (!int.TryParse(userInput, out int menuSelection))
@@ -35,15 +38,31 @@ namespace ConsoleApp
                     // 1. Enter a new expression
                     case 1:
                         Console.WriteLine("Enter new expression:");
-                        string newExpression = Console.ReadLine();
+                        currentExpression = Console.ReadLine();
+                        currentTree = new(currentExpression);
                         break;
 
                     // 2. Set a variable value
                     case 2:
+                        if (currentTree == null)
+                        {
+                            Console.WriteLine("Tree is currently empty, please enter expression with option 1");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Enter variable name:");
+                            string variableName = Console.ReadLine();
+                            Console.WriteLine("Enter variable value:");
+                            string variableValue = Console.ReadLine();
+                            double newVariableValue = double.Parse(variableValue);
+                            currentTree.SetVariable(variableName, newVariableValue);
+                        }
+
                         break;
 
                     // 3. Evaluate tree
                     case 3:
+                        Console.WriteLine(currentTree.Evaluate().ToString());
                         break;
 
                     // 4. Quit
@@ -58,10 +77,6 @@ namespace ConsoleApp
 
                 // Skip a line for clarity
                 Console.WriteLine();
-
-                // if we want to give the user time to read the result before showing the menu again:
-                Console.WriteLine("Press any key to continue.\n");
-                Console.ReadKey();
             }
             while (!exitApplication);
         }
@@ -69,9 +84,9 @@ namespace ConsoleApp
         /// <summary>
         /// Prints menu to the Console.
         /// </summary>
-        private static void ShowMenu()
+        private static void ShowMenu(string currentExpression)
         {
-            Console.WriteLine($"\"Main Menu (current expression=\"{0}");
+            Console.WriteLine($"\"Main Menu (current expression=\"{currentExpression})");
             Console.WriteLine("1. Enter a new expression");
             Console.WriteLine("2. Set a variable value");
             Console.WriteLine("3. Evaluate tree");
