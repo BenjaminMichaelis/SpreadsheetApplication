@@ -23,7 +23,6 @@ namespace SpreadsheetEngine.Tests
         /// <param name="valuesExpression">The value to assign to each variable.</param>
         /// <param name="expected">The expected result from the input.</param>
         [Theory]
-
         // [InlineData("(((((2+3)-(4+5)))))", -4.0)]
         // [InlineData("100/10*10", 100.0)]
         // [InlineData("0/0", double.NaN)]
@@ -40,30 +39,37 @@ namespace SpreadsheetEngine.Tests
         // [InlineData("2*3+5", 11.0)]
         // [InlineData("2+3*5", 17.0)]
         // [InlineData("2 + 3 * 5", 17.0)]
-        // [InlineData("A-B-C", 0)]
-        // [InlineData("3+5", 8.0)]
+        [InlineData("A-B-C", "5-7-2", -4)]
         // [InlineData("A", "0", 0)]
         // [InlineData("A", "5", 5)]
+        [InlineData("3+5", "3+5", 8.0)]
         [InlineData("A+B", "5+7", 12)]
-        [InlineData("A+B", "100+70", 170)]
+        [InlineData("A*B", "5+7", 35)]
         [InlineData("Hello+World", "100+70", 170)]
-        [InlineData("Hello+World+Everywhere", "100+70+30", 200)]
-        [InlineData("Hello-World-Everywhere", "100-70-20", 10)]
+        [InlineData("Hello+Universe", "100+70", 100)]
+        [InlineData("Hello+World+Universe", "100+70", 170)]
+        [InlineData("Hello*World*Everywhere", "100+70+30", 7000)]
+        [InlineData("Hello-World-Everywhere", "100-70-20", 30)]
         public void EvaluateTests(string expression, string valuesExpression, double expected)
         {
             ExpressionTree tree = new ExpressionTree(expression);
-            IEnumerable<string>? operands = ExpressionTree.GetSymbols(expression)
-                    .Where(item => !ExpressionTree.IsOperator(item));
-            IEnumerable<int>? values = ExpressionTree.GetSymbols(valuesExpression)
-                    .Where(item => !ExpressionTree.IsOperator(item))
-                    .Select(item => int.Parse(item));
+            tree.SetVariable("A", 5);
+            tree.SetVariable("B", 7);
+            tree.SetVariable("C", 2);
+            tree.SetVariable("Hello", 100);
+            tree.SetVariable("World", 70);
+            //IEnumerable<string>? operands = ExpressionTree.GetSymbols(expression)
+            //        .Where(item => !ExpressionTree.IsOperator(item));
+            //IEnumerable<int>? values = ExpressionTree.GetSymbols(valuesExpression)
+            //        .Where(item => !ExpressionTree.IsOperator(item))
+            //        .Select(item => int.Parse(item));
 
-            IEnumerable<(string operand, int value)>? operandValues =
-                operands.Zip(values, (operand, value) => (operand, value));
-            foreach ((string operand, int value) in operandValues)
-            {
-                tree.SetVariable(operand, value);
-            }
+            //IEnumerable<(string operand, int value)>? operandValues =
+            //    operands.Zip(values, (operand, value) => (operand, value));
+            //foreach ((string operand, int value) in operandValues)
+            //{
+            //    tree.SetVariable(operand, value);
+            //}
 
             Assert.Equal(expected, tree.Evaluate());
         }
