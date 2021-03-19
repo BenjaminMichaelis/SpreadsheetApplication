@@ -41,6 +41,7 @@ namespace SpreadsheetEngine.Tests
         /// <param name="expected">The expected result from the input.</param>
         [Theory]
         [InlineData("A", 5)]
+        [InlineData("D", 0)]
         [InlineData("Hello+World", 170)]
         [InlineData("Hello+Universe", 100)]
         [InlineData("Hello+World+Universe", 170)]
