@@ -17,41 +17,57 @@ namespace SpreadsheetEngine.Tests
     public class ExpressionTreeTests
     {
         /// <summary>
-        /// Tests Evaluate.
+        /// Test the shunting yard algorithm logic.
+        /// </summary>
+        [Fact]
+        public void ShuntingYardAlgorithm()
+        {
+            Dictionary<string, List<string>> data = new();
+            data.Add("3+5", new List<string> { "3", "5", "+" });
+            data.Add("A3+5", new List<string> { "A3", "5", "+" });
+            data.Add("A*(B+C)", new List<string> { "A", "B", "C", "+", "*" });
+            foreach (KeyValuePair<string, List<string>> entry in data)
+            {
+                ExpressionTree exp = new(entry.Key);
+                Assert.Equal(exp.ShuntingYardAlgorithm(entry.Key), entry.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests Evaluate with normal and edge cases such as divide by zero.
         /// </summary>
         /// <param name="expression">The expression passed into the test.</param>
         /// <param name="valuesExpression">The value to assign to each variable.</param>
         /// <param name="expected">The expected result from the input.</param>
         [Theory]
-
-        // [InlineData("(((((2+3)-(4+5)))))", -4.0)]
-        // [InlineData("100/10*10", 100.0)]
-        // [InlineData("0/0", double.NaN)]
-        // [InlineData("1/0", double.PositiveInfinity)]
-        // [InlineData("5/0", double.PositiveInfinity)]
-        // [InlineData("10/(2*5)", 1.0)]
-        // [InlineData("84-14+26", 96.0)]
-        // [InlineData("7-4+2", 5.0)]
-        // [InlineData("4+7-2", 9.0)]
-        // [InlineData("5-4-3+10", 8.0)]
-        // [InlineData("5-4+10-3+7-6", 9.0)]
-        // [InlineData("10/(7-2)", 2.0)]
-        // [InlineData("(12-2)/2", 5.0)]
-        // [InlineData("2*3+5", 11.0)]
-        // [InlineData("2+3*5", 17.0)]
-        // [InlineData("2 + 3 * 5", 17.0)]
-        // [InlineData("A", "0", 0)]
-        // [InlineData("A", "5", 5)]
-        [InlineData("A-B-C", "5-7-2", -4)]
-        [InlineData("3+5", "3+5", 8.0)]
-        [InlineData("A+B", "5+7", 12)]
-        [InlineData("A*B", "5+7", 35)]
-        [InlineData("Hello+World", "100+70", 170)]
-        [InlineData("Hello+Universe", "100+70", 100)]
-        [InlineData("Hello+World+Universe", "100+70", 170)]
-        [InlineData("Hello*World*Everywhere", "100+70+30", 7000)]
-        [InlineData("Hello-World-Everywhere", "100-70-20", 30)]
-        public void EvaluateTests(string expression, string valuesExpression, double expected)
+        [InlineData("A", 5)]
+        [InlineData("Hello+World", 170)]
+        [InlineData("Hello+Universe", 100)]
+        [InlineData("Hello+World+Universe", 170)]
+        [InlineData("Hello-World-Everywhere", 30)]
+        [InlineData("(((((2+3)-(4+5)))))", -4.0)]
+        [InlineData("48-178-87", -217)]
+        [InlineData("10/(2*5)", 1.0)]
+        [InlineData("3.2+5.4", 8.6000000000000014d)]
+        [InlineData("84-14+26", 96.0)]
+        [InlineData("7-4+2", 5.0)]
+        [InlineData("4+7-2", 9.0)]
+        [InlineData("5-4-3+10", 8.0)]
+        [InlineData("5-4+10-3+7-6", 9.0)]
+        [InlineData("10/(7-2)", 2.0)]
+        [InlineData("(12-2)/2", 5.0)]
+        [InlineData("2*3+5", 11.0)]
+        [InlineData("2+3*5", 17.0)]
+        [InlineData("2 + 3 * 5", 17.0)]
+        [InlineData("A-B-C", -4)]
+        [InlineData("3+5", 8.0)]
+        [InlineData("A+B", 12)]
+        [InlineData("A*B", 35)]
+        [InlineData("100/10*10", 100.0)]
+        [InlineData("0/0", double.NaN)]
+        [InlineData("1/0", double.PositiveInfinity)]
+        [InlineData("5/0", double.PositiveInfinity)]
+        public void EvaluateTests(string expression, double expected)
         {
             ExpressionTree tree = new ExpressionTree(expression);
             tree.SetVariable("A", 5);
@@ -64,24 +80,6 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
-        /// Test get symbols function.
-        /// </summary>
-        /// <param name="expression">Pass in expression to test.</param>
-        /// <param name="expected">Expected List result.</param>
-        [Theory]
-        [MemberData(nameof(Data))]
-        public void GetSymbols(string expression, List<string> expected)
-        {
-            List<string> result = new();
-            foreach (string symbol in ExpressionTree.GetSymbols(expression))
-            {
-                result.Add(symbol);
-            }
-
-            Assert.Equal(expected, result);
-        }
-
-        /// <summary>
         /// Gets Member data for GetSymbols function.
         /// </summary>
         public static IEnumerable<object[]> Data => new List<object[]>
@@ -90,36 +88,5 @@ namespace SpreadsheetEngine.Tests
             new object[] { "1+2+3", new List<string> { "1", "2", "3" } },
             new object[] { "AA+BBB+Hello", new List<string> { "AA", "BBB", "Hello" } },
         };
-
-        /// <summary>
-        /// Tests getNextSymbol.
-        /// </summary>
-        /// <param name="expression">Expression that is being passed in.</param>
-        /// <param name="firstSymbol">The first symbol that should be passed from the method.</param>
-        /// <param name="remainingExpression">The remainder of the expression that should be passed from the method.</param>
-        [Theory]
-
-        // [InlineData("A+B","A","+B")]
-        // [InlineData("AB+B", "AB", "+B")]
-        // [InlineData("ABC+BC", "ABC", "+BC")]
-        // [InlineData("ABC+BC+D", "ABC", "+BC+D")]
-        [InlineData("+BC+D", "+", "BC+D")]
-        public void GetNextSymbol(string expression, string firstSymbol, string remainingExpression)
-        {
-            string actual = ExpressionTree.GetNextSymbol(ref expression);
-            Assert.Equal(firstSymbol, actual);
-            Assert.Equal(remainingExpression, expression);
-        }
-
-        ///// <summary>
-        ///// Tests ParseExpressionNode.
-        ///// </summary>
-        // [Fact]
-        // public void ParseExpressionNode()
-        // {
-        //    OperatorNode actual = (OperatorNode)ExpressionTree.ParseExpression("A+B");
-        //    Assert.Equal("A", ((VariableNode)actual.Left).Name);
-        //    Assert.Equal("B", ((VariableNode)actual.Right).Name);
-        // }
     }
 }
