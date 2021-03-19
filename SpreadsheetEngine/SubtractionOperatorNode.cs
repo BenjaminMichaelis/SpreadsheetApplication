@@ -32,7 +32,7 @@ namespace CptS321
         /// <returns>Returns subration of left then right as answer.</returns>
         public override double Evaluate()
         {
-            return Left.Evaluate() - Right.Evaluate();
+            return this.Left.Evaluate() - this.Right.Evaluate();
         }
     }
 }

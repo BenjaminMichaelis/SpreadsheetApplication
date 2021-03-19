@@ -37,7 +37,6 @@ namespace SpreadsheetEngine.Tests
         /// Tests Evaluate with normal and edge cases such as divide by zero.
         /// </summary>
         /// <param name="expression">The expression passed into the test.</param>
-        /// <param name="valuesExpression">The value to assign to each variable.</param>
         /// <param name="expected">The expected result from the input.</param>
         [Theory]
         [InlineData("A", 5)]

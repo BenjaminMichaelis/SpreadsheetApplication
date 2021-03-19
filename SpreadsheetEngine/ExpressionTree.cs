@@ -279,8 +279,8 @@ namespace CptS321
         private Node Build(string expression)
         {
             Stack<Node> nodes = new();
-            var posfixExpression = this.ShuntingYardAlgorithm(expression);
-            foreach (var item in posfixExpression)
+            List<string> postfixExpression = this.ShuntingYardAlgorithm(expression);
+            foreach (string item in postfixExpression)
             {
                 if (item.Length == 1 && this.IsOperatorOrParenthesis(item[0]))
                 {
