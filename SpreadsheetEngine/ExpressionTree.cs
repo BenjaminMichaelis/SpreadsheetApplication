@@ -1,4 +1,4 @@
-// <copyright file="ExpressionTree.cs" company="Benjamin Michaelis">
+﻿// <copyright file="ExpressionTree.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -16,7 +16,7 @@ namespace CptS321
     public class ExpressionTree
     {
         private Dictionary<string, double> variables = new();
-        private OperatorNode? rootNode;
+        private Node? rootNode;
         private OperatorNodeFactory operatorNodeFactory = new();
 
         /// <summary>
