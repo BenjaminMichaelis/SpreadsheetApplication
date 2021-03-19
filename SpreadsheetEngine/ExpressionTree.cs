@@ -1,4 +1,4 @@
-﻿// <copyright file="ExpressionTree.cs" company="Benjamin Michaelis">
+// <copyright file="ExpressionTree.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -17,6 +17,12 @@ namespace CptS321
     {
         private Dictionary<string, double> variables = new();
         private OperatorNode? rootNode;
+        private OperatorNodeFactory operatorNodeFactory = new();
+
+        /// <summary>
+        /// Gets or sets private dictionary variables.
+        /// </summary>
+        public Dictionary<string, double> Values { get => this.variables; set => this.variables = value; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExpressionTree"/> class.
@@ -24,58 +30,7 @@ namespace CptS321
         /// <param name="expression">The string representing the new expression to construct tree from.</param>
         public ExpressionTree(string expression)
         {
-            this.rootNode = this.ParseNodes(expression);
-        }
-
-        /// <summary>
-        /// Check that the expression has matching Parenthesis.
-        /// </summary>
-        /// <param name="expression">Expression to check.</param>
-        /// <returns>True if expression has matching parenthesis, false if not.</returns>
-        public static bool MatchingParenthesis(string expression)
-        {
-            Dictionary<char, char> bracketPairs = new Dictionary<char, char>()
-            {
-                { '[', ']' },
-                { '{', '}' },
-                { '(', ')' },
-            };
-
-            Stack<char> matchingBrackets = new Stack<char>();
-
-            try
-            {
-                foreach (char currentChar in expression)
-                {
-                    if (bracketPairs.Keys.Contains(currentChar))
-                    {
-                        matchingBrackets.Push(currentChar);
-                    }
-                    else
-                        if (bracketPairs.Values.Contains(currentChar))
-                        {
-                            if (currentChar == bracketPairs[matchingBrackets.First()])
-                            {
-                                matchingBrackets.Pop();
-                            }
-                            else
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-            }
-            catch
-            {
-                // Exception will be caught in case a closing bracket is found first, prior to opening brackets. This implies that the string is not balanced.
-                return false;
-            }
-
-            return matchingBrackets.Count == 0 ? true : false;
+            this.rootNode = this.Build(expression);
         }
 
         /// <summary>
@@ -83,186 +38,272 @@ namespace CptS321
         /// </summary>
         /// <param name="item">The string to check is passed in.</param>
         /// <returns>True or false if it contains an operator.</returns>
-        public static bool IsOperator(string item) => "+-/*".Contains(item);
+        public static bool IsLeftParenthesis(char item) => IsLeftParenthesis(item.ToString());
 
         /// <summary>
-        /// Checks if a char is an operator.
+        /// Checks if a string contains an operator.
         /// </summary>
-        /// <param name="item">Passes in the char to check and uses string IsOperator logic.</param>
+        /// <param name="item">The string to check is passed in.</param>
         /// <returns>True or false if it contains an operator.</returns>
-        public static bool IsOperator(char item) => IsOperator(item.ToString());
+        public static bool IsRightParenthesis(char item) => IsRightParenthesis(item.ToString());
 
         /// <summary>
-        /// Get the next symbol in the expression.
+        /// Checks if a string contains an operator.
         /// </summary>
-        /// <param name="expression">The string expression to get the next symbol from.</param>
-        /// <returns>Returns static string.</returns>
-        public static string GetNextSymbol(ref string expression)
-        {
-            StringBuilder result = new();
-            int charactersProcessed = 0;
-            foreach (char symbol in expression)
-            {
-                if (IsOperator(symbol))
-                {
-                    if (result.Length == 0)
-                    {
-                        result.Append(symbol);
-                        charactersProcessed++;
-                        break;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    result.Append(symbol);
-                }
+        /// <param name="item">The string to check is passed in.</param>
+        /// <returns>True or false if it contains an operator.</returns>
+        public static bool IsLeftParenthesis(string item) => "(".Contains(item);
 
-                charactersProcessed++;
+        /// <summary>
+        /// Checks if a string contains an operator.
+        /// </summary>
+        /// <param name="item">The string to check is passed in.</param>
+        /// <returns>True or false if it contains an operator.</returns>
+        public static bool IsRightParenthesis(string item) => ")".Contains(item);
+
+        /// <summary>
+        /// Operates the ShuntingYardAlgorithm on a given string expression.
+        /// http://math.oxford.emory.edu/site/cs171/shuntingYardAlgorithm/.
+        /// </summary>
+        /// <param name="expression">Expression string to run shunting yard algorithm on.</param>
+        /// <returns>Returns a list with the postfix expression.</returns>
+        public List<string> ShuntingYardAlgorithm(string expression)
+        {
+            List<string> postfixExpression = new();
+            Stack<char> operators = new();
+            int operandStart = -1;
+            for (int i = 0; i < expression.Length; i++)
+            {
+                char c = expression[i];
+                if (this.IsOperatorOrParenthesis(c))
+                {
+                    // 1.
+                    if (operandStart != -1)
+                    {
+                        string operand = expression.Substring(operandStart, i - operandStart);
+                        postfixExpression.Add(operand);
+                        operandStart = -1;
+                    }
+
+                    // 2.
+                    if (IsLeftParenthesis(c.ToString()))
+                    {
+                        operators.Push(c);
+                    }
+
+                    // 3.
+                    else if (IsRightParenthesis(c.ToString()))
+                    {
+                        char op = operators.Pop();
+                        while (!IsLeftParenthesis(op.ToString()))
+                        {
+                            postfixExpression.Add(op.ToString());
+                            op = operators.Pop();
+                        }
+                    }
+
+                    // 4.
+                    else if (this.operatorNodeFactory.IsOperator(c))
+                    {
+                        if (operators.Count == 0 || IsLeftParenthesis(operators.Peek()))
+                        {
+                            operators.Push(c);
+                        }
+
+                        // 5.
+                        else if (this.IsHigherPrecedence(c, operators.Peek()) || (this.IsSamePrecedence(c, operators.Peek()) && this.IsRightAssociative(c)))
+                        {
+                            operators.Push(c);
+                        }
+
+                        // 6.
+                        else if (this.IsLowerPrecedence(c, operators.Peek()) || (this.IsSamePrecedence(c, operators.Peek()) && this.IsLeftAssociative(c)))
+                        {
+                            do
+                            {
+                                char op = operators.Pop();
+                                postfixExpression.Add(op.ToString());
+                            }
+                            while (operators.Count > 0 && (this.IsLowerPrecedence(c, operators.Peek()) || (this.IsSamePrecedence(c, operators.Peek()) && this.IsLeftAssociative(c))));
+
+                            operators.Push(c);
+                        }
+                    }
+                }
+                else if (operandStart == -1)
+                {
+                    operandStart = i;
+                }
             }
 
-            expression = expression[charactersProcessed..];
-            return result.ToString();
+            if (operandStart != -1)
+            {
+                postfixExpression.Add(expression.Substring(operandStart, expression.Length - operandStart));
+                operandStart = -1;
+            }
+
+            while (operators.Count > 0)
+            {
+                postfixExpression.Add(operators.Pop().ToString());
+            }
+
+            return postfixExpression;
         }
 
         /// <summary>
-        /// Gets the first symbols before an operator in a expression string.
+        /// Set the variable value to the string name.
         /// </summary>
-        /// <param name="expression">Expression string to get first variable symbols from.</param>
-        /// <returns>Returns a string (IEnumberable type) with the string until the operator.</returns>
-        public static IEnumerable<string> GetSymbols(string expression)
-        {
-            StringBuilder operand = new();
-            foreach(char symbol in expression)
-            {
-                if(IsOperator(symbol))
-                {
-                    yield return operand.ToString();
-                    operand.Clear();
-                }
-                else
-                {
-                    operand.Append(symbol);
-                }
-            }
-
-            yield return operand.ToString();
-        }
-
-        /// <summary>
-        /// ParseNodes takes an expression and creates a tree of nodes from it.
-        /// </summary>
-        /// <param name="expression">string expression to create tree from.</param>
-        /// <returns>Returns an operator node that is the root of the tree.</returns>
-        public OperatorNode ParseNodes(string expression)
-        {
-            string trimmedExpression = string.Concat(expression.Where(c => !char.IsWhiteSpace(c)));
-            StringBuilder firstVariableString = new();
-            StringBuilder secondVariableString = new();
-            int currentNodeIndex = 0;
-            int operatorSplitIndex = 0;
-            int operatorsInSubstringCount = 0;
-            OperatorNode? tempRoot = null;
-
-            if (MatchingParenthesis(expression) == false)
-            {
-                throw new Exception("Parenthesis in expression do not match.");
-            }
-
-            for (int i = 0; i < trimmedExpression.Length; i++)
-            {
-                if (IsOperator(trimmedExpression[i]) || i == trimmedExpression.Length - 1)
-                {
-                    if (operatorsInSubstringCount < 1)
-                    {
-                        operatorSplitIndex = i;
-                    }
-
-                    if (i == trimmedExpression.Length - 1)
-                    {
-                        secondVariableString.Append(trimmedExpression[i]);
-                    }
-
-                    operatorsInSubstringCount++;
-                }
-
-                if (operatorsInSubstringCount == 2)
-                {
-                    if (tempRoot == null)
-                    {
-                        OperatorNode newNode = OperatorNodeFactory.CreateOperatorNode(trimmedExpression[operatorSplitIndex].ToString());
-                        newNode.Left = this.VariableNodeCreator(firstVariableString);
-                        newNode.Right = this.VariableNodeCreator(secondVariableString);
-                        tempRoot = newNode;
-                    }
-                    else
-                    {
-                        OperatorNode newNode = OperatorNodeFactory.CreateOperatorNode(trimmedExpression[operatorSplitIndex].ToString());
-                        newNode.Left = this.VariableNodeCreator(firstVariableString);
-                        newNode.Right = tempRoot;
-                        tempRoot = newNode;
-                    }
-
-                    operatorsInSubstringCount = 0;
-                    currentNodeIndex = i;
-                    firstVariableString.Clear();
-                    secondVariableString.Clear();
-                }
-                else
-                {
-                    if (operatorsInSubstringCount < 1)
-                    {
-                        firstVariableString.Append(trimmedExpression[i]);
-                    }
-
-                    if (operatorsInSubstringCount == 1 && !IsOperator(trimmedExpression[i]))
-                    {
-                        secondVariableString.Append(trimmedExpression[i]);
-                    }
-                }
-            }
-
-            return tempRoot;
-        }
-
-        /// <summary>
-        /// Creates a variable node or constant node depending on the string passed in.
-        /// </summary>
-        /// <param name="variableString">String to create node from.</param>
-        /// <returns>Returns constantNode or VariableNode.</returns>
-        public Node VariableNodeCreator(StringBuilder variableString)
-        {
-            double constant;
-            if (double.TryParse(variableString.ToString(), out constant))
-            {
-                return new ConstantNode(constant);
-            }
-            else
-            {
-                return new VariableNode(variableString.ToString(), ref this.variables);
-            }
-        }
-
-        /// <summary>
-        /// Sets the specified variable within the ExpressionTree variables dictionary.
-        /// </summary>
-        /// <param name="variableName">Passes in the variable name.</param>
-        /// <param name="variableValue">Passes in the variable value.</param>
+        /// <param name="variableName">The name of the variable.</param>
+        /// <param name="variableValue">The value to assign.</param>
         public void SetVariable(string variableName, double variableValue)
         {
             this.variables[variableName] = variableValue;
         }
 
         /// <summary>
-        /// This method has no parameters but evaluates the expression to a double value.
+        /// Evaluate expression tree.
         /// </summary>
-        /// <returns>The evaluation of the expression.</returns>
+        /// <returns>Returns the result of the tree in a double.</returns>
         public double Evaluate()
         {
-            return this.rootNode?.Evaluate() ?? 0.0f;
+            return this.rootNode.Evaluate();
+        }
+
+        /// <summary>
+        /// Checks if operator is left associative.
+        /// </summary>
+        /// <param name="c">Operator char.</param>
+        /// <returns>Returns true or false.</returns>
+        public bool IsLeftAssociative(char c)
+        {
+            if (this.operatorNodeFactory.GetAssociativity(c) == OperatorNode.Associative.Left)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks if operator is right associative.
+        /// </summary>
+        /// <param name="c">Operator char.</param>
+        /// <returns>Returns true or false.</returns>
+        public bool IsRightAssociative(char c)
+        {
+            if (this.operatorNodeFactory.GetAssociativity(c) == OperatorNode.Associative.Right)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks if left operator is lower precedence than the right side.
+        /// Lower Precedence is higher when we look at http://web.deu.edu.tr/doc/oreily/java/langref/ch04_14.htm.
+        /// </summary>
+        /// <param name="c">Left operator char.</param>
+        /// <param name="v">Right operator char.</param>
+        /// <returns>Returns true or false.</returns>
+        public bool IsLowerPrecedence(char c, char v)
+        {
+            if (this.operatorNodeFactory.GetPrecedence(c) > this.operatorNodeFactory.GetPrecedence(v))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks if left operator is same precedence as the right side.
+        /// </summary>
+        /// <param name="c">Left operator char.</param>
+        /// <param name="v">Right operator char.</param>
+        /// <returns>Returns true or false.</returns>
+        public bool IsSamePrecedence(char c, char v)
+        {
+            if (this.operatorNodeFactory.GetPrecedence(c) == this.operatorNodeFactory.GetPrecedence(v))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks if left operator is higher precedence than the right side.
+        /// Lower Precedence is higher when we look at http://web.deu.edu.tr/doc/oreily/java/langref/ch04_14.htm.
+        /// </summary>
+        /// <param name="c">Left operator char.</param>
+        /// <param name="v">Right operator char.</param>
+        /// <returns>Returns true or false.</returns>
+        public bool IsHigherPrecedence(char c, char v)
+        {
+            if (this.operatorNodeFactory.GetPrecedence(c) < this.operatorNodeFactory.GetPrecedence(v))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks if a string contains an operator.
+        /// </summary>
+        /// <param name="item">The string to check is passed in.</param>
+        /// <returns>True or false if it contains an operator.</returns>
+        public bool IsOperatorOrParenthesis(char item)
+        {
+            if ("()".Contains(item.ToString()) || this.operatorNodeFactory.IsOperator(item))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private Node Build(string expression)
+        {
+            Stack<Node> nodes = new();
+            var posfixExpression = this.ShuntingYardAlgorithm(expression);
+            foreach (var item in posfixExpression)
+            {
+                if (item.Length == 1 && this.IsOperatorOrParenthesis(item[0]))
+                {
+                    OperatorNode node = this.operatorNodeFactory.CreateOperatorNode(item[0]);
+                    node.Right = nodes.Pop();
+                    node.Left = nodes.Pop();
+                    nodes.Push(node);
+                }
+                else
+                {
+                    double num = 0.0;
+                    if (double.TryParse(item, out num))
+                    {
+                        nodes.Push(new ConstantNode(num));
+                    }
+                    else
+                    {
+                        nodes.Push(new VariableNode(item, ref this.variables));
+                    }
+                }
+            }
+
+            return nodes.Pop();
         }
     }
 }
