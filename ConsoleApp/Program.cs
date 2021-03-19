@@ -19,7 +19,7 @@ namespace ConsoleApp
         /// <param name="args">additional argument to add into Main.</param>
         public static void Main(string[] args)
         {
-            ExpressionTree currentTree = null;
+            ExpressionTree? currentTree = null;
             string currentExpression = string.Empty;
             bool exitApplication = false;
             do
