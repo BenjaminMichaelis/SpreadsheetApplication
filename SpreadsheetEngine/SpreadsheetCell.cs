@@ -1,4 +1,4 @@
-﻿// <copyright file="SpreadsheetCell.cs" company="Benjamin Michaelis">
+// <copyright file="SpreadsheetCell.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -40,16 +40,9 @@ namespace SpreadsheetEngine
         /// </summary>
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        /// <summary>
-        /// stores protected string text.
-        /// </summary>
-#pragma warning disable SA1401 // Fields should be private - We want it private in this case.
-        protected string? _text;
-#pragma warning restore SA1401 // Fields should be private
 
-        /// <summary>
-        /// Gets or Sets Text thats typed into the cell.
-        /// </summary>
+        protected string? _text;
+
         public string Text
         {
             get
@@ -60,9 +53,7 @@ namespace SpreadsheetEngine
                 }
                 else
                 {
-#pragma warning disable CS8603 // Logic is correct, following up with microsoft
                     return this._text;
-#pragma warning disable CS8603 // Logic is correct, following up with microsoft
                 }
             }
 
