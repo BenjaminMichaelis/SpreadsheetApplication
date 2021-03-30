@@ -1,4 +1,4 @@
-﻿// <copyright file="MainViewModel.cs" company="Benjamin Michaelis">
+// <copyright file="MainViewModel.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -51,6 +51,9 @@ namespace SpreadsheetApp
             {
                 this.MainForm.dataGridView1.Rows[rowNumber].HeaderCell.Value = string.Format($"{this.MainForm.dataGridView1.Rows[rowNumber].Index + 1}");
             }
+
+            MainForm.dataGridView1.CellBeginEdit += DataGridView1_CellBeginEdit;
+            MainForm.dataGridView1.CellEndEdit += DataGridView1_CellEndEdit;
         }
 
         /// <summary>
@@ -70,10 +73,56 @@ namespace SpreadsheetApp
 
         private void UpdateCell(object sender, PropertyChangedEventArgs e)
         {
-            SpreadsheetEngine.SpreadsheetCell temp = sender as SpreadsheetEngine.SpreadsheetCell;
-            if (e.PropertyName != null)
+            SpreadsheetEngine.SpreadsheetCell? temp = sender as SpreadsheetCell;
+
+            // e.PropertyName == nameof(SpreadsheetCell.Value)
+            if (temp != null)
             {
-                this.MainForm.dataGridView1.Rows[temp!.RowIndex].Cells[temp.ColumnIndex].Value = temp.Value;
+                this.MainForm.dataGridView1.Rows[temp.RowIndex].Cells[temp.ColumnIndex].Value = temp.Value;
+            }
+        }
+
+        /// <summary>
+        /// While the cell is being edited, gets set to text value.
+        /// </summary>
+        /// <param name="sender">sender object.</param>
+        /// <param name="e">Property changed event.</param>
+        private void DataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            string? cellText = this.sheet.GetCellText(e.RowIndex, e.ColumnIndex);
+
+            if (cellText != null)
+            {
+                this.MainForm.dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = cellText;
+            }
+        }
+
+        /// <summary>
+        /// After cell is edited, returns to showing the value again.
+        /// </summary>
+        /// <param name="sender">sender object.</param>
+        /// <param name="e">Property changed event.</param>
+        private void DataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            string? cellValue = this.sheet.GetCellValue(e.RowIndex, e.ColumnIndex);
+
+            try
+            {
+                if (cellValue != null)
+                {
+                    if (cellValue.Length > 0)
+                    {
+                        this.MainForm.dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = cellValue;
+                    }
+                }
+            }
+            catch (NullReferenceException)
+            {
+                this.MainForm.dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = string.Empty;
+            }
+            catch (Exception)
+            {
+                throw new Exception("cellValue has been set to null or empty unexpectedly during cell editing.");
             }
         }
 

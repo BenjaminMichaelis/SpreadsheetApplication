@@ -1,4 +1,4 @@
-﻿// <copyright file="Spreadsheet.cs" company="Benjamin Michaelis">
+// <copyright file="Spreadsheet.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -99,7 +99,7 @@ namespace SpreadsheetEngine
 
             for (int i = 0; i < 50; i++)
             {
-                this._cellsOfSpreadsheet[i, 1].Text = $"This is Cell B{i.ToString()}";
+                this._cellsOfSpreadsheet[i, 1].Text = $"This is Cell B{(i+1).ToString()}";
             }
         }
 
@@ -113,7 +113,7 @@ namespace SpreadsheetEngine
             Cell? evaluatingCell = sender as Cell;
             if (evaluatingCell != null)
             {
-                if (e.PropertyName == "Text")
+                if (e.PropertyName == nameof(SpreadsheetCell.Text))
                 {
                     if (!string.IsNullOrEmpty(evaluatingCell.Text))
                     {
@@ -142,6 +142,42 @@ namespace SpreadsheetEngine
         /// <param name="rowIndex">Pass in the row of the cell you want to access.</param>
         /// <param name="colIndex">Pass in the column of the cell you want to access.</param>
         /// <returns>Returns a Cell of Cell.</returns>
+        public string? GetCellText(int rowIndex, int colIndex)
+        {
+            if ((rowIndex <= this.RowCount && rowIndex >= 0) && colIndex <= this.ColumnCount && colIndex >= 0)
+            {
+                return this._cellsOfSpreadsheet[rowIndex, colIndex].Text;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// GetCell function that takes a row and column index and returns the cell at that location or null if there is no such cell.
+        /// </summary>
+        /// <param name="rowIndex">Pass in the row of the cell you want to access.</param>
+        /// <param name="colIndex">Pass in the column of the cell you want to access.</param>
+        /// <returns>Returns a Cell of Cell.</returns>
+        public string? GetCellValue(int rowIndex, int colIndex)
+        {
+            if ((rowIndex <= this.RowCount && rowIndex >= 0) && colIndex <= this.ColumnCount && colIndex >= 0)
+            {
+                return this._cellsOfSpreadsheet[rowIndex, colIndex].Value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// GetCell function that takes a row and column index and returns the text at that location or null if there is no such cell.
+        /// </summary>
+        /// <param name="rowIndex">Pass in the row of the cell you want to access.</param>
+        /// <param name="colIndex">Pass in the column of the cell you want to access.</param>
+        /// <returns>Returns a string of the cell.</returns>
         private Cell? GetCell(int rowIndex, int colIndex)
         {
             if ((rowIndex <= this.RowCount && rowIndex >= 0) && colIndex <= this.ColumnCount && colIndex >= 0)
