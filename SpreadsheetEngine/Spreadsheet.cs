@@ -1,4 +1,4 @@
-// <copyright file="Spreadsheet.cs" company="Benjamin Michaelis">
+﻿// <copyright file="Spreadsheet.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -99,7 +99,7 @@ namespace SpreadsheetEngine
 
             for (int i = 0; i < 50; i++)
             {
-                this._cellsOfSpreadsheet[i, 1].Text = $"This is Cell B{(i+1).ToString()}";
+                this._cellsOfSpreadsheet[i, 1].Text = $"This is Cell B{(i + 1).ToString()}";
             }
         }
 
@@ -117,21 +117,24 @@ namespace SpreadsheetEngine
                 {
                     if (!string.IsNullOrEmpty(evaluatingCell.Text))
                     {
+                        // If evaluating cell text starts with = then we will have to evaluate all the text to set the value appropriately.
                         if (evaluatingCell.Text.StartsWith("="))
                         {
-                            Cell? targetCell = this.GetCell(evaluatingCell.Text.Substring(1).ToString());
-                            if (targetCell != null)
-                            {
-                                evaluatingCell.SetCellValue(targetCell.Value);
-                            }
+                            string evaluatedString = evaluatingCell.Text.Substring(1);
+
+                            evaluatingCell.SetCellValue(evaluatedString);
                         }
                         else
                         {
                             evaluatingCell.SetCellValue(evaluatingCell.Text);
                         }
 
-                        this.OnCellPropertyChanged!.Invoke(sender, e);
+                        this.OnCellPropertyChanged?.Invoke(sender, e);
                     }
+                }
+                else
+                {
+                    this.OnCellPropertyChanged?.Invoke(sender, new PropertyChangedEventArgs(nameof(SpreadsheetCell.Value)));
                 }
             }
         }
@@ -197,7 +200,7 @@ namespace SpreadsheetEngine
         /// <returns>Returns cell in spreadsheet that matches the index of the cell.</returns>
         private Cell? GetCell(string cellName)
         {
-            int columnLocation = ColumnLetterToInt(cellName);
+            int columnLocation = this.ColumnLetterToInt(cellName);
             string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
             int rowLocation = int.Parse(rowLocationString);
             return this.GetCell(rowLocation, columnLocation);
@@ -212,5 +215,16 @@ namespace SpreadsheetEngine
         /// Gets or sets returns number of rows in spreadsheet.
         /// </summary>
         public int RowCount { get; set; }
+
+        /// <summary>
+        /// Sets the specified cells text.;
+        /// </summary>
+        /// <param name="rowIndex">rowIndex.</param>
+        /// <param name="columnIndex">columnIndex.</param>
+        /// <param name="newCellText">the new text to set the cell to.</param>
+        public void SetCellText(int rowIndex, int columnIndex, string newCellText)
+        {
+            this._cellsOfSpreadsheet[rowIndex, columnIndex].Text = newCellText;
+        }
     }
 }

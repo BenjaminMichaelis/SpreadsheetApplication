@@ -52,8 +52,8 @@ namespace SpreadsheetApp
                 this.MainForm.dataGridView1.Rows[rowNumber].HeaderCell.Value = string.Format($"{this.MainForm.dataGridView1.Rows[rowNumber].Index + 1}");
             }
 
-            MainForm.dataGridView1.CellBeginEdit += DataGridView1_CellBeginEdit;
-            MainForm.dataGridView1.CellEndEdit += DataGridView1_CellEndEdit;
+            this.MainForm.dataGridView1.CellBeginEdit += this.DataGridView1_CellBeginEdit;
+            this.MainForm.dataGridView1.CellEndEdit += this.DataGridView1_CellEndEdit;
         }
 
         /// <summary>
@@ -104,15 +104,18 @@ namespace SpreadsheetApp
         /// <param name="e">Property changed event.</param>
         private void DataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            string? cellValue = this.sheet.GetCellValue(e.RowIndex, e.ColumnIndex);
+            string? newCellText = this.MainForm.dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
 
             try
             {
-                if (cellValue != null)
+                if (newCellText != null)
                 {
-                    if (cellValue.Length > 0)
+                    if (newCellText.Length > 0)
                     {
-                        this.MainForm.dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = cellValue;
+                        if (newCellText.StartsWith("="))
+                        {
+                            this.sheet.SetCellText(rowIndex: e.RowIndex, columnIndex: e.ColumnIndex, newCellText: newCellText);
+                        }
                     }
                 }
             }

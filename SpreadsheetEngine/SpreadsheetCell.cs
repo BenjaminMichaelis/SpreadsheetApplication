@@ -48,7 +48,7 @@ namespace SpreadsheetEngine
 #pragma warning restore SA1401 // Fields should be private
 
         /// <summary>
-        /// Gets or Sets Text thats typed into the cell.
+        /// Gets or Sets Text that's typed into the cell.
         /// </summary>
         public string Text
         {
