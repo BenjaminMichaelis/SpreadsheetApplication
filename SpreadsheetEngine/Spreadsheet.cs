@@ -121,6 +121,8 @@ namespace SpreadsheetEngine
                         if (evaluatingCell.Text.StartsWith("="))
                         {
                             string evaluatedString = evaluatingCell.Text.Substring(1);
+                            ExpressionTree newEvaluationTree = new(evaluatedString);
+                            evaluatedString = newEvaluationTree.Evaluate().ToString();
                             evaluatingCell.SetCellValue(evaluatedString);
                         }
                         else

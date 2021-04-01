@@ -115,6 +115,7 @@ namespace SpreadsheetApp
                         if (newCellText.StartsWith("="))
                         {
                             this.sheet.SetCellText(rowIndex: e.RowIndex, columnIndex: e.ColumnIndex, newCellText: newCellText);
+                            this.MainForm.dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = this.sheet.GetCellValue(e.RowIndex, e.ColumnIndex);
                         }
                     }
                 }
