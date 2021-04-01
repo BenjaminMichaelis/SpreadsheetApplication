@@ -1,10 +1,14 @@
-﻿using System;
+﻿// <copyright file="SubtractionOperatorNode.cs" company="Benjamin Michaelis">
+// Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CptS321
+namespace SpreadsheetEngine
 {
     /// <summary>
     /// Operator Node for subtraction.

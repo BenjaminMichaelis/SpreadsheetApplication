@@ -2,7 +2,7 @@
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
-namespace CptS321
+namespace SpreadsheetEngine
 {
     /// <summary>
     /// Operator Node for multiplication.

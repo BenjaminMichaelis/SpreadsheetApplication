@@ -6,9 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace CptS321
+namespace SpreadsheetEngine
 {
     /// <summary>
     /// Class for Expression Tree.
@@ -278,6 +279,9 @@ namespace CptS321
 
         private Node Build(string expression)
         {
+            // \s indicates a white space and \s+ is any one or more white space characters.
+            expression = Regex.Replace(expression, @"\s+", string.Empty);
+
             Stack<Node> nodes = new();
             List<string> postfixExpression = this.ShuntingYardAlgorithm(expression);
             foreach (string item in postfixExpression)

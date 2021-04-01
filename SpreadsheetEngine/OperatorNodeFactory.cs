@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CptS321
+namespace SpreadsheetEngine
 {
     /// <summary>
     /// Creates OperatorNodes.

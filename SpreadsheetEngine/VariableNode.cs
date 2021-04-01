@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace CptS321
+namespace SpreadsheetEngine
 {
     /// <summary>
     /// Class to create a variable node.

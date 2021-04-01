@@ -1,4 +1,4 @@
-﻿// <copyright file="Spreadsheet.cs" company="Benjamin Michaelis">
+// <copyright file="Spreadsheet.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -121,7 +121,6 @@ namespace SpreadsheetEngine
                         if (evaluatingCell.Text.StartsWith("="))
                         {
                             string evaluatedString = evaluatingCell.Text.Substring(1);
-
                             evaluatingCell.SetCellValue(evaluatedString);
                         }
                         else
@@ -217,7 +216,7 @@ namespace SpreadsheetEngine
         public int RowCount { get; set; }
 
         /// <summary>
-        /// Sets the specified cells text.;
+        /// Sets the specified cells text.
         /// </summary>
         /// <param name="rowIndex">rowIndex.</param>
         /// <param name="columnIndex">columnIndex.</param>

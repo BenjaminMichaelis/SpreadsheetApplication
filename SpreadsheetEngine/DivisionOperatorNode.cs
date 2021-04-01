@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CptS321
+namespace SpreadsheetEngine
 {
     /// <summary>
     /// Operator Node for division.

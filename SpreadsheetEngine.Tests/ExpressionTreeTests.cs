@@ -1,4 +1,4 @@
-// <copyright file="ExpressionTreeTests.cs" company="Benjamin Michaelis">
+﻿// <copyright file="ExpressionTreeTests.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using CptS321;
+using SpreadsheetEngine;
 using Xunit;
 
 namespace SpreadsheetEngine.Tests
@@ -84,6 +84,11 @@ namespace SpreadsheetEngine.Tests
             Assert.Equal(expected, tree.Evaluate());
         }
 
+        /// <summary>
+        /// Tests the algoritm for removing whitespace from a string.
+        /// </summary>
+        /// <param name="expression">The expression to have whitespace removed from.</param>
+        /// <param name="expected">The expected string with no whitespace.</param>
         [Theory]
         [InlineData(" A  B C ", "ABC")]
         [InlineData("", "")]
@@ -91,9 +96,10 @@ namespace SpreadsheetEngine.Tests
         [InlineData("ABC ", "ABC")]
         [InlineData(" ABC", "ABC")]
         [InlineData(" AB C ", "ABC")]
-        public void removeWhitespaceTests(string expression, string expected)
+        public void RemoveWhitespaceTests(string expression, string expected)
         {
-            expression = Regex.Replace(expression, @"", string.Empty);
+            // \s indicates a white space and \s+ is any one or more white space characters"
+            expression = Regex.Replace(expression, @"\s+", string.Empty);
             Assert.Equal(expected, expression);
         }
 
