@@ -1,4 +1,4 @@
-﻿// <copyright file="ExpressionTreeTests.cs" company="Benjamin Michaelis">
+// <copyright file="ExpressionTreeTests.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using CptS321;
 using Xunit;
 
@@ -67,6 +68,10 @@ namespace SpreadsheetEngine.Tests
         [InlineData("0/0", double.NaN)]
         [InlineData("1/0", double.PositiveInfinity)]
         [InlineData("5/0", double.PositiveInfinity)]
+        [InlineData(" A + B ", 12)]
+        [InlineData(" A  * B ", 35)]
+        [InlineData(" A* B", 35)]
+        [InlineData("A*B ", 35)]
         public void EvaluateTests(string expression, double expected)
         {
             ExpressionTree tree = new ExpressionTree(expression);
@@ -77,6 +82,19 @@ namespace SpreadsheetEngine.Tests
             tree.SetVariable("World", 70);
 
             Assert.Equal(expected, tree.Evaluate());
+        }
+
+        [Theory]
+        [InlineData(" A  B C ", "ABC")]
+        [InlineData("", "")]
+        [InlineData(" ", "")]
+        [InlineData("ABC ", "ABC")]
+        [InlineData(" ABC", "ABC")]
+        [InlineData(" AB C ", "ABC")]
+        public void removeWhitespaceTests(string expression, string expected)
+        {
+            expression = Regex.Replace(expression, @"", string.Empty);
+            Assert.Equal(expected, expression);
         }
 
         /// <summary>

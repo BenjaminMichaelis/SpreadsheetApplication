@@ -3,6 +3,7 @@
     "path": "CPTS321.sln",
     "projects": [
       "SpreadsheetApp.Tests\\SpreadsheetApp.Tests.csproj",
+      "SpreadsheetEngine.Tests\\SpreadsheetEngine.Tests.csproj",
       "SpreadsheetEngine\\SpreadsheetEngine.csproj",
       "Spreadsheet\\SpreadsheetApp.csproj"
     ]
