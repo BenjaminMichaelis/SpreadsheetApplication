@@ -14,6 +14,11 @@ namespace SpreadsheetEngine
     public abstract class Cell : INotifyPropertyChanged
     {
         /// <summary>
+        /// Error Message if circular reference occurs.
+        /// </summary>
+        public const string CircularReference = "#error";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Cell"/> class.
         /// </summary>
         /// <param name="columnIndex">int for the readonly columnIndex.</param>

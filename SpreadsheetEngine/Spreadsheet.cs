@@ -26,12 +26,60 @@ namespace SpreadsheetEngine
             public SpreadsheetCell(int rowIndex, int columnIndex)
                 : base(rowIndex, columnIndex)
             {
+                this.PropertyChanged += this.CellPropertyChanged;
             }
+
+            private bool IsCalculating { get; set; }
 
             public void SetCellValue(string value)
             {
                 // this. or base.
                 this._value = value;
+            }
+
+            /// <summary>
+            /// Notifies for  when any property for any cell in the worksheet has changed.
+            /// </summary>
+            /// <param name="sender">Object that called object.</param>
+            /// <param name="e">The property changed arg.</param>
+            private void CellPropertyChanged(object? sender, PropertyChangedEventArgs e)
+            {
+                if (sender is Cell evaluatingCell)
+                {
+                    if (this.IsCalculating)
+                    {
+                        if (this.Text != CircularReference)
+                        {
+                            this.Text = CircularReference;
+                        }
+                    }
+                    else
+                    {
+                        this.IsCalculating = true;
+
+                        if (e.PropertyName == nameof(Cell.Text))
+                        {
+                            if (!string.IsNullOrEmpty(evaluatingCell.Text))
+                            {
+                                // If evaluating cell text starts with = then we will have to evaluate all the text to set the value appropriately.
+                                if (evaluatingCell.Text.StartsWith("="))
+                                {
+                                    string evaluatedString = evaluatingCell.Text.Substring(1);
+                                    ExpressionTree newEvaluationTree = new(evaluatedString);
+
+                                    evaluatedString = newEvaluationTree.Evaluate().ToString();
+                                    this.SetCellValue(evaluatedString);
+                                }
+                                else
+                                {
+                                    evaluatingCell.Text = evaluatingCell.Text;
+                                }
+                            }
+                        }
+                    }
+
+                    this.IsCalculating = false;
+                }
             }
         }
 
@@ -110,32 +158,21 @@ namespace SpreadsheetEngine
         /// <param name="e">The property changed arg.</param>
         public void CellPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            SpreadsheetCell? evaluatingCell = sender as SpreadsheetCell;
-            if (evaluatingCell != null)
+            if (sender is SpreadsheetCell evaluatingCell)
             {
                 if (e.PropertyName == nameof(Cell.Text))
                 {
                     if (!string.IsNullOrEmpty(evaluatingCell.Text))
                     {
-                        // If evaluating cell text starts with = then we will have to evaluate all the text to set the value appropriately.
-                        if (evaluatingCell.Text.StartsWith("="))
-                        {
-                            string evaluatedString = evaluatingCell.Text.Substring(1);
-                            ExpressionTree newEvaluationTree = new(evaluatedString);
-                            evaluatedString = newEvaluationTree.Evaluate().ToString();
-                            evaluatingCell.SetCellValue(evaluatedString);
-                        }
-                        else
-                        {
-                            evaluatingCell.SetCellValue(evaluatingCell.Text);
-                        }
-
                         this.OnCellPropertyChanged?.Invoke(sender, e);
                     }
                 }
                 else
                 {
-                    this.OnCellPropertyChanged?.Invoke(sender, new PropertyChangedEventArgs(nameof(Cell.Value)));
+                    if (!string.IsNullOrEmpty(evaluatingCell.Value))
+                    {
+                        this.OnCellPropertyChanged?.Invoke(sender, new PropertyChangedEventArgs(nameof(Cell.Value)));
+                    }
                 }
             }
         }
