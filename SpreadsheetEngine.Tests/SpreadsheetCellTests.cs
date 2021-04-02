@@ -76,7 +76,7 @@ namespace SpreadsheetEngine.Tests
         public void ColumnLetterToNumber_XFD_return16384()
         {
             CellTests sut = new(1, 1);
-            Assert.Equal(16384, sut.ColumnLetterToNumber("XFD"));
+            Assert.Equal(16384, sut.ColumnLetterToInt("XFD"));
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace SpreadsheetEngine.Tests
         public void ColumnLetterToNumber_Z_return26()
         {
             CellTests sut = new(1, 1);
-            Assert.Equal(26, sut.ColumnLetterToNumber("Z"));
+            Assert.Equal(26, sut.ColumnLetterToInt("Z"));
         }
     }
 }

@@ -1,4 +1,4 @@
-// <copyright file="SpreadsheetCell.cs" company="Benjamin Michaelis">
+﻿// <copyright file="SpreadsheetCell.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -101,9 +101,16 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="columnLetter">Letter to be switched to int.</param>
         /// <returns>Returns an int of the column int.</returns>
-        public int ColumnLetterToNumber(string columnLetter)
+        public int ColumnLetterToInt(string columnLetter)
         {
             int sum = 0;
+            columnLetter = columnLetter.ToUpperInvariant(); // Convert to uppercase if not already.
+            foreach (char c in columnLetter)
+            {
+                sum *= 26;
+                sum += c - 'A' + 1;
+            }
+
             return sum;
         }
 
@@ -117,7 +124,6 @@ namespace SpreadsheetEngine
             int dividend = index;
             string columnName = string.Empty;
             int modulo;
-
             while (dividend > 0)
             {
                 modulo = (dividend - 1) % 26;
