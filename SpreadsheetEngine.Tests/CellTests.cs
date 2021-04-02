@@ -10,20 +10,20 @@ namespace SpreadsheetEngine.Tests
     /// <summary>
     /// Test methods in the spreadsheetClass.
     /// </summary>
-    public class SpreadsheetCellTests
+    public class CellTests
     {
         /// <summary>
         /// Constructs class for abstract Class Cell.
         /// </summary>
-        public class CellTests : Cell
+        public class SpreadsheetCellTests : Cell
         {
             /// <summary>
-            /// Initializes a new instance of the <see cref="CellTests"/> class.
+            /// Initializes a new instance of the <see cref="SpreadsheetCellTests"/> class.
             /// Constructs object for abstract Class Cell.
             /// </summary>
             /// <param name="rowIndex">The row index of cell.</param>
             /// <param name="columnIndex">The column index of the cell.</param>
-            public CellTests(int rowIndex, int columnIndex)
+            public SpreadsheetCellTests(int rowIndex, int columnIndex)
                 : base(rowIndex, columnIndex)
             {
             }
@@ -35,7 +35,7 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void ColumnNumberToLetter_A_return1()
         {
-            CellTests sut = new(1, 1);
+            SpreadsheetCellTests sut = new(1, 1);
             Assert.Equal("A", sut.ColumnIntToLetter(1));
         }
 
@@ -45,7 +45,7 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void ColumnNumberToLetter_26_returnZ()
         {
-            CellTests sut = new(1, 1);
+            SpreadsheetCellTests sut = new(1, 1);
             Assert.Equal("Z", sut.ColumnIntToLetter(26));
         }
 
@@ -55,7 +55,7 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void ColumnNumberToLetter_34_returnAH()
         {
-            CellTests sut = new(1, 1);
+            SpreadsheetCellTests sut = new(1, 1);
             Assert.Equal("AH", sut.ColumnIntToLetter(34));
         }
 
@@ -65,7 +65,7 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void ColumnNumberToLetter_16384_returnXFD()
         {
-            CellTests sut = new(1, 1);
+            SpreadsheetCellTests sut = new(1, 1);
             Assert.Equal("XFD", sut.ColumnIntToLetter(16384));
         }
 
@@ -75,7 +75,7 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void ColumnLetterToNumber_XFD_return16384()
         {
-            CellTests sut = new(1, 1);
+            SpreadsheetCellTests sut = new(1, 1);
             Assert.Equal(16384, sut.ColumnLetterToInt("XFD"));
         }
 
@@ -85,7 +85,7 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void ColumnLetterToNumber_Z_return26()
         {
-            CellTests sut = new(1, 1);
+            SpreadsheetCellTests sut = new(1, 1);
             Assert.Equal(26, sut.ColumnLetterToInt("Z"));
         }
     }
