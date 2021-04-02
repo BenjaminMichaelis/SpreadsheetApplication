@@ -1,4 +1,4 @@
-﻿// <copyright file="SpreadsheetCell.cs" company="Benjamin Michaelis">
+// <copyright file="SpreadsheetCell.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -94,6 +94,17 @@ namespace SpreadsheetEngine
             {
                 return this._value is { } result ? result : string.Empty;
             }
+        }
+
+        /// <summary>
+        /// Converts an associated Letter to int value for Index Name.
+        /// </summary>
+        /// <param name="columnLetter">Letter to be switched to int.</param>
+        /// <returns>Returns an int of the column int.</returns>
+        public int ColumnLetterToNumber(string columnLetter)
+        {
+            int sum = 0;
+            return sum;
         }
 
         /// <summary>
