@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -23,11 +24,16 @@ namespace SpreadsheetEngine
             /// </summary>
             /// <param name="rowIndex">Row index of cell.</param>
             /// <param name="columnIndex">Column index of cell.</param>
-            public SpreadsheetCell(int rowIndex, int columnIndex)
+            public SpreadsheetCell(int rowIndex, int columnIndex, Spreadsheet spreadsheet)
                 : base(rowIndex, columnIndex)
             {
                 this.PropertyChanged += this.CellPropertyChanged;
+                this.SpreadsheetReference = spreadsheet;
             }
+
+            private Spreadsheet SpreadsheetReference { get; set; }
+
+            private Dictionary<Cell, PropertyChangedEventHandler> EventsContainer { get; set; } = new();
 
             private bool IsCalculating { get; set; }
 
@@ -42,7 +48,7 @@ namespace SpreadsheetEngine
             /// </summary>
             /// <param name="sender">Object that called object.</param>
             /// <param name="e">The property changed arg.</param>
-            private void CellPropertyChanged(object? sender, PropertyChangedEventArgs e)
+            internal void CellPropertyChanged(object? sender, PropertyChangedEventArgs e)
             {
                 if (sender is Cell evaluatingCell)
                 {
@@ -59,20 +65,40 @@ namespace SpreadsheetEngine
 
                         if (e.PropertyName == nameof(Cell.Text))
                         {
-                            if (!string.IsNullOrEmpty(evaluatingCell.Text))
+                            foreach (KeyValuePair<Cell, PropertyChangedEventHandler> item in this.EventsContainer)
+                            {
+                                item.Key.PropertyChanged -= item.Value;
+                            }
+
+                            this.EventsContainer.Clear();
+                            if (!string.IsNullOrEmpty(this.Text))
                             {
                                 // If evaluating cell text starts with = then we will have to evaluate all the text to set the value appropriately.
-                                if (evaluatingCell.Text.StartsWith("="))
+                                if (this.Text.StartsWith("="))
                                 {
-                                    string evaluatedString = evaluatingCell.Text.Substring(1);
+                                    string evaluatedString = this.Text.Substring(1);
                                     ExpressionTree newEvaluationTree = new(evaluatedString);
+                                    foreach (KeyValuePair<string, double> keyValuePair in newEvaluationTree.Values)
+                                    {
+                                        SpreadsheetCell variableCell = this.SpreadsheetReference.GetCell(keyValuePair.Key);
+                                        PropertyChangedEventHandler eventHandler = new(this.CellPropertyChanged);
+                                        this.EventsContainer.Add(variableCell, eventHandler);
+                                        variableCell.PropertyChanged += eventHandler;
+                                    }
+
+                                    foreach (KeyValuePair<string, double> keyValuePair in newEvaluationTree.Values)
+                                    {
+                                        newEvaluationTree.SetVariable(
+                                            keyValuePair.Key,
+                                            double.Parse(this.SpreadsheetReference.GetCell(keyValuePair.Key).Value));
+                                    }
 
                                     evaluatedString = newEvaluationTree.Evaluate().ToString();
                                     this.SetCellValue(evaluatedString);
                                 }
                                 else
                                 {
-                                    evaluatingCell.Text = evaluatingCell.Text;
+                                    this.SetCellValue(this.Text);
                                 }
                             }
                         }
@@ -104,7 +130,7 @@ namespace SpreadsheetEngine
             {
                 for (int colNum = 0; colNum < columns; colNum++)
                 {
-                    this._cellsOfSpreadsheet[rowNum, colNum] = new SpreadsheetCell(rowNum, colNum);
+                    this._cellsOfSpreadsheet[rowNum, colNum] = new SpreadsheetCell(rowNum, colNum, this);
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
                     this._cellsOfSpreadsheet[rowNum, colNum].PropertyChanged += this.CellPropertyChanged;
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
@@ -167,12 +193,16 @@ namespace SpreadsheetEngine
                         this.OnCellPropertyChanged?.Invoke(sender, e);
                     }
                 }
-                else
+                else if (e.PropertyName == nameof(Cell.Value))
                 {
                     if (!string.IsNullOrEmpty(evaluatingCell.Value))
                     {
-                        this.OnCellPropertyChanged?.Invoke(sender, new PropertyChangedEventArgs(nameof(Cell.Value)));
+                        this.OnCellPropertyChanged?.Invoke(sender, e);
                     }
+                }
+                else
+                {
+                    throw new NotImplementedException("Spreadsheet cell property changed not implemented else statement");
                 }
             }
         }
@@ -241,7 +271,7 @@ namespace SpreadsheetEngine
             int columnLocation = this.ColumnLetterToInt(cellName);
             string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
             int rowLocation = int.Parse(rowLocationString);
-            return this.GetCell(rowLocation, columnLocation);
+            return this.GetCell(rowLocation - 1, columnLocation - 1);
         }
 
         /// <summary>

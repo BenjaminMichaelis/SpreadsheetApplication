@@ -1,4 +1,4 @@
-﻿// <copyright file="Cell.cs" company="Benjamin Michaelis">
+// <copyright file="Cell.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -79,7 +79,7 @@ namespace SpreadsheetEngine
         {
             get
             {
-                return this.ColumnIntToLetter(this.ColumnIndex) + (this.RowIndex + 1).ToString();
+                return this.ColumnIntToLetter(this.ColumnIndex + 1) + (this.RowIndex + 1).ToString();
             }
         }
 

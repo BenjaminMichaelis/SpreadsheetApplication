@@ -1,4 +1,4 @@
-﻿// <copyright file="ExpressionTree.cs" company="Benjamin Michaelis">
+// <copyright file="ExpressionTree.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -32,6 +32,10 @@ namespace SpreadsheetEngine
         public ExpressionTree(string expression)
         {
             this.rootNode = this.Build(expression);
+            if (this.rootNode is VariableNode variableNode)
+            {
+                this.variables.Add(variableNode.Name, 0.0);
+            }
         }
 
         /// <summary>
