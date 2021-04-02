@@ -1,4 +1,4 @@
-﻿// <copyright file="SpreadsheetCell.cs" company="Benjamin Michaelis">
+﻿// <copyright file="Cell.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -11,14 +11,14 @@ namespace SpreadsheetEngine
     /// <summary>
     /// Represents one cell in the worksheet.
     /// </summary>
-    public abstract class SpreadsheetCell : INotifyPropertyChanged
+    public abstract class Cell : INotifyPropertyChanged
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SpreadsheetCell"/> class.
+        /// Initializes a new instance of the <see cref="Cell"/> class.
         /// </summary>
         /// <param name="columnIndex">int for the readonly columnIndex.</param>
         /// <param name="rowIndex">int for the readonly rowIndex.</param>
-        public SpreadsheetCell(int rowIndex, int columnIndex)
+        public Cell(int rowIndex, int columnIndex)
         {
             this.RowIndex = rowIndex;
             this.ColumnIndex = columnIndex;

@@ -73,9 +73,9 @@ namespace SpreadsheetApp
 
         private void UpdateCell(object sender, PropertyChangedEventArgs e)
         {
-            SpreadsheetEngine.SpreadsheetCell? temp = sender as SpreadsheetCell;
+            SpreadsheetEngine.Cell? temp = sender as Cell;
 
-            // e.PropertyName == nameof(SpreadsheetCell.Value)
+            // e.PropertyName == nameof(Cell.Value)
             if (temp != null)
             {
                 this.MainForm.dataGridView1.Rows[temp.RowIndex].Cells[temp.ColumnIndex].Value = temp.Value;

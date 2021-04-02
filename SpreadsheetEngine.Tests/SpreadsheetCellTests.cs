@@ -13,13 +13,13 @@ namespace SpreadsheetEngine.Tests
     public class SpreadsheetCellTests
     {
         /// <summary>
-        /// Constructs class for abstract Class SpreadsheetCell.
+        /// Constructs class for abstract Class Cell.
         /// </summary>
-        public class CellTests : SpreadsheetCell
+        public class CellTests : Cell
         {
             /// <summary>
             /// Initializes a new instance of the <see cref="CellTests"/> class.
-            /// Constructs object for abstract Class SpreadsheetCell.
+            /// Constructs object for abstract Class Cell.
             /// </summary>
             /// <param name="rowIndex">The row index of cell.</param>
             /// <param name="columnIndex">The column index of the cell.</param>

@@ -16,14 +16,14 @@ namespace SpreadsheetEngine
     /// </summary>
     public class Spreadsheet
     {
-        private class Cell : SpreadsheetCell
+        private class SpreadsheetCell : Cell
         {
             /// <summary>
-            /// Initializes a new instance of the <see cref="Cell"/> class.
+            /// Initializes a new instance of the <see cref="SpreadsheetCell"/> class.
             /// </summary>
             /// <param name="rowIndex">Row index of cell.</param>
             /// <param name="columnIndex">Column index of cell.</param>
-            public Cell(int rowIndex, int columnIndex)
+            public SpreadsheetCell(int rowIndex, int columnIndex)
                 : base(rowIndex, columnIndex)
             {
             }
@@ -40,7 +40,7 @@ namespace SpreadsheetEngine
         /// </summary>
         public event PropertyChangedEventHandler? OnCellPropertyChanged;
 
-        private Cell[,] _cellsOfSpreadsheet;
+        private SpreadsheetCell[,] _cellsOfSpreadsheet;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
@@ -51,12 +51,12 @@ namespace SpreadsheetEngine
         {
             this.ColumnCount = columns;
             this.RowCount = rows;
-            this._cellsOfSpreadsheet = new Cell[rows, columns];
+            this._cellsOfSpreadsheet = new SpreadsheetCell[rows, columns];
             for (int rowNum = 0; rowNum < rows; rowNum++)
             {
                 for (int colNum = 0; colNum < columns; colNum++)
                 {
-                    this._cellsOfSpreadsheet[rowNum, colNum] = new Cell(rowNum, colNum);
+                    this._cellsOfSpreadsheet[rowNum, colNum] = new SpreadsheetCell(rowNum, colNum);
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
                     this._cellsOfSpreadsheet[rowNum, colNum].PropertyChanged += this.CellPropertyChanged;
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
@@ -71,7 +71,7 @@ namespace SpreadsheetEngine
         /// Converts the first letters in a string to numbers.
         /// </summary>
         /// <param name="cellName">The name of the cell (ex: AA33).</param>
-        /// <returns>Int of Cell.</returns>
+        /// <returns>Int of SpreadsheetCell.</returns>
         public int ColumnLetterToInt(string cellName)
         {
             string columnLetters = string.Concat(cellName.TakeWhile(char.IsLetter));
@@ -92,14 +92,14 @@ namespace SpreadsheetEngine
                 randomCol = random.Next(0, 25);
                 randomRow = random.Next(0, 49);
 
-                Cell temp = this.GetCell(randomRow!, randomCol!);
+                SpreadsheetCell temp = this.GetCell(randomRow!, randomCol!);
                 temp!.Text = "Hello World";
                 this._cellsOfSpreadsheet[randomRow, randomCol] = temp;
             }
 
             for (int i = 0; i < 50; i++)
             {
-                this._cellsOfSpreadsheet[i, 1].Text = $"This is Cell B{(i + 1).ToString()}";
+                this._cellsOfSpreadsheet[i, 1].Text = $"This is SpreadsheetCell B{(i + 1).ToString()}";
             }
         }
 
@@ -110,10 +110,10 @@ namespace SpreadsheetEngine
         /// <param name="e">The property changed arg.</param>
         public void CellPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Cell? evaluatingCell = sender as Cell;
+            SpreadsheetCell? evaluatingCell = sender as SpreadsheetCell;
             if (evaluatingCell != null)
             {
-                if (e.PropertyName == nameof(SpreadsheetCell.Text))
+                if (e.PropertyName == nameof(Cell.Text))
                 {
                     if (!string.IsNullOrEmpty(evaluatingCell.Text))
                     {
@@ -135,7 +135,7 @@ namespace SpreadsheetEngine
                 }
                 else
                 {
-                    this.OnCellPropertyChanged?.Invoke(sender, new PropertyChangedEventArgs(nameof(SpreadsheetCell.Value)));
+                    this.OnCellPropertyChanged?.Invoke(sender, new PropertyChangedEventArgs(nameof(Cell.Value)));
                 }
             }
         }
@@ -145,7 +145,7 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="rowIndex">Pass in the row of the cell you want to access.</param>
         /// <param name="colIndex">Pass in the column of the cell you want to access.</param>
-        /// <returns>Returns a Cell of Cell.</returns>
+        /// <returns>Returns a SpreadsheetCell of SpreadsheetCell.</returns>
         public string? GetCellText(int rowIndex, int colIndex)
         {
             if ((rowIndex <= this.RowCount && rowIndex >= 0) && colIndex <= this.ColumnCount && colIndex >= 0)
@@ -163,7 +163,7 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="rowIndex">Pass in the row of the cell you want to access.</param>
         /// <param name="colIndex">Pass in the column of the cell you want to access.</param>
-        /// <returns>Returns a Cell of Cell.</returns>
+        /// <returns>Returns a SpreadsheetCell of SpreadsheetCell.</returns>
         public string? GetCellValue(int rowIndex, int colIndex)
         {
             if ((rowIndex <= this.RowCount && rowIndex >= 0) && colIndex <= this.ColumnCount && colIndex >= 0)
@@ -182,7 +182,7 @@ namespace SpreadsheetEngine
         /// <param name="rowIndex">Pass in the row of the cell you want to access.</param>
         /// <param name="colIndex">Pass in the column of the cell you want to access.</param>
         /// <returns>Returns a string of the cell.</returns>
-        private Cell? GetCell(int rowIndex, int colIndex)
+        private SpreadsheetCell? GetCell(int rowIndex, int colIndex)
         {
             if ((rowIndex <= this.RowCount && rowIndex >= 0) && colIndex <= this.ColumnCount && colIndex >= 0)
             {
@@ -199,7 +199,7 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="cellName">Letter/number combo of cell.</param>
         /// <returns>Returns cell in spreadsheet that matches the index of the cell.</returns>
-        private Cell? GetCell(string cellName)
+        private SpreadsheetCell? GetCell(string cellName)
         {
             int columnLocation = this.ColumnLetterToInt(cellName);
             string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
