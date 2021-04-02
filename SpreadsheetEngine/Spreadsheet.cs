@@ -40,7 +40,7 @@ namespace SpreadsheetEngine
             public void SetCellValue(string value)
             {
                 // this. or base.
-                this._value = value;
+                this.InternalValue = value;
             }
 
             /// <summary>
@@ -52,54 +52,54 @@ namespace SpreadsheetEngine
             {
                 if (sender is Cell evaluatingCell)
                 {
-                    if (this.IsCalculating)
+
+
+                    if (e.PropertyName == nameof(Cell.Text))
                     {
-                        if (this.Text != CircularReference)
+                        if (this.IsCalculating)
                         {
-                            this.Text = CircularReference;
+                            if (this.Text != CircularReference)
+                            {
+                                this.Text = CircularReference;
+                            }
                         }
-                    }
-                    else
-                    {
+
                         this.IsCalculating = true;
 
-                        if (e.PropertyName == nameof(Cell.Text))
+                        foreach (KeyValuePair<Cell, PropertyChangedEventHandler> item in this.EventsContainer)
                         {
-                            foreach (KeyValuePair<Cell, PropertyChangedEventHandler> item in this.EventsContainer)
+                            item.Key.PropertyChanged -= item.Value;
+                        }
+
+                        this.EventsContainer.Clear();
+                        if (!string.IsNullOrEmpty(this.Text))
+                        {
+                            // If evaluating cell text starts with = then we will have to evaluate all the text to set the value appropriately.
+                            if (this.Text.StartsWith("="))
                             {
-                                item.Key.PropertyChanged -= item.Value;
+                                string evaluatedString = this.Text.Substring(1);
+                                ExpressionTree newEvaluationTree = new(evaluatedString);
+                                foreach (KeyValuePair<string, double> keyValuePair in newEvaluationTree.Values)
+                                {
+                                    SpreadsheetCell variableCell = this.SpreadsheetReference.GetCell(keyValuePair.Key);
+                                    PropertyChangedEventHandler eventHandler = new(this.CellPropertyChanged);
+                                    this.EventsContainer.Add(variableCell, eventHandler);
+                                    variableCell.PropertyChanged += eventHandler;
+                                }
+
+                                foreach (KeyValuePair<string, double> keyValuePair in newEvaluationTree.Values)
+                                {
+                                    newEvaluationTree.SetVariable(
+                                        keyValuePair.Key,
+                                        double.Parse(this.SpreadsheetReference.GetCell(keyValuePair.Key).Value));
+                                }
+
+                                evaluatedString = newEvaluationTree.Evaluate().ToString();
+                                this.SetCellValue(evaluatedString);
                             }
-
-                            this.EventsContainer.Clear();
-                            if (!string.IsNullOrEmpty(this.Text))
+                            else
                             {
-                                // If evaluating cell text starts with = then we will have to evaluate all the text to set the value appropriately.
-                                if (this.Text.StartsWith("="))
-                                {
-                                    string evaluatedString = this.Text.Substring(1);
-                                    ExpressionTree newEvaluationTree = new(evaluatedString);
-                                    foreach (KeyValuePair<string, double> keyValuePair in newEvaluationTree.Values)
-                                    {
-                                        SpreadsheetCell variableCell = this.SpreadsheetReference.GetCell(keyValuePair.Key);
-                                        PropertyChangedEventHandler eventHandler = new(this.CellPropertyChanged);
-                                        this.EventsContainer.Add(variableCell, eventHandler);
-                                        variableCell.PropertyChanged += eventHandler;
-                                    }
-
-                                    foreach (KeyValuePair<string, double> keyValuePair in newEvaluationTree.Values)
-                                    {
-                                        newEvaluationTree.SetVariable(
-                                            keyValuePair.Key,
-                                            double.Parse(this.SpreadsheetReference.GetCell(keyValuePair.Key).Value));
-                                    }
-
-                                    evaluatedString = newEvaluationTree.Evaluate().ToString();
-                                    this.SetCellValue(evaluatedString);
-                                }
-                                else
-                                {
-                                    this.SetCellValue(this.Text);
-                                }
+                                this.SetCellValue(this.Text);
                             }
                         }
                     }

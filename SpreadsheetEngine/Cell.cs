@@ -1,4 +1,4 @@
-// <copyright file="Cell.cs" company="Benjamin Michaelis">
+﻿// <copyright file="Cell.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -83,12 +83,17 @@ namespace SpreadsheetEngine
             }
         }
 
-        /// <summary>
-        /// stores protected value string.
-        /// </summary>
-#pragma warning disable SA1401 // Fields should be private
-        protected string? _value;
-#pragma warning restore SA1401 // Fields should be private
+        private string? _internalValue;
+
+        protected string? InternalValue
+        {
+            get => this._internalValue;
+            set
+            {
+                this._internalValue = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Value)));
+            }
+        }
 
         /// <summary>
         /// Gets Value which is text if not set or function if it is.
@@ -97,7 +102,7 @@ namespace SpreadsheetEngine
         {
             get
             {
-                return this._value is { } result ? result : string.Empty;
+                return this.InternalValue is { } result ? result : string.Empty;
             }
         }
 
