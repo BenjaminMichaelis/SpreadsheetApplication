@@ -83,6 +83,8 @@ namespace SpreadsheetEngine
             }
         }
 
+        protected bool IsCalculating { get; set; }
+
         private string? _internalValue;
 
         protected string? InternalValue
@@ -91,7 +93,17 @@ namespace SpreadsheetEngine
             set
             {
                 this._internalValue = value;
+                if (this.IsCalculating)
+                {
+                    if (this.Text != CircularReference)
+                    {
+                        this.Text = CircularReference;
+                    }
+                }
+
+                this.IsCalculating = true;
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Value)));
+                this.IsCalculating = false;
             }
         }
 

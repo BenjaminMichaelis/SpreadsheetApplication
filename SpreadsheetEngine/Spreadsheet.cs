@@ -33,9 +33,7 @@ namespace SpreadsheetEngine
 
             private Spreadsheet SpreadsheetReference { get; set; }
 
-            private Dictionary<Cell, PropertyChangedEventHandler> EventsContainer { get; set; } = new();
-
-            private bool IsCalculating { get; set; }
+            private Dictionary<Cell, PropertyChangedEventHandler> ReferencedCells { get; } = new();
 
             public void SetCellValue(string value)
             {
@@ -52,26 +50,14 @@ namespace SpreadsheetEngine
             {
                 if (sender is Cell evaluatingCell)
                 {
-
-
                     if (e.PropertyName == nameof(Cell.Text))
                     {
-                        if (this.IsCalculating)
-                        {
-                            if (this.Text != CircularReference)
-                            {
-                                this.Text = CircularReference;
-                            }
-                        }
-
-                        this.IsCalculating = true;
-
-                        foreach (KeyValuePair<Cell, PropertyChangedEventHandler> item in this.EventsContainer)
+                        foreach (KeyValuePair<Cell, PropertyChangedEventHandler> item in this.ReferencedCells)
                         {
                             item.Key.PropertyChanged -= item.Value;
                         }
 
-                        this.EventsContainer.Clear();
+                        this.ReferencedCells.Clear();
                         if (!string.IsNullOrEmpty(this.Text))
                         {
                             // If evaluating cell text starts with = then we will have to evaluate all the text to set the value appropriately.
@@ -81,17 +67,58 @@ namespace SpreadsheetEngine
                                 ExpressionTree newEvaluationTree = new(evaluatedString);
                                 foreach (KeyValuePair<string, double> keyValuePair in newEvaluationTree.Values)
                                 {
-                                    SpreadsheetCell variableCell = this.SpreadsheetReference.GetCell(keyValuePair.Key);
-                                    PropertyChangedEventHandler eventHandler = new(this.CellPropertyChanged);
-                                    this.EventsContainer.Add(variableCell, eventHandler);
-                                    variableCell.PropertyChanged += eventHandler;
+                                    try
+                                    {
+                                        SpreadsheetCell variableCell = this.SpreadsheetReference.GetCell(keyValuePair.Key);
+                                        if(this.ReferencedCells.Keys.Contains(variableCell))
+                                        {
+                                            throw new CircularReferenceException();
+                                        }
+
+                                        PropertyChangedEventHandler eventHandler = new(this.CellPropertyChanged);
+                                        this.ReferencedCells.Add(variableCell, eventHandler);
+                                        variableCell.PropertyChanged += eventHandler;
+                                    }
+                                    catch (CircularReferenceException exception)
+                                    {
+                                        this.SetCellValue(exception.Message);
+                                        return;
+                                    }
+                                    catch (ArgumentNullException)
+                                    {
+                                        this.SetCellValue(CircularReference);
+                                        return;
+                                    }
+                                    catch (Exception)
+                                    {
+                                        this.SetCellValue(CircularReference);
+                                        return;
+                                    }
                                 }
 
                                 foreach (KeyValuePair<string, double> keyValuePair in newEvaluationTree.Values)
                                 {
-                                    newEvaluationTree.SetVariable(
-                                        keyValuePair.Key,
-                                        double.Parse(this.SpreadsheetReference.GetCell(keyValuePair.Key).Value));
+                                    try
+                                    {
+                                        newEvaluationTree.SetVariable(
+                                            keyValuePair.Key,
+                                            double.Parse(this.SpreadsheetReference.GetCell(keyValuePair.Key).Value));
+                                    }
+                                    catch (NullReferenceException)
+                                    {
+                                        this.SetCellValue(CircularReference);
+                                        return;
+                                    }
+                                    catch (ArgumentNullException)
+                                    {
+                                        this.SetCellValue(CircularReference);
+                                        return;
+                                    }
+                                    catch (Exception)
+                                    {
+                                        this.SetCellValue(CircularReference);
+                                        return;
+                                    }
                                 }
 
                                 evaluatedString = newEvaluationTree.Evaluate().ToString();
@@ -103,8 +130,6 @@ namespace SpreadsheetEngine
                             }
                         }
                     }
-
-                    this.IsCalculating = false;
                 }
             }
         }
