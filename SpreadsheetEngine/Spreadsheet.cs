@@ -24,6 +24,7 @@ namespace SpreadsheetEngine
             /// </summary>
             /// <param name="rowIndex">Row index of cell.</param>
             /// <param name="columnIndex">Column index of cell.</param>
+            /// <param name="spreadsheet">Spreadsheet reference that the cell is a part of.</param>
             public SpreadsheetCell(int rowIndex, int columnIndex, Spreadsheet spreadsheet)
                 : base(rowIndex, columnIndex)
             {
@@ -31,11 +32,11 @@ namespace SpreadsheetEngine
                 this.SpreadsheetReference = spreadsheet;
             }
 
+            public Dictionary<SpreadsheetCell, PropertyChangedEventHandler> ReferencedCells { get; } = new();
+
             private Spreadsheet SpreadsheetReference { get; set; }
 
-            private Dictionary<Cell, PropertyChangedEventHandler> ReferencedCells { get; } = new();
-
-            public void SetCellValue(string value)
+            private void SetCellValue(string value)
             {
                 // this. or base.
                 this.InternalValue = value;
@@ -46,17 +47,12 @@ namespace SpreadsheetEngine
             /// </summary>
             /// <param name="sender">Object that called object.</param>
             /// <param name="e">The property changed arg.</param>
-            internal void CellPropertyChanged(object? sender, PropertyChangedEventArgs e)
+            private void CellPropertyChanged(object? sender, PropertyChangedEventArgs e)
             {
-                if (sender is Cell evaluatingCell)
+                if (sender is SpreadsheetCell evaluatingCell)
                 {
                     if (e.PropertyName == nameof(Cell.Text))
                     {
-                        foreach (KeyValuePair<Cell, PropertyChangedEventHandler> item in this.ReferencedCells)
-                        {
-                            item.Key.PropertyChanged -= item.Value;
-                        }
-
                         if (!string.IsNullOrEmpty(this.Text))
                         {
                             // If evaluating cell text starts with = then we will have to evaluate all the text to set the value appropriately.
@@ -67,11 +63,34 @@ namespace SpreadsheetEngine
                                     string evaluatedString = this.Text.Substring(1);
                                     ExpressionTree newEvaluationTree = new(evaluatedString);
                                     IEnumerable<SpreadsheetCell> referencedCells = newEvaluationTree.Values.Select(
-                                    item => this.SpreadsheetReference.GetCell(item.Key)).Where(item => item is { });
-                                    if (referencedCells.Intersect(ReferencedCells.Keys).Any())
+                                        item => this.SpreadsheetReference.GetCell(item.Key)).Where(item => item is { });
+                                    IEnumerable<SpreadsheetCell>? intersectingCells = referencedCells.Intersect(this.ReferencedCells.Keys);
+                                    foreach (SpreadsheetCell? item in intersectingCells)
+                                    {
+                                        item.ErrorMessage = CircularReferenceException.DefaultMessage;
+                                    }
+
+                                    if (intersectingCells.Any())
                                     {
                                         throw new CircularReferenceException();
                                     }
+
+                                    foreach (SpreadsheetCell item in referencedCells)
+                                    {
+                                        item.ErrorMessage = null;
+                                    }
+
+                                    foreach (SpreadsheetCell item in this.ReferencedCells.Keys)
+                                    {
+                                        item.ErrorMessage = null;
+                                    }
+
+                                    foreach (KeyValuePair<SpreadsheetCell, PropertyChangedEventHandler> item in this.ReferencedCells)
+                                    {
+                                        item.Key.PropertyChanged -= item.Value;
+                                    }
+
+                                    this.ReferencedCells.Clear();
 
                                     foreach (SpreadsheetCell item in referencedCells)
                                     {
@@ -130,8 +149,7 @@ namespace SpreadsheetEngine
                                 }
                                 catch (CircularReferenceException exception)
                                 {
-                                    this.SetCellValue(exception.Message);
-                                    return;
+                                    this.ErrorMessage = exception.Message;
                                 }
                                 catch (Exception exception)
                                 {
@@ -226,23 +244,24 @@ namespace SpreadsheetEngine
         {
             if (sender is SpreadsheetCell evaluatingCell)
             {
-                if (e.PropertyName == nameof(Cell.Text))
+                switch (e.PropertyName)
                 {
-                    if (!string.IsNullOrEmpty(evaluatingCell.Text))
-                    {
-                        this.OnCellPropertyChanged?.Invoke(sender, e);
-                    }
-                }
-                else if (e.PropertyName == nameof(Cell.Value))
-                {
-                    if (!string.IsNullOrEmpty(evaluatingCell.Value))
-                    {
-                        this.OnCellPropertyChanged?.Invoke(sender, e);
-                    }
-                }
-                else
-                {
-                    throw new NotImplementedException("Spreadsheet cell property changed not implemented else statement");
+                    case nameof(Cell.Text):
+                        if (!string.IsNullOrEmpty(evaluatingCell.Text))
+                        {
+                            this.OnCellPropertyChanged?.Invoke(sender, e);
+                        }
+
+                        break;
+                    case nameof(Cell.Value):
+                        if (!string.IsNullOrEmpty(evaluatingCell.Value))
+                        {
+                            this.OnCellPropertyChanged?.Invoke(sender, e);
+                        }
+
+                        break;
+                    default:
+                        throw new NotImplementedException("Spreadsheet cell property changed not implemented else statement");
                 }
             }
         }
