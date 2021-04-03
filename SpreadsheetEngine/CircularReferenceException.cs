@@ -9,7 +9,7 @@ namespace SpreadsheetEngine
     public class CircularReferenceException : Exception
     {
         public CircularReferenceException()
-            : base("Cell is referencing itself")
+            : base("#error: Cell is referencing itself")
         {
         }
 

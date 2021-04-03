@@ -57,72 +57,87 @@ namespace SpreadsheetEngine
                             item.Key.PropertyChanged -= item.Value;
                         }
 
-                        this.ReferencedCells.Clear();
                         if (!string.IsNullOrEmpty(this.Text))
                         {
                             // If evaluating cell text starts with = then we will have to evaluate all the text to set the value appropriately.
                             if (this.Text.StartsWith("="))
                             {
-                                string evaluatedString = this.Text.Substring(1);
-                                ExpressionTree newEvaluationTree = new(evaluatedString);
-                                foreach (KeyValuePair<string, double> keyValuePair in newEvaluationTree.Values)
+                                try
                                 {
-                                    try
+                                    string evaluatedString = this.Text.Substring(1);
+                                    ExpressionTree newEvaluationTree = new(evaluatedString);
+                                    IEnumerable<SpreadsheetCell> referencedCells = newEvaluationTree.Values.Select(
+                                    item => this.SpreadsheetReference.GetCell(item.Key)).Where(item => item is { });
+                                    if (referencedCells.Intersect(ReferencedCells.Keys).Any())
                                     {
-                                        SpreadsheetCell variableCell = this.SpreadsheetReference.GetCell(keyValuePair.Key);
-                                        if(this.ReferencedCells.Keys.Contains(variableCell))
+                                        throw new CircularReferenceException();
+                                    }
+
+                                    foreach (SpreadsheetCell item in referencedCells)
+                                    {
+                                        try
                                         {
-                                            throw new CircularReferenceException();
+                                            SpreadsheetCell variableCell = item;
+
+                                            PropertyChangedEventHandler eventHandler = new(this.CellPropertyChanged);
+                                            this.ReferencedCells.Add(variableCell, eventHandler);
+                                            variableCell.PropertyChanged += eventHandler;
                                         }
+                                        catch (CircularReferenceException exception)
+                                        {
+                                            this.SetCellValue(exception.Message);
+                                            return;
+                                        }
+                                        catch (ArgumentNullException)
+                                        {
+                                            this.SetCellValue(CircularReference);
+                                            return;
+                                        }
+                                        catch (Exception)
+                                        {
+                                            this.SetCellValue(CircularReference);
+                                            return;
+                                        }
+                                    }
 
-                                        PropertyChangedEventHandler eventHandler = new(this.CellPropertyChanged);
-                                        this.ReferencedCells.Add(variableCell, eventHandler);
-                                        variableCell.PropertyChanged += eventHandler;
-                                    }
-                                    catch (CircularReferenceException exception)
+                                    foreach (KeyValuePair<string, double> keyValuePair in newEvaluationTree.Values)
                                     {
-                                        this.SetCellValue(exception.Message);
-                                        return;
+                                        try
+                                        {
+                                            newEvaluationTree.SetVariable(
+                                                keyValuePair.Key,
+                                                double.Parse(this.SpreadsheetReference.GetCell(keyValuePair.Key).Value));
+                                        }
+                                        catch (NullReferenceException)
+                                        {
+                                            this.SetCellValue(CircularReference);
+                                            return;
+                                        }
+                                        catch (ArgumentNullException)
+                                        {
+                                            this.SetCellValue(CircularReference);
+                                            return;
+                                        }
+                                        catch (Exception)
+                                        {
+                                            this.SetCellValue(CircularReference);
+                                            return;
+                                        }
                                     }
-                                    catch (ArgumentNullException)
-                                    {
-                                        this.SetCellValue(CircularReference);
-                                        return;
-                                    }
-                                    catch (Exception)
-                                    {
-                                        this.SetCellValue(CircularReference);
-                                        return;
-                                    }
+
+                                    evaluatedString = newEvaluationTree.Evaluate().ToString();
+                                    this.SetCellValue(evaluatedString);
                                 }
-
-                                foreach (KeyValuePair<string, double> keyValuePair in newEvaluationTree.Values)
+                                catch (CircularReferenceException exception)
                                 {
-                                    try
-                                    {
-                                        newEvaluationTree.SetVariable(
-                                            keyValuePair.Key,
-                                            double.Parse(this.SpreadsheetReference.GetCell(keyValuePair.Key).Value));
-                                    }
-                                    catch (NullReferenceException)
-                                    {
-                                        this.SetCellValue(CircularReference);
-                                        return;
-                                    }
-                                    catch (ArgumentNullException)
-                                    {
-                                        this.SetCellValue(CircularReference);
-                                        return;
-                                    }
-                                    catch (Exception)
-                                    {
-                                        this.SetCellValue(CircularReference);
-                                        return;
-                                    }
+                                    this.SetCellValue(exception.Message);
+                                    return;
                                 }
-
-                                evaluatedString = newEvaluationTree.Evaluate().ToString();
-                                this.SetCellValue(evaluatedString);
+                                catch (Exception exception)
+                                {
+                                    Console.WriteLine(exception);
+                                    throw;
+                                }
                             }
                             else
                             {
