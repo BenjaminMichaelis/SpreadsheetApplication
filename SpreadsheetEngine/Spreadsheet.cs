@@ -172,7 +172,7 @@ namespace SpreadsheetEngine
         /// </summary>
         public event PropertyChangedEventHandler? OnCellPropertyChanged;
 
-        private SpreadsheetCell[,] _cellsOfSpreadsheet;
+        private SpreadsheetCell[,] CellsOfSpreadsheet { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
@@ -183,14 +183,14 @@ namespace SpreadsheetEngine
         {
             this.ColumnCount = columns;
             this.RowCount = rows;
-            this._cellsOfSpreadsheet = new SpreadsheetCell[rows, columns];
+            this.CellsOfSpreadsheet = new SpreadsheetCell[rows, columns];
             for (int rowNum = 0; rowNum < rows; rowNum++)
             {
                 for (int colNum = 0; colNum < columns; colNum++)
                 {
-                    this._cellsOfSpreadsheet[rowNum, colNum] = new SpreadsheetCell(rowNum, colNum, this);
+                    this.CellsOfSpreadsheet[rowNum, colNum] = new SpreadsheetCell(rowNum, colNum, this);
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-                    this._cellsOfSpreadsheet[rowNum, colNum].PropertyChanged += this.CellPropertyChanged;
+                    this.CellsOfSpreadsheet[rowNum, colNum].PropertyChanged += this.CellPropertyChanged;
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
 
                 }
@@ -226,12 +226,12 @@ namespace SpreadsheetEngine
 
                 SpreadsheetCell temp = this.GetCell(randomRow!, randomCol!);
                 temp!.Text = "Hello World";
-                this._cellsOfSpreadsheet[randomRow, randomCol] = temp;
+                this.CellsOfSpreadsheet[randomRow, randomCol] = temp;
             }
 
             for (int i = 0; i < 50; i++)
             {
-                this._cellsOfSpreadsheet[i, 1].Text = $"This is SpreadsheetCell B{(i + 1).ToString()}";
+                this.CellsOfSpreadsheet[i, 1].Text = $"This is SpreadsheetCell B{(i + 1).ToString()}";
             }
         }
 
@@ -276,7 +276,7 @@ namespace SpreadsheetEngine
         {
             if ((rowIndex <= this.RowCount && rowIndex >= 0) && colIndex <= this.ColumnCount && colIndex >= 0)
             {
-                return this._cellsOfSpreadsheet[rowIndex, colIndex].Text;
+                return this.CellsOfSpreadsheet[rowIndex, colIndex].Text;
             }
             else
             {
@@ -294,7 +294,7 @@ namespace SpreadsheetEngine
         {
             if ((rowIndex <= this.RowCount && rowIndex >= 0) && colIndex <= this.ColumnCount && colIndex >= 0)
             {
-                return this._cellsOfSpreadsheet[rowIndex, colIndex].Value;
+                return this.CellsOfSpreadsheet[rowIndex, colIndex].Value;
             }
             else
             {
@@ -312,7 +312,7 @@ namespace SpreadsheetEngine
         {
             if ((rowIndex <= this.RowCount && rowIndex >= 0) && colIndex <= this.ColumnCount && colIndex >= 0)
             {
-                return this._cellsOfSpreadsheet[rowIndex, colIndex];
+                return this.CellsOfSpreadsheet[rowIndex, colIndex];
             }
             else
             {
@@ -351,7 +351,15 @@ namespace SpreadsheetEngine
         /// <param name="newCellText">the new text to set the cell to.</param>
         public void SetCellText(int rowIndex, int columnIndex, string newCellText)
         {
-            this._cellsOfSpreadsheet[rowIndex, columnIndex].Text = newCellText;
+            this.CellsOfSpreadsheet[rowIndex, columnIndex].Text = newCellText;
         }
+
+        // public SpreadsheetCell this[int rowIndex, int columnIndex]
+        // {
+        //     get
+        //     {
+        //         return CellsOfSpreadsheet[rowIndex, columnIndex].Text;
+        //     }
+        // }
     }
 }
