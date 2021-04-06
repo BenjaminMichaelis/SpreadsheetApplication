@@ -363,12 +363,12 @@ namespace SpreadsheetEngine
             this.CellsOfSpreadsheet[rowIndex, columnIndex].Text = newCellText;
         }
 
-        // public SpreadsheetCell this[int rowIndex, int columnIndex]
-        // {
-        //     get
-        //     {
-        //         return CellsOfSpreadsheet[rowIndex, columnIndex].Text;
-        //     }
-        // }
+        public Cell this[int rowIndex, int columnIndex]
+        {
+            get
+            {
+                return CellsOfSpreadsheet[rowIndex, columnIndex];
+            }
+        }
     }
 }
