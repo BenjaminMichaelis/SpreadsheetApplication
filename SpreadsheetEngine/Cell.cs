@@ -159,9 +159,17 @@ namespace SpreadsheetEngine
             get => this._internalValue;
             set
             {
-                this._internalValue = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Value)));
+                if (value != _internalValue)
+                {
+                    this._internalValue = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Value)));
+                }
             }
+        }
+
+        public override string ToString()
+        {
+            return $"{IndexName}: Text='{Text}', Value='{Value}'";
         }
     }
 }

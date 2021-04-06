@@ -42,6 +42,11 @@ namespace SpreadsheetEngine
                 this.InternalValue = value;
             }
 
+            public override string ToString()
+            {
+                return base.ToString();
+            }
+
             /// <summary>
             /// Notifies for  when any property for any cell in the worksheet has changed.
             /// </summary>
@@ -51,7 +56,7 @@ namespace SpreadsheetEngine
             {
                 if (sender is SpreadsheetCell evaluatingCell)
                 {
-                    if (e.PropertyName == nameof(Cell.Text))
+                    if (e.PropertyName == nameof(Cell.Text) || (e.PropertyName == nameof(Cell.Value) && this != evaluatingCell))
                     {
                         if (!string.IsNullOrEmpty(this.Text))
                         {
@@ -63,8 +68,12 @@ namespace SpreadsheetEngine
                                     string evaluatedString = this.Text.Substring(1);
                                     ExpressionTree newEvaluationTree = new(evaluatedString);
                                     IEnumerable<SpreadsheetCell> referencedCells = newEvaluationTree.Values.Select(
-                                        item => this.SpreadsheetReference.GetCell(item.Key)).Where(item => item is { });
-                                    IEnumerable<SpreadsheetCell>? intersectingCells = referencedCells.Intersect(this.ReferencedCells.Keys);
+                                        item => this.SpreadsheetReference.GetCell(item.Key)
+                                    );
+                                    referencedCells = referencedCells.Where(
+                                            item => item is { }
+                                        );
+                                    IEnumerable<SpreadsheetCell>? intersectingCells = referencedCells.Intersect(evaluatingCell.ReferencedCells.Keys);
                                     foreach (SpreadsheetCell? item in intersectingCells)
                                     {
                                         item.ErrorMessage = CircularReferenceException.DefaultMessage;

@@ -63,8 +63,8 @@ namespace SpreadsheetEngine.Tests
             Spreadsheet sut = new(2, 1);
             sut.SetCellText(0, 0, "=A2");
             sut.SetCellText(1, 0, "=A1");
-            Assert.Equal("#error: Cell is referencing itself", sut.GetCellValue(0, 0));
-            Assert.Equal("#error: Cell is referencing itself", sut.GetCellValue(1, 0));
+            Assert.Equal("#error", sut.GetCellValue(0, 0));
+            Assert.Equal("#error", sut.GetCellValue(1, 0));
             sut.SetCellText(0, 0, "=10");
             Assert.Equal("10", sut.GetCellValue(0, 0));
             Assert.Equal("10", sut.GetCellValue(1, 0));
