@@ -24,6 +24,7 @@ namespace SpreadsheetEngine
             /// </summary>
             /// <param name="rowIndex">Row index of cell.</param>
             /// <param name="columnIndex">Column index of cell.</param>
+            /// <param name="spreadsheet">Spreadsheet reference that the cell is a part of.</param>
             public SpreadsheetCell(int rowIndex, int columnIndex, Spreadsheet spreadsheet)
                 : base(rowIndex, columnIndex)
             {
@@ -31,14 +32,19 @@ namespace SpreadsheetEngine
                 this.SpreadsheetReference = spreadsheet;
             }
 
+            public Dictionary<SpreadsheetCell, PropertyChangedEventHandler> ReferencedCells { get; } = new();
+
             private Spreadsheet SpreadsheetReference { get; set; }
 
-            private Dictionary<Cell, PropertyChangedEventHandler> ReferencedCells { get; } = new();
-
-            public void SetCellValue(string value)
+            private void SetCellValue(string value)
             {
                 // this. or base.
                 this.InternalValue = value;
+            }
+
+            public override string ToString()
+            {
+                return base.ToString();
             }
 
             /// <summary>
@@ -46,83 +52,119 @@ namespace SpreadsheetEngine
             /// </summary>
             /// <param name="sender">Object that called object.</param>
             /// <param name="e">The property changed arg.</param>
-            internal void CellPropertyChanged(object? sender, PropertyChangedEventArgs e)
+            private void CellPropertyChanged(object? sender, PropertyChangedEventArgs e)
             {
-                if (sender is Cell evaluatingCell)
+                if (sender is SpreadsheetCell evaluatingCell)
                 {
-                    if (e.PropertyName == nameof(Cell.Text))
+                    if (e.PropertyName == nameof(Cell.Text) || (e.PropertyName == nameof(Cell.Value) && this != evaluatingCell))
                     {
-                        foreach (KeyValuePair<Cell, PropertyChangedEventHandler> item in this.ReferencedCells)
-                        {
-                            item.Key.PropertyChanged -= item.Value;
-                        }
-
-                        this.ReferencedCells.Clear();
                         if (!string.IsNullOrEmpty(this.Text))
                         {
                             // If evaluating cell text starts with = then we will have to evaluate all the text to set the value appropriately.
                             if (this.Text.StartsWith("="))
                             {
-                                string evaluatedString = this.Text.Substring(1);
-                                ExpressionTree newEvaluationTree = new(evaluatedString);
-                                foreach (KeyValuePair<string, double> keyValuePair in newEvaluationTree.Values)
+                                try
                                 {
-                                    try
+                                    string evaluatedString = this.Text.Substring(1);
+                                    ExpressionTree newEvaluationTree = new(evaluatedString);
+                                    IEnumerable<SpreadsheetCell> referencedCells = newEvaluationTree.Values.Select(
+                                        item => this.SpreadsheetReference.GetCell(item.Key)
+                                    );
+                                    referencedCells = referencedCells.Where(
+                                            item => item is { }
+                                        );
+                                    IEnumerable<SpreadsheetCell>? intersectingCells = referencedCells.Intersect(evaluatingCell.ReferencedCells.Keys);
+                                    foreach (SpreadsheetCell? item in intersectingCells)
                                     {
-                                        SpreadsheetCell variableCell = this.SpreadsheetReference.GetCell(keyValuePair.Key);
-                                        if(this.ReferencedCells.Keys.Contains(variableCell))
+                                        item.ErrorMessage = CircularReferenceException.DefaultMessage;
+                                    }
+
+                                    if (intersectingCells.Any())
+                                    {
+                                        throw new CircularReferenceException();
+                                    }
+
+                                    foreach (SpreadsheetCell item in referencedCells)
+                                    {
+                                        item.ErrorMessage = null;
+                                    }
+
+                                    foreach (SpreadsheetCell item in this.ReferencedCells.Keys)
+                                    {
+                                        item.ErrorMessage = null;
+                                    }
+
+                                    foreach (KeyValuePair<SpreadsheetCell, PropertyChangedEventHandler> item in this.ReferencedCells)
+                                    {
+                                        item.Key.PropertyChanged -= item.Value;
+                                    }
+
+                                    this.ReferencedCells.Clear();
+
+                                    foreach (SpreadsheetCell item in referencedCells)
+                                    {
+                                        try
                                         {
-                                            throw new CircularReferenceException();
+                                            SpreadsheetCell variableCell = item;
+
+                                            PropertyChangedEventHandler eventHandler = new(this.CellPropertyChanged);
+                                            this.ReferencedCells.Add(variableCell, eventHandler);
+                                            variableCell.PropertyChanged += eventHandler;
                                         }
+                                        catch (CircularReferenceException exception)
+                                        {
+                                            this.SetCellValue(exception.Message);
+                                            return;
+                                        }
+                                        catch (ArgumentNullException)
+                                        {
+                                            this.SetCellValue(CircularReference);
+                                            return;
+                                        }
+                                        catch (Exception)
+                                        {
+                                            this.SetCellValue(CircularReference);
+                                            return;
+                                        }
+                                    }
 
-                                        PropertyChangedEventHandler eventHandler = new(this.CellPropertyChanged);
-                                        this.ReferencedCells.Add(variableCell, eventHandler);
-                                        variableCell.PropertyChanged += eventHandler;
-                                    }
-                                    catch (CircularReferenceException exception)
+                                    foreach (KeyValuePair<string, double> keyValuePair in newEvaluationTree.Values)
                                     {
-                                        this.SetCellValue(exception.Message);
-                                        return;
+                                        try
+                                        {
+                                            newEvaluationTree.SetVariable(
+                                                keyValuePair.Key,
+                                                double.Parse(this.SpreadsheetReference.GetCell(keyValuePair.Key).Value));
+                                        }
+                                        catch (NullReferenceException)
+                                        {
+                                            this.SetCellValue(CircularReference);
+                                            return;
+                                        }
+                                        catch (ArgumentNullException)
+                                        {
+                                            this.SetCellValue(CircularReference);
+                                            return;
+                                        }
+                                        catch (Exception)
+                                        {
+                                            this.SetCellValue(CircularReference);
+                                            return;
+                                        }
                                     }
-                                    catch (ArgumentNullException)
-                                    {
-                                        this.SetCellValue(CircularReference);
-                                        return;
-                                    }
-                                    catch (Exception)
-                                    {
-                                        this.SetCellValue(CircularReference);
-                                        return;
-                                    }
+
+                                    evaluatedString = newEvaluationTree.Evaluate().ToString();
+                                    this.SetCellValue(evaluatedString);
                                 }
-
-                                foreach (KeyValuePair<string, double> keyValuePair in newEvaluationTree.Values)
+                                catch (CircularReferenceException exception)
                                 {
-                                    try
-                                    {
-                                        newEvaluationTree.SetVariable(
-                                            keyValuePair.Key,
-                                            double.Parse(this.SpreadsheetReference.GetCell(keyValuePair.Key).Value));
-                                    }
-                                    catch (NullReferenceException)
-                                    {
-                                        this.SetCellValue(CircularReference);
-                                        return;
-                                    }
-                                    catch (ArgumentNullException)
-                                    {
-                                        this.SetCellValue(CircularReference);
-                                        return;
-                                    }
-                                    catch (Exception)
-                                    {
-                                        this.SetCellValue(CircularReference);
-                                        return;
-                                    }
+                                    this.ErrorMessage = exception.Message;
                                 }
-
-                                evaluatedString = newEvaluationTree.Evaluate().ToString();
-                                this.SetCellValue(evaluatedString);
+                                catch (Exception exception)
+                                {
+                                    Console.WriteLine(exception);
+                                    throw;
+                                }
                             }
                             else
                             {
@@ -139,7 +181,7 @@ namespace SpreadsheetEngine
         /// </summary>
         public event PropertyChangedEventHandler? OnCellPropertyChanged;
 
-        private SpreadsheetCell[,] _cellsOfSpreadsheet;
+        private SpreadsheetCell[,] CellsOfSpreadsheet { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
@@ -150,14 +192,14 @@ namespace SpreadsheetEngine
         {
             this.ColumnCount = columns;
             this.RowCount = rows;
-            this._cellsOfSpreadsheet = new SpreadsheetCell[rows, columns];
+            this.CellsOfSpreadsheet = new SpreadsheetCell[rows, columns];
             for (int rowNum = 0; rowNum < rows; rowNum++)
             {
                 for (int colNum = 0; colNum < columns; colNum++)
                 {
-                    this._cellsOfSpreadsheet[rowNum, colNum] = new SpreadsheetCell(rowNum, colNum, this);
+                    this.CellsOfSpreadsheet[rowNum, colNum] = new SpreadsheetCell(rowNum, colNum, this);
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-                    this._cellsOfSpreadsheet[rowNum, colNum].PropertyChanged += this.CellPropertyChanged;
+                    this.CellsOfSpreadsheet[rowNum, colNum].PropertyChanged += this.CellPropertyChanged;
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
 
                 }
@@ -193,12 +235,12 @@ namespace SpreadsheetEngine
 
                 SpreadsheetCell temp = this.GetCell(randomRow!, randomCol!);
                 temp!.Text = "Hello World";
-                this._cellsOfSpreadsheet[randomRow, randomCol] = temp;
+                this.CellsOfSpreadsheet[randomRow, randomCol] = temp;
             }
 
             for (int i = 0; i < 50; i++)
             {
-                this._cellsOfSpreadsheet[i, 1].Text = $"This is SpreadsheetCell B{(i + 1).ToString()}";
+                this.CellsOfSpreadsheet[i, 1].Text = $"This is SpreadsheetCell B{(i + 1).ToString()}";
             }
         }
 
@@ -211,23 +253,24 @@ namespace SpreadsheetEngine
         {
             if (sender is SpreadsheetCell evaluatingCell)
             {
-                if (e.PropertyName == nameof(Cell.Text))
+                switch (e.PropertyName)
                 {
-                    if (!string.IsNullOrEmpty(evaluatingCell.Text))
-                    {
-                        this.OnCellPropertyChanged?.Invoke(sender, e);
-                    }
-                }
-                else if (e.PropertyName == nameof(Cell.Value))
-                {
-                    if (!string.IsNullOrEmpty(evaluatingCell.Value))
-                    {
-                        this.OnCellPropertyChanged?.Invoke(sender, e);
-                    }
-                }
-                else
-                {
-                    throw new NotImplementedException("Spreadsheet cell property changed not implemented else statement");
+                    case nameof(Cell.Text):
+                        if (!string.IsNullOrEmpty(evaluatingCell.Text))
+                        {
+                            this.OnCellPropertyChanged?.Invoke(sender, e);
+                        }
+
+                        break;
+                    case nameof(Cell.Value):
+                        if (!string.IsNullOrEmpty(evaluatingCell.Value))
+                        {
+                            this.OnCellPropertyChanged?.Invoke(sender, e);
+                        }
+
+                        break;
+                    default:
+                        throw new NotImplementedException("Spreadsheet cell property changed not implemented else statement");
                 }
             }
         }
@@ -242,7 +285,7 @@ namespace SpreadsheetEngine
         {
             if ((rowIndex <= this.RowCount && rowIndex >= 0) && colIndex <= this.ColumnCount && colIndex >= 0)
             {
-                return this._cellsOfSpreadsheet[rowIndex, colIndex].Text;
+                return this.CellsOfSpreadsheet[rowIndex, colIndex].Text;
             }
             else
             {
@@ -260,7 +303,7 @@ namespace SpreadsheetEngine
         {
             if ((rowIndex <= this.RowCount && rowIndex >= 0) && colIndex <= this.ColumnCount && colIndex >= 0)
             {
-                return this._cellsOfSpreadsheet[rowIndex, colIndex].Value;
+                return this.CellsOfSpreadsheet[rowIndex, colIndex].Value;
             }
             else
             {
@@ -278,7 +321,7 @@ namespace SpreadsheetEngine
         {
             if ((rowIndex <= this.RowCount && rowIndex >= 0) && colIndex <= this.ColumnCount && colIndex >= 0)
             {
-                return this._cellsOfSpreadsheet[rowIndex, colIndex];
+                return this.CellsOfSpreadsheet[rowIndex, colIndex];
             }
             else
             {
@@ -317,7 +360,15 @@ namespace SpreadsheetEngine
         /// <param name="newCellText">the new text to set the cell to.</param>
         public void SetCellText(int rowIndex, int columnIndex, string newCellText)
         {
-            this._cellsOfSpreadsheet[rowIndex, columnIndex].Text = newCellText;
+            this.CellsOfSpreadsheet[rowIndex, columnIndex].Text = newCellText;
         }
+
+        // public SpreadsheetCell this[int rowIndex, int columnIndex]
+        // {
+        //     get
+        //     {
+        //         return CellsOfSpreadsheet[rowIndex, columnIndex].Text;
+        //     }
+        // }
     }
 }

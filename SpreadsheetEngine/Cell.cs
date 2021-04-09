@@ -83,29 +83,17 @@ namespace SpreadsheetEngine
             }
         }
 
-        protected bool IsCalculating { get; set; }
-
         private string? _internalValue;
 
-        protected string? InternalValue
-        {
-            get => this._internalValue;
-            set
-            {
-                this._internalValue = value;
-                if (this.IsCalculating)
-                {
-                    if (this.Text != CircularReference)
-                    {
-                        this.Text = CircularReference;
-                    }
-                }
+        /// <summary>
+        /// Gets or sets the error message to the cell.
+        /// </summary>
+        public string ErrorMessage { get; set; }
 
-                this.IsCalculating = true;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Value)));
-                this.IsCalculating = false;
-            }
-        }
+        /// <summary>
+        /// Gets a value indicating whether gets bool; True if is an error message, false if not.
+        /// </summary>
+        public bool IsErrored { get => !string.IsNullOrWhiteSpace(this.ErrorMessage); }
 
         /// <summary>
         /// Gets Value which is text if not set or function if it is.
@@ -114,7 +102,14 @@ namespace SpreadsheetEngine
         {
             get
             {
-                return this.InternalValue is { } result ? result : string.Empty;
+                if (this.IsErrored)
+                {
+                    return this.ErrorMessage;
+                }
+                else
+                {
+                    return this.InternalValue is { } result ? result : string.Empty;
+                }
             }
         }
 
@@ -154,6 +149,27 @@ namespace SpreadsheetEngine
             }
 
             return columnName;
+        }
+
+        /// <summary>
+        /// Gets or sets the internal value of the cell that can invoke an event.
+        /// </summary>
+        protected string? InternalValue
+        {
+            get => this._internalValue;
+            set
+            {
+                if (value != _internalValue)
+                {
+                    this._internalValue = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Value)));
+                }
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"{IndexName}: Text='{Text}', Value='{Value}'";
         }
     }
 }
