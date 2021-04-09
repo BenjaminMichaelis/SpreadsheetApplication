@@ -89,7 +89,7 @@ namespace SpreadsheetApp
         /// <param name="e">Property changed event.</param>
         private void DataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            string? cellText = this.sheet.GetCellText(e.RowIndex, e.ColumnIndex);
+            string? cellText = this.sheet[e.RowIndex, e.ColumnIndex].Text;
 
             if (cellText != null)
             {
@@ -115,7 +115,7 @@ namespace SpreadsheetApp
                         if (newCellText.StartsWith("="))
                         {
                             this.sheet.SetCellText(rowIndex: e.RowIndex, columnIndex: e.ColumnIndex, newCellText: newCellText);
-                            this.MainForm.dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = this.sheet.GetCellValue(e.RowIndex, e.ColumnIndex);
+                            this.MainForm.dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = this.sheet[e.RowIndex, e.ColumnIndex].Value;
                         }
                     }
                 }
