@@ -21,8 +21,8 @@ namespace SpreadsheetEngine
 
         private SpreadsheetCell[,] CellsOfSpreadsheet { get; set; }
 
-        Stack<Cell> undoStack { get; set; }
-        Stack<Cell> redoStack { get; set; }
+        Stack<Cell> UndoStack { get; set; }
+        Stack<Cell> RedoStack { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
