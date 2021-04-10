@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace SpreadsheetApp
     {
         private string? _mainText;
         private SpreadsheetEngine.Spreadsheet sheet;
+
+        private UndoRedo UndoRedo { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainViewModel"/> class.
@@ -161,6 +164,7 @@ namespace SpreadsheetApp
                     {
                         if (newCellText.StartsWith("="))
                         {
+                            this.UndoRedo.AddUndoCommand(new HistoryCollection(RestoreHistory.CreateInstance(this.sheet[e.RowIndex, e.ColumnIndex], nameof(Cell.Text), newText: this.sheet[e.RowIndex, e.ColumnIndex].Text), "Cell Text Change"));
                             this.sheet.SetCellText(rowIndex: e.RowIndex, columnIndex: e.ColumnIndex, newCellText: newCellText);
                             this.MainForm.spreadsheetViewUI.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = this.sheet[e.RowIndex, e.ColumnIndex].Value;
                         }
