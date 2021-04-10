@@ -32,7 +32,8 @@ namespace SpreadsheetApp
             this.MainForm = mainForm;
 
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-            this.MainForm.DemoButton.Click += new System.EventHandler(this.Button_Click);
+            this.MainForm.DemoButton.Click += new System.EventHandler(this.DemoButton_Click);
+            this.MainForm.changeBackgroundColorButton.Click += new System.EventHandler(this.BackgroundColorButton_Click);
 #pragma warning restore CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
 
             this.sheet = new(50, 26);
@@ -61,21 +62,60 @@ namespace SpreadsheetApp
         /// </summary>
         /// <param name="sender">sender object.</param>
         /// <param name="e">Property changed event.</param>
-        public void Button_Click(object sender, System.EventArgs e)
+        public void DemoButton_Click(object sender, System.EventArgs e)
         {
             this.MainForm.DemoButton.Enabled = true;
             this.MainForm.DemoButton.Visible = true;
             this.sheet.Demo();
         }
 
+        /// <summary>
+        /// Runs when the change background color button is clicked.
+        /// </summary>
+        /// <param name="sender">The sending object.</param>
+        /// <param name="e">The event sending argument.</param>
+        public void BackgroundColorButton_Click(object sender, System.EventArgs e)
+        {
+            ColorDialog colorDialog = new ColorDialog();
+            colorDialog.AllowFullOpen = true;
+            colorDialog.ShowHelp = true;
+            colorDialog.AnyColor = true;
+            colorDialog.HelpRequest += new System.EventHandler(this.ColorDialog_HelpRequest);
+
+            // if user selects OK in the color dialog, otherwise do nothing.
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                uint chosenColor = (uint)colorDialog.Color.ToArgb();
+
+                foreach (DataGridViewCell cell in this.MainForm.spreadsheetViewUI.SelectedCells)
+                {
+                    this.sheet[cell.RowIndex, cell.ColumnIndex].BackgroundColor = (uint)chosenColor;
+                }
+            }
+        }
+
+        private void ColorDialog_HelpRequest(object sender, System.EventArgs e)
+        {
+            MessageBox.Show("Please select a color by clicking it. "
+               + "This will change the background color of a cell box.");
+        }
+
         private void UpdateCell(object sender, PropertyChangedEventArgs e)
         {
-            SpreadsheetEngine.Cell? temp = sender as Cell;
-
-            // e.PropertyName == nameof(Cell.Value)
-            if (temp != null)
+            if (sender is Cell senderCell)
             {
-                this.MainForm.spreadsheetViewUI.Rows[temp.RowIndex].Cells[temp.ColumnIndex].Value = temp.Value;
+                if (e.PropertyName == nameof(Cell.Value) || e.PropertyName == nameof(Cell.Text))
+                {
+                    if (senderCell != null)
+                    {
+                        this.MainForm.spreadsheetViewUI.Rows[senderCell.RowIndex].Cells[senderCell.ColumnIndex].Value = senderCell.Value;
+                    }
+                }
+
+                if (e.PropertyName == nameof(Cell.BackgroundColor))
+                {
+                    this.MainForm.spreadsheetViewUI.Rows[senderCell.RowIndex].Cells[senderCell.ColumnIndex].Style.BackColor = System.Drawing.Color.FromArgb((int)senderCell.BackgroundColor);
+                }
             }
         }
 

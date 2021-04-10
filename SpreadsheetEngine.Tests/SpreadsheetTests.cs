@@ -1,4 +1,4 @@
-// <copyright file="SpreadsheetTests.cs" company="Benjamin Michaelis">
+﻿// <copyright file="SpreadsheetTests.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -61,11 +61,11 @@ namespace SpreadsheetEngine.Tests
         public void CircularReference()
         {
             Spreadsheet sut = new(2, 1);
-            sut.SetCellText(0, 0, "=A2");
-            sut.SetCellText(1, 0, "=A1");
+            sut[0, 0].Text = "=A2";
+            sut[1, 0].Text = "=A1";
             Assert.Equal("#error", sut[0, 0].Value);
             Assert.Equal("#error", sut[1, 0].Value);
-            sut.SetCellText(0, 0, "=10");
+            sut[0, 0].Text = "=10";
             Assert.Equal("10", sut[0, 0].Value);
             Assert.Equal("10", sut[1, 0].Value);
         }
@@ -73,6 +73,7 @@ namespace SpreadsheetEngine.Tests
         /// <summary>
         /// Test background color changing.
         /// </summary>
+        [Fact]
         public void BackgroundColorChange()
         {
             Spreadsheet sut = new(2, 1);

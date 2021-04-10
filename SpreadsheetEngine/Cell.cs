@@ -62,7 +62,11 @@ namespace SpreadsheetEngine
 
             set
             {
-                if (this._text == value) return;
+                if (this._text == value)
+                {
+                    return;
+                }
+
                 this._text = value;
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Text)));
             }
