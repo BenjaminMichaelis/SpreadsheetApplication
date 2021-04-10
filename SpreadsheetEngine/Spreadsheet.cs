@@ -104,8 +104,11 @@ namespace SpreadsheetEngine
                         }
 
                         break;
+                    case nameof(Cell.BackgroundColor):
+                        this.OnCellPropertyChanged?.Invoke(sender, e);
+                        break;
                     default:
-                        throw new NotImplementedException("Spreadsheet cell property changed not implemented else statement");
+                        throw new NotImplementedException($"Spreadsheet cell property '{e.PropertyName}' changed not implemented in spreadsheet");
                 }
             }
         }

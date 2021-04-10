@@ -166,6 +166,10 @@ namespace SpreadsheetEngine
                             }
                         }
                     }
+
+                    if (e.PropertyName == nameof(Cell.BackgroundColor))
+                    {
+                    }
                 }
             }
         }
