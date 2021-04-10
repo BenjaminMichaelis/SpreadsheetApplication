@@ -32,71 +32,107 @@ namespace SpreadsheetApp
         private void InitializeComponent()
         {
             this.SuspendLayout();
-
             // 
-            // mainmenu
+            // mainMenu
             // 
-            this.mainmenu.AllowDrop = true;
-            this.mainmenu.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.mainmenu.Location = new System.Drawing.Point(0, 0);
-            this.mainmenu.Name = "mainmenu";
-            this.mainmenu.Size = new System.Drawing.Size(800, 28);
-            this.mainmenu.TabIndex = 0;
-            this.mainmenu.Text = "Main Menu";
+            this.mainMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.FileButton, this.CellButton});
+            this.mainMenu.Location = new System.Drawing.Point(0, 0);
+            this.mainMenu.Name = "mainMenu";
+            this.mainMenu.Size = new System.Drawing.Size(800, 28);
+            this.mainMenu.TabIndex = 0;
+            this.mainMenu.Text = "Main Menu";
+            this.mainMenu.Anchor = (AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top);
             // 
-            // dataGridView1
+            // FileButton
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(13, 13);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.RowTemplate.Height = 29;
-            this.dataGridView1.Size = new System.Drawing.Size(750, 400);
-            this.dataGridView1.TabIndex = 0;
-            //// 
-            //// button1
-            //// 
-            // this.button1.Location = new System.Drawing.Point(0, 61);
-            // this.button1.Name = "button1";
-            // this.button1.Size = new System.Drawing.Size(400, 200);
-            this.button1.Visible = false;
-            // this.button1.TabIndex = 1;
-            // this.button1.Text = "Perform Demo";
-            // this.button1.UseVisualStyleBackColor = true;
+            this.FileButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.DemoButton});
+            this.FileButton.Name = "FileButton";
+            this.FileButton.Size = new System.Drawing.Size(48, 24);
+            this.FileButton.Text = "File";
+            // 
+            // DemoButton
+            // 
+            this.DemoButton.Name = "DemoButton";
+            this.DemoButton.Size = new System.Drawing.Size(274, 26);
+            this.DemoButton.Text = "Demo";
+            // 
+            // CellButton
+            // 
+            this.CellButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.changeBackgroundColorButton});
+            this.CellButton.Name = "CellButton";
+            this.CellButton.Size = new System.Drawing.Size(48, 24);
+            this.CellButton.Text = "Cell";
+            // 
+            // changeBackgroundColorButton
+            // 
+            this.changeBackgroundColorButton.Name = "changeBackgroundColorButton";
+            this.changeBackgroundColorButton.Size = new System.Drawing.Size(274, 26);
+            this.changeBackgroundColorButton.Text = "Change Background Color...";
+            // 
+            // spreadsheetViewUI
+            // 
+            this.spreadsheetViewUI.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.spreadsheetViewUI.Location = new System.Drawing.Point(13, 30);
+            this.spreadsheetViewUI.Name = "spreadsheetViewUI";
+            this.spreadsheetViewUI.RowHeadersWidth = 51;
+            this.spreadsheetViewUI.RowTemplate.Height = 29;
+            this.spreadsheetViewUI.Size = new System.Drawing.Size(750, 400);
+            this.spreadsheetViewUI.TabIndex = 0;
+            this.spreadsheetViewUI.Anchor = (AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.dataGridView1);
-            this.MainMenuStrip = this.mainmenu;
+            this.Controls.Add(this.spreadsheetViewUI);
+            this.Controls.Add(this.mainMenu);
+            this.MainMenuStrip = this.mainMenu;
             this.Name = "MainForm";
             this.Text = "Benjamin Michaelis - 11620581";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         /// <summary>
+        /// Cell Dropdown Button.
+        /// </summary>
+        public ToolStripMenuItem CellButton { get; } = new();
+
+        /// <summary>
+        /// File Dropdown Button.
+        /// </summary>
+        public ToolStripMenuItem FileButton { get; } = new();
+
+        /// <summary>
+        /// Change Background Color Button.
+        /// </summary>
+        public ToolStripMenuItem changeBackgroundColorButton { get; } = new();
+
+        /// <summary>
+        /// DemoButton Button.
+        /// </summary>
+        public ToolStripMenuItem DemoButton { get; } = new();
+
+        /// <summary>
         /// gets dataGridView for MainViewModel.
         /// </summary>
-        public DataGridView dataGridView1 { get; } = new();
-        /// <summary>
-        /// Button for running demo.
-        /// </summary>
-        public System.Windows.Forms.Button button1 { get; } = new();
+        public DataGridView spreadsheetViewUI { get; } = new();
         /// <summary>
         /// Creates menustrip.
         /// </summary>
-        public MenuStrip mainmenu { get; } = new();
-
-        #endregion
+        public MenuStrip mainMenu { get; } = new();
 
         /// <summary>
         /// MainTextBox.
         /// </summary>
         public System.Windows.Forms.TextBox MainTextBox { get; } = new System.Windows.Forms.TextBox();
+
+        #endregion
     }
 }

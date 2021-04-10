@@ -61,13 +61,26 @@ namespace SpreadsheetEngine.Tests
         public void CircularReference()
         {
             Spreadsheet sut = new(2, 1);
-            sut.SetCellText(0, 0, "=A2");
-            sut.SetCellText(1, 0, "=A1");
+            sut[0, 0].Text = "=A2";
+            sut[1, 0].Text = "=A1";
             Assert.Equal("#error", sut[0, 0].Value);
             Assert.Equal("#error", sut[1, 0].Value);
-            sut.SetCellText(0, 0, "=10");
+            sut[0, 0].Text = "=10";
             Assert.Equal("10", sut[0, 0].Value);
             Assert.Equal("10", sut[1, 0].Value);
+        }
+
+        /// <summary>
+        /// Test background color changing.
+        /// </summary>
+        [Fact]
+        public void BackgroundColorChange()
+        {
+            Spreadsheet sut = new(2, 1);
+            sut[0, 0].BackgroundColor = 0xFFFF7F50;
+            sut[1, 0].BackgroundColor = 0xFF6495ED;
+            Assert.Equal(0xFFFF7F50, sut[0, 0].BackgroundColor);
+            Assert.Equal(0xFF6495ED, sut[1, 0].BackgroundColor);
         }
     }
 }

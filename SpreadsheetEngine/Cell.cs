@@ -23,11 +23,12 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="columnIndex">int for the readonly columnIndex.</param>
         /// <param name="rowIndex">int for the readonly rowIndex.</param>
-        public Cell(int rowIndex, int columnIndex)
+        protected Cell(int rowIndex, int columnIndex)
         {
             this.RowIndex = rowIndex;
             this.ColumnIndex = columnIndex;
             this.Text = string.Empty;
+            this.ErrorMessage = null;
         }
 
         /// <summary>
@@ -46,7 +47,7 @@ namespace SpreadsheetEngine
         public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
-        /// stores protected string text.
+        /// Stores protected string text.
         /// </summary>
 #pragma warning disable SA1401 // Fields should be private - We want it private in this case.
         protected string? _text;
@@ -57,43 +58,61 @@ namespace SpreadsheetEngine
         /// </summary>
         public string Text
         {
-            get
-            {
-                return this._text is { } result ? result : string.Empty;
-            }
+            get => this._text is { } result ? result : string.Empty;
 
             set
             {
-                if (this._text != value)
+                if (this._text == value)
                 {
-                    this._text = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Text)));
+                    return;
                 }
+
+                this._text = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Text)));
             }
         }
 
         /// <summary>
         /// Gets the Cell name by converting the column to a letter and adding on the row number, and returning as a string.
         /// </summary>
-        public string IndexName
-        {
-            get
-            {
-                return this.ColumnIntToLetter(this.ColumnIndex + 1) + (this.RowIndex + 1).ToString();
-            }
-        }
+        public string IndexName => this.ColumnIntToLetter(this.ColumnIndex + 1) + (this.RowIndex + 1).ToString();
 
         private string? _internalValue;
 
         /// <summary>
         /// Gets or sets the error message to the cell.
         /// </summary>
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether gets bool; True if is an error message, false if not.
         /// </summary>
-        public bool IsErrored { get => !string.IsNullOrWhiteSpace(this.ErrorMessage); }
+        public bool IsErrored => !string.IsNullOrWhiteSpace(this.ErrorMessage);
+
+        /// <summary>
+        /// Stores cell background color.
+        /// </summary>
+#pragma warning disable SA1401 // Fields should be private - We want it private in this case.
+        protected uint _backgroundColor = 0xFFFFFFFF;
+#pragma warning restore SA1401 // Fields should be private - We want it private in this case.
+
+        /// <summary>
+        /// Gets or sets cell background color.
+        /// </summary>
+        public uint BackgroundColor
+        {
+            get => this._backgroundColor;
+            set
+            {
+                if (this._backgroundColor == value)
+                {
+                    return;
+                }
+
+                this._backgroundColor = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.BackgroundColor)));
+            }
+        }
 
         /// <summary>
         /// Gets Value which is text if not set or function if it is.
@@ -140,10 +159,9 @@ namespace SpreadsheetEngine
         {
             int dividend = index;
             string columnName = string.Empty;
-            int modulo;
             while (dividend > 0)
             {
-                modulo = (dividend - 1) % 26;
+                int modulo = (dividend - 1) % 26;
                 columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
                 dividend = (int)((dividend - modulo) / 26);
             }
@@ -159,7 +177,7 @@ namespace SpreadsheetEngine
             get => this._internalValue;
             set
             {
-                if (value != _internalValue)
+                if (value != this._internalValue)
                 {
                     this._internalValue = value;
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Value)));
@@ -167,9 +185,10 @@ namespace SpreadsheetEngine
             }
         }
 
-        public override string ToString()
-        {
-            return $"{IndexName}: Text='{Text}', Value='{Value}'";
-        }
+        /// <summary>
+        /// Allows for cell info to be displayed in debug watch window.
+        /// </summary>
+        /// <returns>Returns overriden string with specified information.</returns>
+        public override string ToString() => $"{this.IndexName}: Text='{this.Text}', Value='{this.Value}'";
     }
 }

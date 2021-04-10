@@ -41,11 +41,6 @@ namespace SpreadsheetEngine
                 this.InternalValue = value;
             }
 
-            public override string ToString()
-            {
-                return base.ToString();
-            }
-
             /// <summary>
             /// Notifies for  when any property for any cell in the worksheet has changed.
             /// </summary>
@@ -170,6 +165,10 @@ namespace SpreadsheetEngine
                                 this.SetCellValue(this.Text);
                             }
                         }
+                    }
+
+                    if (e.PropertyName == nameof(Cell.BackgroundColor))
+                    {
                     }
                 }
             }

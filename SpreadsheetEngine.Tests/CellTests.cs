@@ -1,4 +1,4 @@
-﻿// <copyright file="SpreadsheetCellTests.cs" company="Benjamin Michaelis">
+﻿// <copyright file="CellTests.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 

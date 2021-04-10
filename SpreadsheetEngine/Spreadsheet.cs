@@ -42,8 +42,6 @@ namespace SpreadsheetEngine
 
                 }
             }
-
-            // this._cellsOfSpreadsheet[rownum, colnum].PropertyChanged += this.CellPropertyChanged;
         }
 
         /// <summary>
@@ -63,13 +61,12 @@ namespace SpreadsheetEngine
         /// </summary>
         public void Demo()
         {
-            int randomRow = 0, randomCol = 0;
             Random random = new Random();
 
             for (int i = 0; i < 50; i++)
             {
-                randomCol = random.Next(0, 25);
-                randomRow = random.Next(0, 49);
+                int randomCol = random.Next(0, 25);
+                int randomRow = random.Next(0, 49);
 
                 SpreadsheetCell temp = (SpreadsheetCell)this[randomRow!, randomCol!];
                 temp!.Text = "Hello World";
@@ -107,8 +104,11 @@ namespace SpreadsheetEngine
                         }
 
                         break;
+                    case nameof(Cell.BackgroundColor):
+                        this.OnCellPropertyChanged?.Invoke(sender, e);
+                        break;
                     default:
-                        throw new NotImplementedException("Spreadsheet cell property changed not implemented else statement");
+                        throw new NotImplementedException($"Spreadsheet cell property '{e.PropertyName}' changed not implemented in spreadsheet");
                 }
             }
         }
@@ -150,12 +150,12 @@ namespace SpreadsheetEngine
             this.CellsOfSpreadsheet[rowIndex, columnIndex].Text = newCellText;
         }
 
-        public Cell this[int rowIndex, int columnIndex]
-        {
-            get
-            {
-                return CellsOfSpreadsheet[rowIndex, columnIndex];
-            }
-        }
+        /// <summary>
+        /// Indexer to pass back a Spreadsheet Cell.
+        /// </summary>
+        /// <param name="rowIndex">The row of the location of the cell.</param>
+        /// <param name="columnIndex">The column of the location of the cell.</param>
+        /// <returns>A Cell.</returns>
+        public Cell this[int rowIndex, int columnIndex] => this.CellsOfSpreadsheet[rowIndex, columnIndex];
     }
 }
