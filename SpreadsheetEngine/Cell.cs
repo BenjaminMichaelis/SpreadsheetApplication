@@ -86,6 +86,31 @@ namespace SpreadsheetEngine
         public bool IsErrored => !string.IsNullOrWhiteSpace(this.ErrorMessage);
 
         /// <summary>
+        /// Stores cell background color.
+        /// </summary>
+#pragma warning disable SA1401 // Fields should be private - We want it private in this case.
+        protected uint _backgroundColor = 0xFFFFFFFF;
+#pragma warning restore SA1401 // Fields should be private - We want it private in this case.
+
+        /// <summary>
+        /// Gets or sets cell background color.
+        /// </summary>
+        public uint BackgroundColor
+        {
+            get => this._backgroundColor;
+            set
+            {
+                if (this._backgroundColor == value)
+                {
+                    return;
+                }
+
+                this._backgroundColor = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.BackgroundColor)));
+            }
+        }
+
+        /// <summary>
         /// Gets Value which is text if not set or function if it is.
         /// </summary>
         public string Value
