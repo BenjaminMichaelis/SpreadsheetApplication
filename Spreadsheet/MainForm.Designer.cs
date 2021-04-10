@@ -37,13 +37,33 @@ namespace SpreadsheetApp
             // 
             this.mainMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                this.FileButton, this.CellButton});
+                this.FileButton, this.EditButton, this.CellButton});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
             this.mainMenu.Size = new System.Drawing.Size(800, 28);
             this.mainMenu.TabIndex = 0;
             this.mainMenu.Text = "Main Menu";
             this.mainMenu.Anchor = (AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top);
+            // 
+            // EditButton
+            // 
+            this.EditButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.UndoButton, this.RedoButton});
+            this.EditButton.Name = "EditButton";
+            this.EditButton.Size = new System.Drawing.Size(48, 24);
+            this.EditButton.Text = "Edit";
+            // 
+            // UndoButton
+            // 
+            this.UndoButton.Name = "UndoButton";
+            this.UndoButton.Size = new System.Drawing.Size(274, 26);
+            this.UndoButton.Text = "Undo";
+            // 
+            // RedoButton
+            // 
+            this.RedoButton.Name = "RedoButton";
+            this.RedoButton.Size = new System.Drawing.Size(274, 26);
+            this.RedoButton.Text = "Redo";
             // 
             // FileButton
             // 
@@ -110,14 +130,30 @@ namespace SpreadsheetApp
         public ToolStripMenuItem FileButton { get; } = new();
 
         /// <summary>
+        /// Edit Dropdown Button.
+        /// </summary>
+        public ToolStripMenuItem EditButton { get; } = new();
+
+        /// <summary>
         /// Change Background Color Button.
         /// </summary>
         public ToolStripMenuItem changeBackgroundColorButton { get; } = new();
 
         /// <summary>
-        /// DemoButton Button.
+        /// Demo Button.
         /// </summary>
         public ToolStripMenuItem DemoButton { get; } = new();
+
+        /// <summary>
+        /// Undo Button.
+        /// </summary>
+        public ToolStripMenuItem UndoButton { get; } = new();
+
+        /// <summary>
+        /// Redo Button.
+        /// </summary>
+        public ToolStripMenuItem RedoButton { get; } = new();
+
 
         /// <summary>
         /// gets dataGridView for MainViewModel.
