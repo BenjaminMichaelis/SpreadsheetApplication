@@ -1,4 +1,4 @@
-﻿// <copyright file="SpreadsheetTests.cs" company="Benjamin Michaelis">
+// <copyright file="SpreadsheetTests.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -68,6 +68,18 @@ namespace SpreadsheetEngine.Tests
             sut.SetCellText(0, 0, "=10");
             Assert.Equal("10", sut[0, 0].Value);
             Assert.Equal("10", sut[1, 0].Value);
+        }
+
+        /// <summary>
+        /// Test background color changing.
+        /// </summary>
+        public void BackgroundColorChange()
+        {
+            Spreadsheet sut = new(2, 1);
+            sut[0, 0].BackgroundColor = 0xFFFF7F50;
+            sut[1, 0].BackgroundColor = 0xFF6495ED;
+            Assert.Equal(0xFFFF7F50, sut[0, 0].BackgroundColor);
+            Assert.Equal(0xFF6495ED, sut[1, 0].BackgroundColor);
         }
     }
 }
