@@ -32,6 +32,8 @@ namespace SpreadsheetApp
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
             this.MainForm.DemoButton.Click += new System.EventHandler(this.DemoButton_Click);
             this.MainForm.changeBackgroundColorButton.Click += new System.EventHandler(this.BackgroundColorButton_Click);
+            this.MainForm.UndoButton.Click += new System.EventHandler(this.UndoButton_Click);
+            this.MainForm.RedoButton.Click += new System.EventHandler(this.RedoButton_Click);
             this.MainForm.LoadButton.Click += new System.EventHandler(this.LoadButton_Click);
             this.MainForm.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
 #pragma warning restore CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
@@ -123,6 +125,14 @@ namespace SpreadsheetApp
             {
                 this.Sheet[cell.ColumnIndex, cell.RowIndex].BackgroundColor = (uint)chosenColor;
             }
+        }
+
+        public void UndoButton_Click(object sender, System.EventArgs e)
+        {
+        }
+
+        public void RedoButton_Click(object sender, System.EventArgs e)
+        {
         }
 
         private void ColorDialog_HelpRequest(object sender, System.EventArgs e) => MessageBox.Show("Please select a color by clicking it. This will change the background color of a cell box.");
