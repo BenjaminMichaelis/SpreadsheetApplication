@@ -71,6 +71,21 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
+        /// Test cell adding another cell reference.
+        /// </summary>
+        [Fact]
+        public void CellAddingAnotherCell()
+        {
+            Spreadsheet sut = new(3, 1);
+            sut[0, 0].Text = "=10";
+            sut[1, 0].Text = "=11";
+            sut[2, 0].Text = "=A1+A2";
+            Assert.Equal("10", sut[0, 0].Value);
+            Assert.Equal("11", sut[1, 0].Value);
+            Assert.Equal("21", sut[2, 0].Value);
+        }
+
+        /// <summary>
         /// Test background color changing.
         /// </summary>
         [Fact]
