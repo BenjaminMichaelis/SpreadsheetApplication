@@ -151,7 +151,7 @@ namespace SpreadsheetApp
                     {
                         if (newCellText.StartsWith("="))
                         {
-                            this.sheet.SetCellText(rowIndex: e.RowIndex, columnIndex: e.ColumnIndex, newCellText: newCellText);
+                            this.sheet[e.RowIndex, e.ColumnIndex].Text = newCellText;
                             this.MainForm.spreadsheetViewUI.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = this.sheet[e.RowIndex, e.ColumnIndex].Value;
                         }
                     }

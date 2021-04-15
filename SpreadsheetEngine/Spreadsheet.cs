@@ -140,17 +140,6 @@ namespace SpreadsheetEngine
         public int RowCount { get; set; }
 
         /// <summary>
-        /// Sets the specified cells text.
-        /// </summary>
-        /// <param name="rowIndex">rowIndex.</param>
-        /// <param name="columnIndex">columnIndex.</param>
-        /// <param name="newCellText">the new text to set the cell to.</param>
-        public void SetCellText(int rowIndex, int columnIndex, string newCellText)
-        {
-            this.CellsOfSpreadsheet[rowIndex, columnIndex].Text = newCellText;
-        }
-
-        /// <summary>
         /// Indexer to pass back a Spreadsheet Cell.
         /// </summary>
         /// <param name="rowIndex">The row of the location of the cell.</param>
