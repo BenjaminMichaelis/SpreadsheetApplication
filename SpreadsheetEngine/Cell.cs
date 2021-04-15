@@ -46,6 +46,8 @@ namespace SpreadsheetEngine
         /// </summary>
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        public event PropertyChangedEventHandler? BeforePropertyChanged;
+
         /// <summary>
         /// Stores protected string text.
         /// </summary>
@@ -109,6 +111,7 @@ namespace SpreadsheetEngine
                     return;
                 }
 
+                this.BeforePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.BackgroundColor)));
                 this._backgroundColor = value;
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.BackgroundColor)));
             }

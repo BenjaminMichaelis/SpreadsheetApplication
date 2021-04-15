@@ -97,5 +97,15 @@ namespace SpreadsheetEngine.Tests
             Assert.Equal(0xFFFF7F50, sut[0, 0].BackgroundColor);
             Assert.Equal(0xFF6495ED, sut[1, 0].BackgroundColor);
         }
+
+        public void UndoCommand()
+        {
+            Spreadsheet sut = new(5, 5);
+            sut[0, 0].Text = "=88";
+            sut[0, 0].Text = "=12";
+            sut.Undo();
+            Assert.Equal("=88", sut[0, 0].Text);
+            Assert.Equal("88", sut[0, 0].Value);
+        }
     }
 }

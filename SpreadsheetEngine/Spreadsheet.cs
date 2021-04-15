@@ -19,6 +19,8 @@ namespace SpreadsheetEngine
         /// </summary>
         public event PropertyChangedEventHandler? OnCellPropertyChanged;
 
+        private Stack<Commands> UndoStack { get; } = new();
+
         private SpreadsheetCell[,] CellsOfSpreadsheet { get; set; }
 
         /// <summary>
@@ -157,5 +159,11 @@ namespace SpreadsheetEngine
         /// <param name="columnIndex">The column of the location of the cell.</param>
         /// <returns>A Cell.</returns>
         public Cell this[int rowIndex, int columnIndex] => this.CellsOfSpreadsheet[rowIndex, columnIndex];
+
+        public void Undo()
+        {
+
+            throw new NotImplementedException();
+        }
     }
 }
