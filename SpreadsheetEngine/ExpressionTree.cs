@@ -32,10 +32,6 @@ namespace SpreadsheetEngine
         public ExpressionTree(string expression)
         {
             this.rootNode = this.Build(expression);
-            if (this.rootNode is VariableNode variableNode)
-            {
-                this.variables.Add(variableNode.Name, 0.0);
-            }
         }
 
         /// <summary>
@@ -307,6 +303,7 @@ namespace SpreadsheetEngine
                     else
                     {
                         nodes.Push(new VariableNode(item, ref this.variables));
+                        this.variables.Add(item, 0.0);
                     }
                 }
             }
