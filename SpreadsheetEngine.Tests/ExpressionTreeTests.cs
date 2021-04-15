@@ -85,6 +85,20 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
+        /// Test cell adding another cell reference.
+        /// </summary>
+        [Fact]
+        public void VariablesDictUpToDate()
+        {
+            ExpressionTree tree = new ExpressionTree("=A1+A2");
+            Assert.Equal(2, tree.Values.Count);
+            tree.Values.TryGetValue("A1", out double temp);
+            Assert.Equal(0.0, temp);
+            tree.Values.TryGetValue("A2", out temp);
+            Assert.Equal(0.0, temp);
+        }
+
+        /// <summary>
         /// Tests the algoritm for removing whitespace from a string.
         /// </summary>
         /// <param name="expression">The expression to have whitespace removed from.</param>
