@@ -49,8 +49,8 @@ namespace SpreadsheetEngine.Tests
         public void ReferenceCell()
         {
             Spreadsheet sut = new(2, 1);
-            sut.SetCellText(0, 0, "10");
-            sut.SetCellText(1, 0, "=A1");
+            sut[0, 0].Text = "10";
+            sut[1, 0].Text = "=A1";
             Assert.Equal("10", sut[1, 0].Value);
         }
 
