@@ -219,23 +219,6 @@ namespace SpreadsheetEngine.Tests
         /// Test saving xml as a proper format.
         /// </summary>
         [Fact]
-        public void LoadSpreadsheetFromXml_GivenDefaultColor()
-        {
-            const string path = "Root.xml";
-            Spreadsheet sut = new(2, 3);
-            sut[1, 0].Text = "=A1+6";
-            sut[1, 0].BackgroundColor = 1;
-            sut.SaveSpreadsheet(path);
-            sut = new Spreadsheet(2, 3);
-            sut.LoadSpreadsheet(path);
-            Assert.Equal("=A1+6", sut[1, 0].Text);
-            Assert.Equal(0xFFFFFFFF.ToString(), sut[1, 0].BackgroundColor.ToString());
-        }
-
-        /// <summary>
-        /// Test saving xml as a proper format.
-        /// </summary>
-        [Fact]
         public void LoadSpreadsheetFromXml_GivenNothing()
         {
             const string path = "Root.xml";
