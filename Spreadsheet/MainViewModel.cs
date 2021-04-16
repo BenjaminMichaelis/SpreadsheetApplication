@@ -84,6 +84,16 @@ namespace SpreadsheetApp
         /// <param name="e">The event sending argument.</param>
         public void SaveButton_Click(object sender, System.EventArgs e)
         {
+            SaveFileDialog fileDialog = new();
+
+            fileDialog.Filter = "xml files (*.xml)|*.xml";
+            fileDialog.FilterIndex = 2;
+            fileDialog.RestoreDirectory = true;
+
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                this.Sheet.SaveSpreadsheet(fileDialog.OpenFile());
+            }
         }
 
         /// <summary>

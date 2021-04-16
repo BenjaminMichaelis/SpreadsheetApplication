@@ -125,6 +125,22 @@ namespace SpreadsheetEngine
         /// <param name="savePath">Path to save the document at.</param>
         public void SaveSpreadsheet(string savePath)
         {
+            this.SaveSpreadsheet();
+            this.SrcTree.Save(savePath);
+        }
+
+        /// <summary>
+        /// Saves the spreadsheet given a specified path.
+        /// </summary>
+        /// <param name="saveStream">Path to save the document at.</param>
+        public void SaveSpreadsheet(System.IO.Stream saveStream)
+        {
+            this.SaveSpreadsheet();
+            this.SrcTree.Save(saveStream);
+        }
+
+        private void SaveSpreadsheet()
+        {
             this.SrcTree = new XDocument();
             var xmlTree = new XElement(nameof(Spreadsheet));
             foreach (SpreadsheetCell spreadsheetCell in this.CellsOfSpreadsheet)
@@ -140,7 +156,6 @@ namespace SpreadsheetEngine
             }
 
             this.SrcTree.Add(xmlTree);
-            this.SrcTree.Save(savePath);
         }
 
         /// <summary>
