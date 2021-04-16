@@ -32,8 +32,11 @@ namespace SpreadsheetEngine
         /// <param name="rows">Number of rows.</param>
         public Spreadsheet(int columns, int rows)
         {
-            this.ColumnCount = columns;
-            this.RowCount = rows;
+            this.InitializeSpreadsheet(columns, rows);
+        }
+
+        private void InitializeSpreadsheet(int columns, int rows)
+        {
             this.CellsOfSpreadsheet = new SpreadsheetCell[columns, rows];
             for (int rowNum = 0; rowNum < rows; rowNum++)
             {
@@ -43,7 +46,6 @@ namespace SpreadsheetEngine
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
                     this.CellsOfSpreadsheet[colNum, rowNum].PropertyChanged += this.CellPropertyChanged;
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-
                 }
             }
         }
@@ -124,21 +126,73 @@ namespace SpreadsheetEngine
         public void SaveSpreadsheet(string savePath)
         {
             this.SrcTree = new XDocument();
-            var xmlTree = new XElement("Spreadsheet");
+            var xmlTree = new XElement(nameof(Spreadsheet));
             foreach (SpreadsheetCell spreadsheetCell in this.CellsOfSpreadsheet)
             {
-                if (spreadsheetCell.Text != string.Empty && spreadsheetCell.BackgroundColor != 0xFFFFFFFF)
+                if (spreadsheetCell.Text != string.Empty || spreadsheetCell.BackgroundColor != 0xFFFFFFFF)
                 {
                     xmlTree.Add(new XElement(
-                        "SpreadsheetCell",
-                        new XElement("bgcolor", spreadsheetCell.BackgroundColor.ToString()),
-                        new XElement("text", spreadsheetCell.Text),
-                        new XAttribute("name", spreadsheetCell.IndexName)));
+                        nameof(SpreadsheetCell),
+                        new XElement(nameof(Cell.BackgroundColor), spreadsheetCell.BackgroundColor.ToString()),
+                        new XElement(nameof(Cell.Text), spreadsheetCell.Text),
+                        new XAttribute(nameof(Cell.IndexName), spreadsheetCell.IndexName)));
                 }
             }
 
             this.SrcTree.Add(xmlTree);
             this.SrcTree.Save(savePath);
+        }
+
+        /// <summary>
+        /// loads the spreadsheet given a specified path.
+        /// </summary>
+        /// <param name="savePath">Path to save the document at.</param>
+        public void LoadSpreadsheet(string savePath)
+        {
+            XDocument doc = XDocument.Load(savePath);
+            this.SrcTree = doc;
+            if (this.SrcTree.Root is null)
+            {
+                return;
+            }
+
+            switch (this.SrcTree.Root.Name.ToString())
+            {
+                case nameof(Spreadsheet):
+                {
+                    IEnumerable<XElement> spreadsheetCells = this.SrcTree.Root.Elements(nameof(SpreadsheetCell));
+                    foreach (XElement cell in spreadsheetCells)
+                    {
+                        if (cell.FirstAttribute is null)
+                        {
+                            break;
+                        }
+
+                        string cellName = cell.FirstAttribute.Value;
+                        bool colorParseSuccessful = uint.TryParse(cell.Element(nameof(Cell.BackgroundColor)).Value, out uint cellBackgroundColor);
+                        string cellText = cell.Element(nameof(Cell.Text)).Value;
+                        if (cellText != string.Empty)
+                        {
+                            this[cellName].Text = cellText;
+                        }
+
+                        switch (colorParseSuccessful)
+                        {
+                            case true:
+                            {
+                                if (cellBackgroundColor != 0xFFFFFFFF)
+                                {
+                                    this[cellName].BackgroundColor = cellBackgroundColor;
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+                }
+            }
         }
 
         /// <summary>
@@ -160,12 +214,12 @@ namespace SpreadsheetEngine
         /// <summary>
         /// Gets or sets returns number of columns in spreadsheet.
         /// </summary>
-        public int ColumnCount { get; set; }
+        public int ColumnCount => this.CellsOfSpreadsheet.GetLength(0);
 
         /// <summary>
         /// Gets or sets returns number of rows in spreadsheet.
         /// </summary>
-        public int RowCount { get; set; }
+        public int RowCount => this.CellsOfSpreadsheet.GetLength(1);
 
         /// <summary>
         /// Indexer to pass back a Spreadsheet Cell.
