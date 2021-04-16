@@ -1,4 +1,4 @@
-﻿// <copyright file="SpreadsheetTests.cs" company="Benjamin Michaelis">
+// <copyright file="SpreadsheetTests.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -69,6 +69,28 @@ namespace SpreadsheetEngine.Tests
             sut[0, 0].Text = "=10";
             Assert.Equal("10", sut[0, 0].Value);
             Assert.Equal("10", sut[0, 1].Value);
+        }
+
+        /// <summary>
+        /// Test Referencing Empty Cell.
+        /// </summary>
+        [Fact]
+        public void ReferenceEmptyCell()
+        {
+            Spreadsheet sut = new(1, 2);
+            sut[0, 0].Text = "=A2";
+            Assert.Equal("0", sut[0, 0].Value);
+        }
+
+        /// <summary>
+        /// Test Referencing Empty Cell Multiplied by 2.
+        /// </summary>
+        [Fact]
+        public void ReferenceEmptyCellPerformMath()
+        {
+            Spreadsheet sut = new(1, 2);
+            sut[0, 0].Text = "=A2*2";
+            Assert.Equal("0", sut[0, 0].Value);
         }
 
         /// <summary>
