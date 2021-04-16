@@ -126,16 +126,16 @@ namespace SpreadsheetEngine
         public void SaveSpreadsheet(string savePath)
         {
             this.SrcTree = new XDocument();
-            var xmlTree = new XElement("Spreadsheet");
+            var xmlTree = new XElement(nameof(Spreadsheet));
             foreach (SpreadsheetCell spreadsheetCell in this.CellsOfSpreadsheet)
             {
                 if (spreadsheetCell.Text != string.Empty && spreadsheetCell.BackgroundColor != 0xFFFFFFFF)
                 {
                     xmlTree.Add(new XElement(
-                        "SpreadsheetCell",
-                        new XElement("bgcolor", spreadsheetCell.BackgroundColor.ToString()),
-                        new XElement("text", spreadsheetCell.Text),
-                        new XAttribute("name", spreadsheetCell.IndexName)));
+                        nameof(SpreadsheetCell),
+                        new XElement(nameof(Cell.BackgroundColor), spreadsheetCell.BackgroundColor.ToString()),
+                        new XElement(nameof(Cell.Text), spreadsheetCell.Text),
+                        new XAttribute(nameof(Cell.IndexName), spreadsheetCell.IndexName)));
                 }
             }
 

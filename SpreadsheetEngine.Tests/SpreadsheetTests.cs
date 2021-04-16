@@ -128,9 +128,9 @@ namespace SpreadsheetEngine.Tests
             Assert.Equal(
                  "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
                          "\r\n<Spreadsheet>\r\n" +
-                         "  <SpreadsheetCell name=\"B1\">\r\n" +
-                         "    <bgcolor>16744448</bgcolor>\r\n" +
-                         "    <text>=A1+6</text>\r\n" +
+                         "  <SpreadsheetCell IndexName=\"B1\">\r\n" +
+                         "    <BackgroundColor>16744448</BackgroundColor>\r\n" +
+                         "    <Text>=A1+6</Text>\r\n" +
                          "  </SpreadsheetCell>\r\n" +
                          "</Spreadsheet>",
                  File.ReadAllText(path));
@@ -209,7 +209,7 @@ namespace SpreadsheetEngine.Tests
             sut[1, 0].Text = "=A1+6";
             sut[1, 0].BackgroundColor = 0xFF8000;
             sut.SaveSpreadsheet(path);
-            sut = new(2, 3);
+            sut = new Spreadsheet(2, 3);
             sut.LoadSpreadsheet(path);
             Assert.Equal("=A1+6", sut[1, 0].Text);
             Assert.Equal(16744448.ToString(), sut[1, 0].BackgroundColor.ToString());
