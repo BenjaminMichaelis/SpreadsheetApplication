@@ -147,15 +147,16 @@ namespace SpreadsheetApp
                 switch (newCellText.Length)
                 {
                     case > 0:
-                    {
-                        if (newCellText.StartsWith("="))
                         {
-                            this.Sheet[e.RowIndex, e.ColumnIndex].Text = newCellText;
-                            this.MainForm.spreadsheetViewUI.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = this.Sheet[e.RowIndex, e.ColumnIndex].Value;
-                        }
+                            if (newCellText.StartsWith("="))
+                            {
+                                this.Sheet[e.RowIndex, e.ColumnIndex].Text = newCellText;
+                                this.MainForm.spreadsheetViewUI.Rows[e.RowIndex].Cells[e.ColumnIndex].Value =
+                                    this.Sheet[e.RowIndex, e.ColumnIndex].Value;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                 }
             }
             catch (NullReferenceException)
