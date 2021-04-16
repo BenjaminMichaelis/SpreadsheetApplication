@@ -32,8 +32,11 @@ namespace SpreadsheetEngine
         /// <param name="rows">Number of rows.</param>
         public Spreadsheet(int columns, int rows)
         {
-            this.ColumnCount = columns;
-            this.RowCount = rows;
+            this.InitializeSpreadsheet(columns, rows);
+        }
+
+        private void InitializeSpreadsheet(int columns, int rows)
+        {
             this.CellsOfSpreadsheet = new SpreadsheetCell[columns, rows];
             for (int rowNum = 0; rowNum < rows; rowNum++)
             {
@@ -43,7 +46,6 @@ namespace SpreadsheetEngine
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
                     this.CellsOfSpreadsheet[colNum, rowNum].PropertyChanged += this.CellPropertyChanged;
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-
                 }
             }
         }
@@ -160,12 +162,12 @@ namespace SpreadsheetEngine
         /// <summary>
         /// Gets or sets returns number of columns in spreadsheet.
         /// </summary>
-        public int ColumnCount { get; set; }
+        public int ColumnCount => this.CellsOfSpreadsheet.GetLength(0);
 
         /// <summary>
         /// Gets or sets returns number of rows in spreadsheet.
         /// </summary>
-        public int RowCount { get; set; }
+        public int RowCount => this.CellsOfSpreadsheet.GetLength(1);
 
         /// <summary>
         /// Indexer to pass back a Spreadsheet Cell.
