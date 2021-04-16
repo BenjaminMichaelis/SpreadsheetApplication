@@ -129,7 +129,7 @@ namespace SpreadsheetEngine
             var xmlTree = new XElement(nameof(Spreadsheet));
             foreach (SpreadsheetCell spreadsheetCell in this.CellsOfSpreadsheet)
             {
-                if (spreadsheetCell.Text != string.Empty && spreadsheetCell.BackgroundColor != 0xFFFFFFFF)
+                if (spreadsheetCell.Text != string.Empty || spreadsheetCell.BackgroundColor != 0xFFFFFFFF)
                 {
                     xmlTree.Add(new XElement(
                         nameof(SpreadsheetCell),
@@ -151,6 +151,48 @@ namespace SpreadsheetEngine
         {
             XDocument doc = XDocument.Load(savePath);
             this.SrcTree = doc;
+            if (this.SrcTree.Root is null)
+            {
+                return;
+            }
+
+            switch (this.SrcTree.Root.Name.ToString())
+            {
+                case nameof(Spreadsheet):
+                {
+                    IEnumerable<XElement> spreadsheetCells = this.SrcTree.Root.Elements(nameof(SpreadsheetCell));
+                    foreach (XElement cell in spreadsheetCells)
+                    {
+                        if (cell.FirstAttribute is null)
+                        {
+                            break;
+                        }
+
+                        string cellName = cell.FirstAttribute.Value;
+                        bool colorParseSuccessful = uint.TryParse(cell.Element(nameof(Cell.BackgroundColor)).Value, out uint cellBackgroundColor);
+                        string cellText = cell.Element(nameof(Cell.Text)).Value;
+                        if (cellText != string.Empty)
+                        {
+                            this[cellName].Text = cellText;
+                        }
+
+                        switch (colorParseSuccessful)
+                        {
+                            case true:
+                            {
+                                if (cellBackgroundColor != 0xFFFFFFFF)
+                                {
+                                    this[cellName].BackgroundColor = cellBackgroundColor;
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+                }
+            }
         }
 
         /// <summary>
