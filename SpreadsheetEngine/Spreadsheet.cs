@@ -139,6 +139,26 @@ namespace SpreadsheetEngine
             this.SrcTree.Save(saveStream);
         }
 
+        /// <summary>
+        /// loads the spreadsheet given a specified path.
+        /// </summary>
+        /// <param name="savePath">Path to save the document at.</param>
+        public void LoadSpreadsheet(string savePath)
+        {
+            XDocument doc = XDocument.Load(savePath);
+            this.LoadSpreadsheet(doc);
+        }
+
+        /// <summary>
+        /// loads the spreadsheet given a specified path.
+        /// </summary>
+        /// <param name="saveStream">Path to save the document at.</param>
+        public void LoadSpreadsheet(System.IO.Stream saveStream)
+        {
+            XDocument doc = XDocument.Load(saveStream);
+            this.LoadSpreadsheet(doc);
+        }
+
         private void SaveSpreadsheet()
         {
             this.SrcTree = new XDocument();
@@ -158,13 +178,8 @@ namespace SpreadsheetEngine
             this.SrcTree.Add(xmlTree);
         }
 
-        /// <summary>
-        /// loads the spreadsheet given a specified path.
-        /// </summary>
-        /// <param name="savePath">Path to save the document at.</param>
-        public void LoadSpreadsheet(string savePath)
+        private void LoadSpreadsheet(XDocument doc)
         {
-            XDocument doc = XDocument.Load(savePath);
             this.SrcTree = doc;
             if (this.SrcTree.Root is null)
             {
@@ -184,7 +199,8 @@ namespace SpreadsheetEngine
                         }
 
                         string cellName = cell.FirstAttribute.Value;
-                        bool colorParseSuccessful = uint.TryParse(cell.Element(nameof(Cell.BackgroundColor)).Value, out uint cellBackgroundColor);
+                        bool colorParseSuccessful = uint.TryParse(cell.Element(nameof(Cell.BackgroundColor)).Value,
+                            out uint cellBackgroundColor);
                         string cellText = cell.Element(nameof(Cell.Text)).Value;
                         if (cellText != string.Empty)
                         {

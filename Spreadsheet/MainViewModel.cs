@@ -75,6 +75,17 @@ namespace SpreadsheetApp
         /// <param name="e">The event sending argument.</param>
         public void LoadButton_Click(object sender, System.EventArgs e)
         {
+            OpenFileDialog fileDialog = new();
+
+            fileDialog.Filter = "xml files (*.xml)|*.xml";
+            fileDialog.RestoreDirectory = true;
+            fileDialog.CheckFileExists = true;
+            fileDialog.Multiselect = false;
+
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                this.Sheet.LoadSpreadsheet(fileDialog.OpenFile());
+            }
         }
 
         /// <summary>
@@ -87,8 +98,8 @@ namespace SpreadsheetApp
             SaveFileDialog fileDialog = new();
 
             fileDialog.Filter = "xml files (*.xml)|*.xml";
-            fileDialog.FilterIndex = 2;
             fileDialog.RestoreDirectory = true;
+            fileDialog.ValidateNames = true;
 
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
