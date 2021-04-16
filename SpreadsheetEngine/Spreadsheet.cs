@@ -155,6 +155,7 @@ namespace SpreadsheetEngine
         /// <param name="saveStream">Path to save the document at.</param>
         public void LoadSpreadsheet(System.IO.Stream saveStream)
         {
+            this.InitializeSpreadsheet(this.ColumnCount, this.RowCount);
             XDocument doc = XDocument.Load(saveStream);
             this.LoadSpreadsheet(doc);
         }

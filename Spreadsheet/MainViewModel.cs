@@ -27,7 +27,6 @@ namespace SpreadsheetApp
         /// <param name="mainForm">pass in the Form to bind.</param>
         public MainViewModel(MainForm mainForm)
         {
-            char[] alphabet = Enumerable.Range('A', 'Z' - 'A' + 1).Select(i => (char)i).ToArray();
             this.MainForm = mainForm;
 
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
@@ -41,6 +40,15 @@ namespace SpreadsheetApp
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
             this.Sheet.OnCellPropertyChanged += this.UpdateCell;
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+            this.InitializeUiGrid();
+
+            this.MainForm.spreadsheetViewUI.CellBeginEdit += this.DataGridView1_CellBeginEdit;
+            this.MainForm.spreadsheetViewUI.CellEndEdit += this.DataGridView1_CellEndEdit;
+        }
+
+        private void InitializeUiGrid()
+        {
+            char[] alphabet = Enumerable.Range('A', 'Z' - 'A' + 1).Select(i => (char)i).ToArray();
             this.MainForm.spreadsheetViewUI.Columns.Clear();
             foreach (char c in alphabet)
             {
@@ -51,11 +59,9 @@ namespace SpreadsheetApp
             this.MainForm.spreadsheetViewUI.Rows.Add(50);
             for (int rowNumber = 0; rowNumber < 50; rowNumber++)
             {
-                this.MainForm.spreadsheetViewUI.Rows[rowNumber].HeaderCell.Value = string.Format($"{this.MainForm.spreadsheetViewUI.Rows[rowNumber].Index + 1}");
+                this.MainForm.spreadsheetViewUI.Rows[rowNumber].HeaderCell.Value =
+                    string.Format($"{this.MainForm.spreadsheetViewUI.Rows[rowNumber].Index + 1}");
             }
-
-            this.MainForm.spreadsheetViewUI.CellBeginEdit += this.DataGridView1_CellBeginEdit;
-            this.MainForm.spreadsheetViewUI.CellEndEdit += this.DataGridView1_CellEndEdit;
         }
 
         /// <summary>
@@ -84,6 +90,7 @@ namespace SpreadsheetApp
 
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
+                this.InitializeUiGrid();
                 this.Sheet.LoadSpreadsheet(fileDialog.OpenFile());
             }
         }
