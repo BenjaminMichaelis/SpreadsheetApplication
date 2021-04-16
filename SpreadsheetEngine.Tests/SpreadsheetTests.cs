@@ -49,10 +49,10 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void ReferenceCell()
         {
-            Spreadsheet sut = new(2, 1);
+            Spreadsheet sut = new(1, 2);
             sut[0, 0].Text = "10";
-            sut[1, 0].Text = "=A1";
-            Assert.Equal("10", sut[1, 0].Value);
+            sut[0, 1].Text = "=A1";
+            Assert.Equal("10", sut[0, 1].Value);
         }
 
         /// <summary>
@@ -61,14 +61,14 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void CircularReference()
         {
-            Spreadsheet sut = new(2, 1);
+            Spreadsheet sut = new(1, 2);
             sut[0, 0].Text = "=A2";
-            sut[1, 0].Text = "=A1";
+            sut[0, 1].Text = "=A1";
             Assert.Equal("#error", sut[0, 0].Value);
-            Assert.Equal("#error", sut[1, 0].Value);
+            Assert.Equal("#error", sut[0, 1].Value);
             sut[0, 0].Text = "=10";
             Assert.Equal("10", sut[0, 0].Value);
-            Assert.Equal("10", sut[1, 0].Value);
+            Assert.Equal("10", sut[0, 1].Value);
         }
 
         /// <summary>
@@ -77,13 +77,13 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void CellAddingAnotherCell()
         {
-            Spreadsheet sut = new(3, 1);
+            Spreadsheet sut = new(1, 3);
             sut[0, 0].Text = "=10";
-            sut[1, 0].Text = "=11";
-            sut[2, 0].Text = "=A1+A2";
+            sut[0, 1].Text = "=11";
+            sut[0, 2].Text = "=A1+A2";
             Assert.Equal("10", sut[0, 0].Value);
-            Assert.Equal("11", sut[1, 0].Value);
-            Assert.Equal("21", sut[2, 0].Value);
+            Assert.Equal("11", sut[0, 1].Value);
+            Assert.Equal("21", sut[0, 2].Value);
         }
 
         /// <summary>
@@ -92,11 +92,11 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void BackgroundColorChange()
         {
-            Spreadsheet sut = new(2, 1);
+            Spreadsheet sut = new(1, 2);
             sut[0, 0].BackgroundColor = 0xFFFF7F50;
-            sut[1, 0].BackgroundColor = 0xFF6495ED;
+            sut[0, 1].BackgroundColor = 0xFF6495ED;
             Assert.Equal(0xFFFF7F50, sut[0, 0].BackgroundColor);
-            Assert.Equal(0xFF6495ED, sut[1, 0].BackgroundColor);
+            Assert.Equal(0xFF6495ED, sut[0, 1].BackgroundColor);
         }
 
         /// <summary>
@@ -108,10 +108,10 @@ namespace SpreadsheetEngine.Tests
         [InlineData("=", "=")]
         public void SpreadsheetCellEvaluateTests(string expression, string expected)
         {
-            Spreadsheet sut = new(3, 1);
-            sut[1, 0].Text = expression;
+            Spreadsheet sut = new(1, 3);
+            sut[0, 1].Text = expression;
 
-            Assert.Equal(expected, sut[1, 0].Value);
+            Assert.Equal(expected, sut[0, 1].Value);
         }
 
         /// <summary>
@@ -121,9 +121,9 @@ namespace SpreadsheetEngine.Tests
         public void SaveSpreadsheetAsXml()
         {
             const string path = "Root.xml";
-            Spreadsheet sut = new(3, 2);
-            sut[0, 1].Text = "=A1+6";
-            sut[0, 1].BackgroundColor = 0xFF8000;
+            Spreadsheet sut = new(2, 3);
+            sut[1, 0].Text = "=A1+6";
+            sut[1, 0].BackgroundColor = 0xFF8000;
             sut.SaveSpreadsheet(path);
             Assert.Equal(
                  "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +

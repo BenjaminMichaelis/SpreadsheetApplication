@@ -23,7 +23,7 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="columnIndex">int for the readonly columnIndex.</param>
         /// <param name="rowIndex">int for the readonly rowIndex.</param>
-        protected Cell(int rowIndex, int columnIndex)
+        protected Cell(int columnIndex, int rowIndex)
         {
             this.RowIndex = rowIndex;
             this.ColumnIndex = columnIndex;

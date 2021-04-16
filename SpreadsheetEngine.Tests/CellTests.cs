@@ -24,7 +24,7 @@ namespace SpreadsheetEngine.Tests
             /// <param name="rowIndex">The row index of cell.</param>
             /// <param name="columnIndex">The column index of the cell.</param>
             public SpreadsheetCellTests(int rowIndex, int columnIndex)
-                : base(rowIndex, columnIndex)
+                : base(columnIndex, rowIndex)
             {
             }
         }

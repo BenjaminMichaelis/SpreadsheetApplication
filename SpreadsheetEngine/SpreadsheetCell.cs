@@ -21,11 +21,11 @@ namespace SpreadsheetEngine
             /// <summary>
             /// Initializes a new instance of the <see cref="SpreadsheetCell"/> class.
             /// </summary>
-            /// <param name="rowIndex">Row index of cell.</param>
             /// <param name="columnIndex">Column index of cell.</param>
+            /// <param name="rowIndex">Row index of cell.</param>
             /// <param name="spreadsheet">Spreadsheet reference that the cell is a part of.</param>
-            public SpreadsheetCell(int rowIndex, int columnIndex, Spreadsheet spreadsheet)
-                : base(rowIndex, columnIndex)
+            public SpreadsheetCell(int columnIndex, int rowIndex, Spreadsheet spreadsheet)
+                : base(columnIndex, rowIndex)
             {
                 this.PropertyChanged += this.CellPropertyChanged;
                 this.SpreadsheetReference = spreadsheet;

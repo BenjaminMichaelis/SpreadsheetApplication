@@ -28,20 +28,20 @@ namespace SpreadsheetEngine
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
         /// </summary>
-        /// <param name="rows">Number of rows.</param>
         /// <param name="columns">Number of columns.</param>
-        public Spreadsheet(int rows, int columns)
+        /// <param name="rows">Number of rows.</param>
+        public Spreadsheet(int columns, int rows)
         {
             this.ColumnCount = columns;
             this.RowCount = rows;
-            this.CellsOfSpreadsheet = new SpreadsheetCell[rows, columns];
+            this.CellsOfSpreadsheet = new SpreadsheetCell[columns, rows];
             for (int rowNum = 0; rowNum < rows; rowNum++)
             {
                 for (int colNum = 0; colNum < columns; colNum++)
                 {
-                    this.CellsOfSpreadsheet[rowNum, colNum] = new SpreadsheetCell(rowNum, colNum, this);
+                    this.CellsOfSpreadsheet[colNum, rowNum] = new SpreadsheetCell(colNum, rowNum, this);
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-                    this.CellsOfSpreadsheet[rowNum, colNum].PropertyChanged += this.CellPropertyChanged;
+                    this.CellsOfSpreadsheet[colNum, rowNum].PropertyChanged += this.CellPropertyChanged;
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
 
                 }
@@ -72,7 +72,7 @@ namespace SpreadsheetEngine
                 int randomCol = random.Next(0, 25);
                 int randomRow = random.Next(0, 49);
 
-                SpreadsheetCell temp = (SpreadsheetCell)this[randomRow!, randomCol!];
+                SpreadsheetCell temp = (SpreadsheetCell)this[randomCol!, randomRow!];
                 temp!.Text = "Hello World";
                 this.CellsOfSpreadsheet[randomRow, randomCol] = temp;
             }
@@ -153,7 +153,7 @@ namespace SpreadsheetEngine
                 int columnLocation = this.ColumnLetterToInt(cellName);
                 string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
                 int rowLocation = int.Parse(rowLocationString);
-                return (SpreadsheetCell)this[rowLocation - 1, columnLocation - 1];
+                return (SpreadsheetCell)this[columnLocation - 1, rowLocation - 1];
             }
         }
 
@@ -170,9 +170,9 @@ namespace SpreadsheetEngine
         /// <summary>
         /// Indexer to pass back a Spreadsheet Cell.
         /// </summary>
-        /// <param name="rowIndex">The row of the location of the cell.</param>
         /// <param name="columnIndex">The column of the location of the cell.</param>
+        /// <param name="rowIndex">The row of the location of the cell.</param>
         /// <returns>A Cell.</returns>
-        public Cell this[int rowIndex, int columnIndex] => this.CellsOfSpreadsheet[rowIndex, columnIndex];
+        public Cell this[int columnIndex, int rowIndex] => this.CellsOfSpreadsheet[columnIndex, rowIndex];
     }
 }

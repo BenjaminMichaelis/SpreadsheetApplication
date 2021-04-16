@@ -35,7 +35,7 @@ namespace SpreadsheetApp
             this.MainForm.changeBackgroundColorButton.Click += new System.EventHandler(this.BackgroundColorButton_Click);
 #pragma warning restore CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
 
-            this.Sheet = new SpreadsheetEngine.Spreadsheet(50, 26);
+            this.Sheet = new SpreadsheetEngine.Spreadsheet(26, 50);
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
             this.Sheet.OnCellPropertyChanged += this.UpdateCell;
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
@@ -91,7 +91,7 @@ namespace SpreadsheetApp
 
             foreach (DataGridViewCell cell in this.MainForm.spreadsheetViewUI.SelectedCells)
             {
-                this.Sheet[cell.RowIndex, cell.ColumnIndex].BackgroundColor = (uint)chosenColor;
+                this.Sheet[cell.ColumnIndex, cell.RowIndex].BackgroundColor = (uint)chosenColor;
             }
         }
 
@@ -126,7 +126,7 @@ namespace SpreadsheetApp
         /// <param name="e">Property changed event.</param>
         private void DataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            string? cellText = this.Sheet[e.RowIndex, e.ColumnIndex].Text;
+            string? cellText = this.Sheet[e.ColumnIndex, e.RowIndex].Text;
 
             if (cellText != null)
             {
@@ -156,9 +156,9 @@ namespace SpreadsheetApp
                         {
                             if (newCellText.StartsWith("="))
                             {
-                                this.Sheet[e.RowIndex, e.ColumnIndex].Text = newCellText;
+                                this.Sheet[e.ColumnIndex, e.RowIndex].Text = newCellText;
                                 this.MainForm.spreadsheetViewUI.Rows[e.RowIndex].Cells[e.ColumnIndex].Value =
-                                    this.Sheet[e.RowIndex, e.ColumnIndex].Value;
+                                    this.Sheet[e.ColumnIndex, e.RowIndex].Value;
                             }
 
                             break;
