@@ -18,8 +18,7 @@ namespace SpreadsheetApp
     /// </summary>
     public class MainViewModel
     {
-        private string? _mainText;
-        private SpreadsheetEngine.Spreadsheet sheet;
+        private SpreadsheetEngine.Spreadsheet Sheet { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainViewModel"/> class.
@@ -36,9 +35,9 @@ namespace SpreadsheetApp
             this.MainForm.changeBackgroundColorButton.Click += new System.EventHandler(this.BackgroundColorButton_Click);
 #pragma warning restore CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
 
-            this.sheet = new(50, 26);
+            this.Sheet = new(50, 26);
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-            this.sheet.OnCellPropertyChanged += this.UpdateCell;
+            this.Sheet.OnCellPropertyChanged += this.UpdateCell;
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
             this.MainForm.spreadsheetViewUI.Columns.Clear();
             foreach (char c in alphabet)
@@ -64,9 +63,7 @@ namespace SpreadsheetApp
         /// <param name="e">Property changed event.</param>
         public void DemoButton_Click(object sender, System.EventArgs e)
         {
-            this.MainForm.DemoButton.Enabled = true;
-            this.MainForm.DemoButton.Visible = true;
-            this.sheet.Demo();
+            this.Sheet.Demo();
         }
 
         /// <summary>
@@ -83,38 +80,35 @@ namespace SpreadsheetApp
             colorDialog.HelpRequest += new System.EventHandler(this.ColorDialog_HelpRequest);
 
             // if user selects OK in the color dialog, otherwise do nothing.
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                uint chosenColor = (uint)colorDialog.Color.ToArgb();
+            if (colorDialog.ShowDialog() != DialogResult.OK) return;
+            uint chosenColor = (uint)colorDialog.Color.ToArgb();
 
-                foreach (DataGridViewCell cell in this.MainForm.spreadsheetViewUI.SelectedCells)
-                {
-                    this.sheet[cell.RowIndex, cell.ColumnIndex].BackgroundColor = (uint)chosenColor;
-                }
+            foreach (DataGridViewCell cell in this.MainForm.spreadsheetViewUI.SelectedCells)
+            {
+                this.Sheet[cell.RowIndex, cell.ColumnIndex].BackgroundColor = (uint)chosenColor;
             }
         }
 
-        private void ColorDialog_HelpRequest(object sender, System.EventArgs e)
-        {
-            MessageBox.Show("Please select a color by clicking it. "
-               + "This will change the background color of a cell box.");
-        }
+        private void ColorDialog_HelpRequest(object sender, System.EventArgs e) => MessageBox.Show("Please select a color by clicking it. This will change the background color of a cell box.");
 
         private void UpdateCell(object sender, PropertyChangedEventArgs e)
         {
-            if (sender is Cell senderCell)
+            switch (sender)
             {
-                if (e.PropertyName == nameof(Cell.Value) || e.PropertyName == nameof(Cell.Text))
+                case Cell senderCell:
                 {
-                    if (senderCell != null)
+                    switch (e.PropertyName)
                     {
-                        this.MainForm.spreadsheetViewUI.Rows[senderCell.RowIndex].Cells[senderCell.ColumnIndex].Value = senderCell.Value;
+                        case nameof(Cell.Value):
+                        case nameof(Cell.Text):
+                            this.MainForm.spreadsheetViewUI.Rows[senderCell.RowIndex].Cells[senderCell.ColumnIndex].Value = senderCell.Value;
+                            break;
+                        case nameof(Cell.BackgroundColor):
+                            this.MainForm.spreadsheetViewUI.Rows[senderCell.RowIndex].Cells[senderCell.ColumnIndex].Style.BackColor = System.Drawing.Color.FromArgb((int)senderCell.BackgroundColor);
+                            break;
                     }
-                }
 
-                if (e.PropertyName == nameof(Cell.BackgroundColor))
-                {
-                    this.MainForm.spreadsheetViewUI.Rows[senderCell.RowIndex].Cells[senderCell.ColumnIndex].Style.BackColor = System.Drawing.Color.FromArgb((int)senderCell.BackgroundColor);
+                    break;
                 }
             }
         }
@@ -126,7 +120,7 @@ namespace SpreadsheetApp
         /// <param name="e">Property changed event.</param>
         private void DataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            string? cellText = this.sheet[e.RowIndex, e.ColumnIndex].Text;
+            string? cellText = this.Sheet[e.RowIndex, e.ColumnIndex].Text;
 
             if (cellText != null)
             {
@@ -145,15 +139,22 @@ namespace SpreadsheetApp
 
             try
             {
-                if (newCellText != null)
+                if (newCellText == null)
                 {
-                    if (newCellText.Length > 0)
+                    return;
+                }
+
+                switch (newCellText.Length)
+                {
+                    case > 0:
                     {
                         if (newCellText.StartsWith("="))
                         {
-                            this.sheet[e.RowIndex, e.ColumnIndex].Text = newCellText;
-                            this.MainForm.spreadsheetViewUI.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = this.sheet[e.RowIndex, e.ColumnIndex].Value;
+                            this.Sheet[e.RowIndex, e.ColumnIndex].Text = newCellText;
+                            this.MainForm.spreadsheetViewUI.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = this.Sheet[e.RowIndex, e.ColumnIndex].Value;
                         }
+
+                        break;
                     }
                 }
             }
@@ -164,23 +165,6 @@ namespace SpreadsheetApp
             catch (Exception)
             {
                 throw new Exception("cellValue has been set to null or empty unexpectedly during cell editing.");
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets mainText Property.
-        /// </summary>
-        public string? MainText
-        {
-            get
-            {
-                return this._mainText;
-            }
-
-            set
-            {
-                this._mainText = value;
-                this.MainForm.MainTextBox.Text = value;
             }
         }
 
