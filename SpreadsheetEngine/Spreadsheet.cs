@@ -114,6 +114,14 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        /// Saves the spreadsheet given a specified path.
+        /// </summary>
+        /// <param name="savePath">Path to save the document at.</param>
+        public void SaveSpreadsheet(string savePath)
+        {
+        }
+
+        /// <summary>
         /// Get the cell from the cell name.
         /// </summary>
         /// <param name="cellName">Letter/number combo of cell.</param>

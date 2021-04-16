@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.IO;
 using Xunit;
 
 namespace SpreadsheetEngine.Tests
@@ -111,6 +112,28 @@ namespace SpreadsheetEngine.Tests
             sut[1, 0].Text = expression;
 
             Assert.Equal(expected, sut[1, 0].Value);
+        }
+
+        /// <summary>
+        /// Test saving xml as a proper format.
+        /// </summary>
+        [Fact]
+        public void SaveSpreadsheetAsXML()
+        {
+            string path = "Root.xml";
+            Spreadsheet sut = new(3, 2);
+            sut[0, 1].Text = "=A1+6";
+            sut[0, 1].BackgroundColor = 0xFF8000;
+            sut.SaveSpreadsheet(path);
+            Assert.Equal(
+                 "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+                         "\r\n<Spreadsheet>\r\n" +
+                         "  <SpreadsheetCell name=\"B1\">\r\n" +
+                         "    <bgcolor>16744448</bgcolor>\r\n" +
+                         "    <text>=A1+6</text>\r\n" +
+                         "  </SpreadsheetCell>\r\n" +
+                         "</Spreadsheet>",
+                 File.ReadAllText(path));
         }
     }
 }
