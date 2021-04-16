@@ -55,7 +55,7 @@ namespace SpreadsheetEngine
                         if (!string.IsNullOrEmpty(this.Text))
                         {
                             // If evaluating cell text starts with = then we will have to evaluate all the text to set the value appropriately.
-                            if (this.Text.StartsWith("="))
+                            if (this.Text.StartsWith("=") && this.Text.Length > 1)
                             {
                                 try
                                 {
