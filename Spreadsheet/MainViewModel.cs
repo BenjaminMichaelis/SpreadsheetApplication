@@ -33,6 +33,8 @@ namespace SpreadsheetApp
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
             this.MainForm.DemoButton.Click += new System.EventHandler(this.DemoButton_Click);
             this.MainForm.changeBackgroundColorButton.Click += new System.EventHandler(this.BackgroundColorButton_Click);
+            this.MainForm.LoadButton.Click += new System.EventHandler(this.LoadButton_Click);
+            this.MainForm.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
 #pragma warning restore CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
 
             this.Sheet = new SpreadsheetEngine.Spreadsheet(26, 50);
@@ -64,6 +66,45 @@ namespace SpreadsheetApp
         public void DemoButton_Click(object sender, System.EventArgs e)
         {
             this.Sheet.Demo();
+        }
+
+        /// <summary>
+        /// Runs when the Load button is clicked.
+        /// </summary>
+        /// <param name="sender">The sending object.</param>
+        /// <param name="e">The event sending argument.</param>
+        public void LoadButton_Click(object sender, System.EventArgs e)
+        {
+            OpenFileDialog fileDialog = new();
+
+            fileDialog.Filter = "xml files (*.xml)|*.xml";
+            fileDialog.RestoreDirectory = true;
+            fileDialog.CheckFileExists = true;
+            fileDialog.Multiselect = false;
+
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                this.Sheet.LoadSpreadsheet(fileDialog.OpenFile());
+            }
+        }
+
+        /// <summary>
+        /// Runs when the Save button is clicked.
+        /// </summary>
+        /// <param name="sender">The sending object.</param>
+        /// <param name="e">The event sending argument.</param>
+        public void SaveButton_Click(object sender, System.EventArgs e)
+        {
+            SaveFileDialog fileDialog = new();
+
+            fileDialog.Filter = "xml files (*.xml)|*.xml";
+            fileDialog.RestoreDirectory = true;
+            fileDialog.ValidateNames = true;
+
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                this.Sheet.SaveSpreadsheet(fileDialog.OpenFile());
+            }
         }
 
         /// <summary>

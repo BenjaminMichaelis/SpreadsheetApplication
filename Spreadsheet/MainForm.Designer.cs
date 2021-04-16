@@ -48,7 +48,7 @@ namespace SpreadsheetApp
             // FileButton
             // 
             this.FileButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                this.DemoButton});
+                this.LoadButton, this.SaveButton, this.DemoButton});
             this.FileButton.Name = "FileButton";
             this.FileButton.Size = new System.Drawing.Size(48, 24);
             this.FileButton.Text = "File";
@@ -58,6 +58,18 @@ namespace SpreadsheetApp
             this.DemoButton.Name = "DemoButton";
             this.DemoButton.Size = new System.Drawing.Size(274, 26);
             this.DemoButton.Text = "Demo";
+            // 
+            // SaveButton
+            // 
+            this.SaveButton.Name = "SaveButton";
+            this.SaveButton.Size = new System.Drawing.Size(274, 26);
+            this.SaveButton.Text = "Save";
+            // 
+            // LoadButton
+            // 
+            this.LoadButton.Name = "LoadButton";
+            this.LoadButton.Size = new System.Drawing.Size(274, 26);
+            this.LoadButton.Text = "Load";
             // 
             // CellButton
             // 
@@ -118,6 +130,16 @@ namespace SpreadsheetApp
         /// DemoButton Button.
         /// </summary>
         public ToolStripMenuItem DemoButton { get; } = new();
+
+        /// <summary>
+        /// SaveButton Button.
+        /// </summary>
+        public ToolStripMenuItem SaveButton { get; } = new();
+
+        /// <summary>
+        /// LoadButton Button.
+        /// </summary>
+        public ToolStripMenuItem LoadButton { get; } = new();
 
         /// <summary>
         /// gets dataGridView for MainViewModel.
