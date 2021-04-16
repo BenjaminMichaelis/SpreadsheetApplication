@@ -123,7 +123,7 @@ namespace SpreadsheetEngine
             {
                 if (this.IsErrored)
                 {
-                    return this.ErrorMessage;
+                    return this.ErrorMessage ?? throw new InvalidOperationException();
                 }
                 else
                 {

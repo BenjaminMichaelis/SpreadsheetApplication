@@ -46,24 +46,6 @@ namespace SpreadsheetApp
             this.MainForm.spreadsheetViewUI.CellEndEdit += this.DataGridView1_CellEndEdit;
         }
 
-        private void InitializeUiGrid()
-        {
-            char[] alphabet = Enumerable.Range('A', 'Z' - 'A' + 1).Select(i => (char)i).ToArray();
-            this.MainForm.spreadsheetViewUI.Columns.Clear();
-            foreach (char c in alphabet)
-            {
-                this.MainForm.spreadsheetViewUI.Columns.Add(c.ToString(), c.ToString());
-            }
-
-            this.MainForm.spreadsheetViewUI.Rows.Clear();
-            this.MainForm.spreadsheetViewUI.Rows.Add(50);
-            for (int rowNumber = 0; rowNumber < 50; rowNumber++)
-            {
-                this.MainForm.spreadsheetViewUI.Rows[rowNumber].HeaderCell.Value =
-                    string.Format($"{this.MainForm.spreadsheetViewUI.Rows[rowNumber].Index + 1}");
-            }
-        }
-
         /// <summary>
         /// Runs DemoButton.
         /// </summary>
@@ -220,6 +202,24 @@ namespace SpreadsheetApp
             catch (Exception)
             {
                 throw new Exception("cellValue has been set to null or empty unexpectedly during cell editing.");
+            }
+        }
+
+        private void InitializeUiGrid()
+        {
+            char[] alphabet = Enumerable.Range('A', 'Z' - 'A' + 1).Select(i => (char)i).ToArray();
+            this.MainForm.spreadsheetViewUI.Columns.Clear();
+            foreach (char c in alphabet)
+            {
+                this.MainForm.spreadsheetViewUI.Columns.Add(c.ToString(), c.ToString());
+            }
+
+            this.MainForm.spreadsheetViewUI.Rows.Clear();
+            this.MainForm.spreadsheetViewUI.Rows.Add(50);
+            for (int rowNumber = 0; rowNumber < 50; rowNumber++)
+            {
+                this.MainForm.spreadsheetViewUI.Rows[rowNumber].HeaderCell.Value =
+                    string.Format($"{this.MainForm.spreadsheetViewUI.Rows[rowNumber].Index + 1}");
             }
         }
 

@@ -35,21 +35,6 @@ namespace SpreadsheetEngine
             this.InitializeSpreadsheet(columns, rows);
         }
 
-        private void InitializeSpreadsheet(int columns, int rows)
-        {
-            this.CellsOfSpreadsheet = new SpreadsheetCell[columns, rows];
-            for (int rowNum = 0; rowNum < rows; rowNum++)
-            {
-                for (int colNum = 0; colNum < columns; colNum++)
-                {
-                    this.CellsOfSpreadsheet[colNum, rowNum] = new SpreadsheetCell(colNum, rowNum, this);
-#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-                    this.CellsOfSpreadsheet[colNum, rowNum].PropertyChanged += this.CellPropertyChanged;
-#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-                }
-            }
-        }
-
         /// <summary>
         /// Converts the first letters in a string to numbers.
         /// </summary>
@@ -200,12 +185,16 @@ namespace SpreadsheetEngine
                         }
 
                         string cellName = cell.FirstAttribute.Value;
-                        bool colorParseSuccessful = uint.TryParse(cell.Element(nameof(Cell.BackgroundColor)).Value,
+                        bool colorParseSuccessful = uint.TryParse(
+                            cell.Element(nameof(Cell.BackgroundColor))?.Value,
                             out uint cellBackgroundColor);
-                        string cellText = cell.Element(nameof(Cell.Text)).Value;
-                        if (cellText != string.Empty)
+                        string? cellText = cell.Element(nameof(Cell.Text))?.Value;
+                        if (cellText is { })
                         {
-                            this[cellName].Text = cellText;
+                            if (cellText != string.Empty)
+                            {
+                                this[cellName].Text = cellText;
+                            }
                         }
 
                         switch (colorParseSuccessful)
@@ -227,6 +216,21 @@ namespace SpreadsheetEngine
             }
         }
 
+        private void InitializeSpreadsheet(int columns, int rows)
+        {
+            this.CellsOfSpreadsheet = new SpreadsheetCell[columns, rows];
+            for (int rowNum = 0; rowNum < rows; rowNum++)
+            {
+                for (int colNum = 0; colNum < columns; colNum++)
+                {
+                    this.CellsOfSpreadsheet[colNum, rowNum] = new SpreadsheetCell(colNum, rowNum, this);
+#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+                    this.CellsOfSpreadsheet[colNum, rowNum].PropertyChanged += this.CellPropertyChanged;
+#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+                }
+            }
+        }
+
         /// <summary>
         /// Get the cell from the cell name.
         /// </summary>
@@ -244,12 +248,12 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        /// Gets or sets returns number of columns in spreadsheet.
+        /// Gets number of columns in spreadsheet.
         /// </summary>
         public int ColumnCount => this.CellsOfSpreadsheet.GetLength(0);
 
         /// <summary>
-        /// Gets or sets returns number of rows in spreadsheet.
+        /// Gets number of rows in spreadsheet.
         /// </summary>
         public int RowCount => this.CellsOfSpreadsheet.GetLength(1);
 
