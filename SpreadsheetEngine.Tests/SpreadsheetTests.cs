@@ -97,5 +97,20 @@ namespace SpreadsheetEngine.Tests
             Assert.Equal(0xFFFF7F50, sut[0, 0].BackgroundColor);
             Assert.Equal(0xFF6495ED, sut[1, 0].BackgroundColor);
         }
+
+        /// <summary>
+        /// Test various inputs into spreadsheet.
+        /// </summary>
+        /// <param name="expression">The text to be passed into a cell.</param>
+        /// <param name="expected">The expected result (value) of the cell.</param>
+        [Theory]
+        [InlineData("=", "=")]
+        public void SpreadsheetCellEvaluateTests(string expression, string expected)
+        {
+            Spreadsheet sut = new(3, 1);
+            sut[1, 0].Text = expression;
+
+            Assert.Equal(expected, sut[1, 0].Value);
+        }
     }
 }
