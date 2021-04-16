@@ -77,7 +77,7 @@ namespace SpreadsheetEngine
                                             {
                                                 if (item != null)
                                                 {
-                                                    item.ErrorMessage = CircularReferenceException.DefaultMessage;
+                                                    item.ErrorMessage = CircularReferenceException.Message;
                                                 }
                                             }
 
@@ -121,19 +121,19 @@ namespace SpreadsheetEngine
                                                     this.SetCellValue("#error: reference cell is null");
                                                     return;
                                                 }
-                                                catch (CircularReferenceException exception)
+                                                catch (CircularReferenceException)
                                                 {
-                                                    this.SetCellValue(exception.Message);
+                                                    this.SetCellValue(CircularReferenceException.Message);
                                                     return;
                                                 }
                                                 catch (ArgumentNullException)
                                                 {
-                                                    this.SetCellValue(CircularReference);
+                                                    this.SetCellValue(CellErrorMessage);
                                                     return;
                                                 }
                                                 catch (Exception)
                                                 {
-                                                    this.SetCellValue(CircularReference);
+                                                    this.SetCellValue(CellErrorMessage);
                                                     return;
                                                 }
                                             }
@@ -142,23 +142,35 @@ namespace SpreadsheetEngine
                                             {
                                                 try
                                                 {
-                                                    newEvaluationTree.SetVariable(
-                                                        keyValuePair.Key,
-                                                        double.Parse(this.SpreadsheetReference[keyValuePair.Key].Value));
+                                                    bool valueTryParse = double.TryParse(this.SpreadsheetReference[keyValuePair.Key].Value,
+                                                        out double cellValue);
+                                                    switch (valueTryParse)
+                                                    {
+                                                        case true:
+                                                            newEvaluationTree.SetVariable(
+                                                                keyValuePair.Key,
+                                                                cellValue);
+                                                            break;
+                                                        case false:
+                                                            newEvaluationTree.SetVariable(
+                                                                keyValuePair.Key,
+                                                                0);
+                                                            break;
+                                                    }
                                                 }
                                                 catch (NullReferenceException)
                                                 {
-                                                    this.SetCellValue(CircularReference);
+                                                    this.SetCellValue(CellErrorMessage);
                                                     return;
                                                 }
                                                 catch (ArgumentNullException)
                                                 {
-                                                    this.SetCellValue(CircularReference);
+                                                    this.SetCellValue(CellErrorMessage);
                                                     return;
                                                 }
                                                 catch (Exception)
                                                 {
-                                                    this.SetCellValue(CircularReference);
+                                                    this.SetCellValue(CellErrorMessage);
                                                     return;
                                                 }
                                             }
@@ -166,9 +178,9 @@ namespace SpreadsheetEngine
                                             evaluatedString = newEvaluationTree.Evaluate().ToString();
                                             this.SetCellValue(evaluatedString);
                                         }
-                                        catch (CircularReferenceException exception)
+                                        catch (CircularReferenceException)
                                         {
-                                            this.ErrorMessage = exception.Message;
+                                            this.ErrorMessage = CircularReferenceException.Message;
                                         }
                                         catch (Exception exception)
                                         {

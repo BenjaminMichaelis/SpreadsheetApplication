@@ -16,7 +16,7 @@ namespace SpreadsheetEngine
         /// <summary>
         /// Error Message if circular reference occurs.
         /// </summary>
-        public const string CircularReference = "#error";
+        public const string CellErrorMessage = "#error";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Cell"/> class.
