@@ -55,6 +55,18 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
+        /// Test lowercase references.
+        /// </summary>
+        [Fact]
+        public void LowercaseReferenceCell()
+        {
+            Spreadsheet sut = new(2, 1);
+            sut[0, 0].Text = "10";
+            sut[1, 0].Text = "=a1";
+            Assert.Equal("10", sut[1, 0].Value);
+        }
+
+        /// <summary>
         /// Test Circular references.
         /// </summary>
         [Fact]
