@@ -135,5 +135,115 @@ namespace SpreadsheetEngine.Tests
                          "</Spreadsheet>",
                  File.ReadAllText(path));
         }
+
+        /// <summary>
+        /// Test saving xml as a proper format.
+        /// </summary>
+        [Fact]
+        public void SaveSpreadsheetAsXml_GivenDefaultColor_SkipCellSave()
+        {
+            const string path = "Root.xml";
+            Spreadsheet sut = new(2, 3);
+            sut[1, 0].BackgroundColor = 0xFFFFFFFF;
+            sut.SaveSpreadsheet(path);
+            Assert.NotEqual(
+                "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+                "\r\n<Spreadsheet>\r\n" +
+                "  <SpreadsheetCell IndexName=\"B1\">\r\n" +
+                "    <BackgroundColor>16744448</BackgroundColor>\r\n" +
+                "    <Text>=A1+6</Text>\r\n" +
+                "  </SpreadsheetCell>\r\n" +
+                "</Spreadsheet>",
+                File.ReadAllText(path));
+        }
+
+        /// <summary>
+        /// Test saving xml as a proper format.
+        /// </summary>
+        [Fact]
+        public void SaveSpreadsheetAsXml_GivenDefaultText_SkipCellSave()
+        {
+            const string path = "Root.xml";
+            Spreadsheet sut = new(2, 3);
+            sut[1, 0].Text = string.Empty;
+            sut.SaveSpreadsheet(path);
+            Assert.NotEqual(
+                "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+                "\r\n<Spreadsheet>\r\n" +
+                "  <SpreadsheetCell IndexName=\"B1\">\r\n" +
+                "    <BackgroundColor>16744448</BackgroundColor>\r\n" +
+                "    <Text>=A1+6</Text>\r\n" +
+                "  </SpreadsheetCell>\r\n" +
+                "</Spreadsheet>",
+                File.ReadAllText(path));
+        }
+
+        /// <summary>
+        /// Test saving xml as a proper format.
+        /// </summary>
+        [Fact]
+        public void SaveSpreadsheetAsXml_GivenNoChanges_SkipCellSave()
+        {
+            const string path = "Root.xml";
+            Spreadsheet sut = new(2, 3);
+            sut.SaveSpreadsheet(path);
+            Assert.NotEqual(
+                "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+                "\r\n<Spreadsheet>\r\n" +
+                "  <SpreadsheetCell IndexName=\"B1\">\r\n" +
+                "    <BackgroundColor>16744448</BackgroundColor>\r\n" +
+                "    <Text>=A1+6</Text>\r\n" +
+                "  </SpreadsheetCell>\r\n" +
+                "</Spreadsheet>",
+                File.ReadAllText(path));
+        }
+
+        /// <summary>
+        /// Test saving xml as a proper format.
+        /// </summary>
+        [Fact]
+        public void LoadSpreadsheetFromXml()
+        {
+            const string path = "Root.xml";
+            Spreadsheet sut = new(2, 3);
+            sut[1, 0].Text = "=A1+6";
+            sut[1, 0].BackgroundColor = 0xFF8000;
+            sut.SaveSpreadsheet(path);
+            sut = new(2, 3);
+            sut.LoadSpreadsheet(path);
+            Assert.Equal("=A1+6", sut[1, 0].Text);
+            Assert.Equal(16744448.ToString(), sut[1, 0].BackgroundColor.ToString());
+        }
+
+        /// <summary>
+        /// Test saving xml as a proper format.
+        /// </summary>
+        [Fact]
+        public void LoadSpreadsheetFromXml_GivenDefaultColor()
+        {
+            const string path = "Root.xml";
+            Spreadsheet sut = new(2, 3);
+            sut[1, 0].Text = "=A1+6";
+            sut[1, 0].BackgroundColor = 1;
+            sut.SaveSpreadsheet(path);
+            sut = new Spreadsheet(2, 3);
+            sut.LoadSpreadsheet(path);
+            Assert.Equal("=A1+6", sut[1, 0].Text);
+            Assert.Equal(0xFFFFFFFF.ToString(), sut[1, 0].BackgroundColor.ToString());
+        }
+
+        /// <summary>
+        /// Test saving xml as a proper format.
+        /// </summary>
+        [Fact]
+        public void LoadSpreadsheetFromXml_GivenNothing()
+        {
+            const string path = "Root.xml";
+            Spreadsheet sut = new(2, 3);
+            sut.SaveSpreadsheet(path);
+            sut = new Spreadsheet(2, 3);
+            sut.LoadSpreadsheet(path);
+            Assert.Equal(string.Empty, sut[1, 0].Text);
+        }
     }
 }

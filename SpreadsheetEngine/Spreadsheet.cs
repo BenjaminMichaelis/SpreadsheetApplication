@@ -144,6 +144,16 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        /// loads the spreadsheet given a specified path.
+        /// </summary>
+        /// <param name="savePath">Path to save the document at.</param>
+        public void LoadSpreadsheet(string savePath)
+        {
+            XDocument doc = XDocument.Load(savePath);
+            this.SrcTree = doc;
+        }
+
+        /// <summary>
         /// Get the cell from the cell name.
         /// </summary>
         /// <param name="cellName">Letter/number combo of cell.</param>
