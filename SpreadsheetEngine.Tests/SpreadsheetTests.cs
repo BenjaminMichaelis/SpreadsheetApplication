@@ -118,9 +118,9 @@ namespace SpreadsheetEngine.Tests
         /// Test saving xml as a proper format.
         /// </summary>
         [Fact]
-        public void SaveSpreadsheetAsXML()
+        public void SaveSpreadsheetAsXml()
         {
-            string path = "Root.xml";
+            const string path = "Root.xml";
             Spreadsheet sut = new(3, 2);
             sut[0, 1].Text = "=A1+6";
             sut[0, 1].BackgroundColor = 0xFF8000;

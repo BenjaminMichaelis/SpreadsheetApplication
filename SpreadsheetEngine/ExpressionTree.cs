@@ -81,8 +81,12 @@ namespace SpreadsheetEngine
                     // 1.
                     if (operandStart != -1)
                     {
-                        string operand = expression.Substring(operandStart, i - operandStart);
-                        postfixExpression.Add(operand);
+                        if (operandStart >= 0 && expression.Length > operandStart)
+                        {
+                            string operand = expression[operandStart..i];
+                            postfixExpression.Add(operand);
+                        }
+
                         operandStart = -1;
                     }
 
@@ -139,7 +143,11 @@ namespace SpreadsheetEngine
 
             if (operandStart != -1)
             {
-                postfixExpression.Add(expression.Substring(operandStart, expression.Length - operandStart));
+                if (operandStart >= 0 && expression.Length > operandStart)
+                {
+                    postfixExpression.Add(expression[operandStart..]);
+                }
+
                 operandStart = -1;
             }
 
@@ -295,8 +303,7 @@ namespace SpreadsheetEngine
                 }
                 else
                 {
-                    double num = 0.0;
-                    if (double.TryParse(item, out num))
+                    if (double.TryParse(item, out var num))
                     {
                         nodes.Push(new ConstantNode(num));
                     }

@@ -23,7 +23,7 @@ namespace SpreadsheetEngine
 
         private SpreadsheetCell[,] CellsOfSpreadsheet { get; set; }
 
-        private XDocument SrcTree { get; set; }
+        private XDocument? SrcTree { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
@@ -79,7 +79,7 @@ namespace SpreadsheetEngine
 
             for (int i = 0; i < 50; i++)
             {
-                this.CellsOfSpreadsheet[i, 1].Text = $"This is SpreadsheetCell B{(i + 1).ToString()}";
+                this.CellsOfSpreadsheet[i, 1].Text = $"This is SpreadsheetCell B{i + 1}";
             }
         }
 
@@ -125,7 +125,7 @@ namespace SpreadsheetEngine
         {
             this.SrcTree = new XDocument();
             var xmlTree = new XElement("Spreadsheet");
-            foreach (SpreadsheetCell spreadsheetCell in CellsOfSpreadsheet)
+            foreach (SpreadsheetCell spreadsheetCell in this.CellsOfSpreadsheet)
             {
                 if (spreadsheetCell.Text != string.Empty && spreadsheetCell.BackgroundColor != 0xFFFFFFFF)
                 {

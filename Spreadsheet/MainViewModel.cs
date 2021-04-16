@@ -18,7 +18,7 @@ namespace SpreadsheetApp
     /// </summary>
     public class MainViewModel
     {
-        private SpreadsheetEngine.Spreadsheet Sheet { get; }
+        private Spreadsheet Sheet { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainViewModel"/> class.
@@ -35,7 +35,7 @@ namespace SpreadsheetApp
             this.MainForm.changeBackgroundColorButton.Click += new System.EventHandler(this.BackgroundColorButton_Click);
 #pragma warning restore CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
 
-            this.Sheet = new(50, 26);
+            this.Sheet = new SpreadsheetEngine.Spreadsheet(50, 26);
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
             this.Sheet.OnCellPropertyChanged += this.UpdateCell;
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
@@ -73,14 +73,20 @@ namespace SpreadsheetApp
         /// <param name="e">The event sending argument.</param>
         public void BackgroundColorButton_Click(object sender, System.EventArgs e)
         {
-            ColorDialog colorDialog = new ColorDialog();
-            colorDialog.AllowFullOpen = true;
-            colorDialog.ShowHelp = true;
-            colorDialog.AnyColor = true;
+            using ColorDialog colorDialog = new ColorDialog
+            {
+                AllowFullOpen = true,
+                ShowHelp = true,
+                AnyColor = true,
+            };
             colorDialog.HelpRequest += new System.EventHandler(this.ColorDialog_HelpRequest);
 
             // if user selects OK in the color dialog, otherwise do nothing.
-            if (colorDialog.ShowDialog() != DialogResult.OK) return;
+            if (colorDialog.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+
             uint chosenColor = (uint)colorDialog.Color.ToArgb();
 
             foreach (DataGridViewCell cell in this.MainForm.spreadsheetViewUI.SelectedCells)

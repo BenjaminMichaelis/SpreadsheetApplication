@@ -59,7 +59,7 @@ namespace SpreadsheetEngine
                             {
                                 try
                                 {
-                                    string evaluatedString = this.Text.Substring(1);
+                                    string evaluatedString = this.Text[1..];
                                     ExpressionTree newEvaluationTree = new(evaluatedString);
                                     IEnumerable<SpreadsheetCell> referencedCells = newEvaluationTree.Values.Select(
                                         item => this.SpreadsheetReference[item.Key]
