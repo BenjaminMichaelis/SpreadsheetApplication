@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace SpreadsheetEngine
 {
@@ -20,6 +22,8 @@ namespace SpreadsheetEngine
         public event PropertyChangedEventHandler? OnCellPropertyChanged;
 
         private SpreadsheetCell[,] CellsOfSpreadsheet { get; set; }
+
+        private XDocument SrcTree { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
@@ -119,6 +123,22 @@ namespace SpreadsheetEngine
         /// <param name="savePath">Path to save the document at.</param>
         public void SaveSpreadsheet(string savePath)
         {
+            this.SrcTree = new XDocument();
+            var xmlTree = new XElement("Spreadsheet");
+            foreach (SpreadsheetCell spreadsheetCell in CellsOfSpreadsheet)
+            {
+                if (spreadsheetCell.Text != string.Empty && spreadsheetCell.BackgroundColor != 0xFFFFFFFF)
+                {
+                    xmlTree.Add(new XElement(
+                        "SpreadsheetCell",
+                        new XElement("bgcolor", spreadsheetCell.BackgroundColor.ToString()),
+                        new XElement("text", spreadsheetCell.Text),
+                        new XAttribute("name", spreadsheetCell.IndexName)));
+                }
+            }
+
+            this.SrcTree.Add(xmlTree);
+            this.SrcTree.Save(savePath);
         }
 
         /// <summary>
