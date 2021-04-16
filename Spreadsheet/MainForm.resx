@@ -117,4 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="MainViewModel_ColorDialog_HelpRequest_Please_select_a_color_by_clicking_it__This_will_change_the_background_color_of_a_cell_box_" xml:space="preserve">
+      <value>Please select a color by clicking it. This will change the background color of a cell box.</value>
+  </data>
 </root>
