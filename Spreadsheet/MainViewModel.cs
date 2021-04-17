@@ -129,6 +129,7 @@ namespace SpreadsheetApp
 
         public void UndoButton_Click(object sender, System.EventArgs e)
         {
+            this.Sheet.Undo();
         }
 
         public void RedoButton_Click(object sender, System.EventArgs e)
