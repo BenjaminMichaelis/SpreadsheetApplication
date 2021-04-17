@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
-        <CodeAnalysisTreatWarningsAsErrors> false</CodeAnalysisTreatWarningsAsErrors>
+        <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     <ItemGroup>
