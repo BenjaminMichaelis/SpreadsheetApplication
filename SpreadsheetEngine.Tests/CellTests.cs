@@ -28,6 +28,10 @@ namespace SpreadsheetEngine.Tests
             {
             }
 
+            /// <summary>
+            /// Method that would need to be overwritten.
+            /// </summary>
+            /// <returns>Clone of the current cell.</returns>
             public override Cell Clone()
             {
                 throw new NotImplementedException();

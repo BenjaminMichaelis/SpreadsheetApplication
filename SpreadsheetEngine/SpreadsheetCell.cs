@@ -35,6 +35,17 @@ namespace SpreadsheetEngine
 
             private Spreadsheet SpreadsheetReference { get; set; }
 
+            public override Cell Clone()
+            {
+                SpreadsheetCell cellCopy = new(this.ColumnIndex, this.RowIndex, this.SpreadsheetReference)
+                {
+                    BackgroundColor = this.BackgroundColor,
+                    Text = this.Text,
+                    ErrorMessage = this.ErrorMessage,
+                };
+                return cellCopy;
+            }
+
             private void SetCellValue(string value)
             {
                 // this. or base.
@@ -206,17 +217,6 @@ namespace SpreadsheetEngine
                         break;
                     }
                 }
-            }
-
-            public override Cell Clone()
-            {
-                SpreadsheetCell cellCopy = new(this.ColumnIndex, this.RowIndex, this.SpreadsheetReference)
-                {
-                    BackgroundColor = this.BackgroundColor,
-                    Text = this.Text,
-                    ErrorMessage = this.ErrorMessage,
-                };
-                return cellCopy;
             }
         }
     }

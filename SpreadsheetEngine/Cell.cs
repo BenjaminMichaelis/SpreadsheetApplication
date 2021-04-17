@@ -13,6 +13,10 @@ namespace SpreadsheetEngine
     /// </summary>
     public abstract class Cell : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Clones the current cell.
+        /// </summary>
+        /// <returns>Returns a copy of the current cell.</returns>
         public abstract Cell Clone();
 
         /// <summary>
@@ -44,10 +48,13 @@ namespace SpreadsheetEngine
         public int ColumnIndex { get; }
 
         /// <summary>
-        /// Throw Property changed if text in cell is changed.
+        /// Event handler to hold the property changed if property in cell is changed.
         /// </summary>
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        /// <summary>
+        /// Event handler to hold the cell before it gets changed.
+        /// </summary>
         public event EventHandler<BeforeCellChangedEventArgs>? BeforePropertyChanged;
 
         /// <summary>
@@ -64,7 +71,9 @@ namespace SpreadsheetEngine
                     return;
                 }
 
-                this.BeforePropertyChanged?.Invoke(this, new BeforeCellChangedEventArgs(this.Clone()));
+                this.BeforePropertyChanged?.Invoke(this, new BeforeCellChangedEventArgs(
+                    $"Undo change of cell {nameof(this.Text)}",
+                    this.Clone()));
                 this.InternalText = value;
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Text)));
             }
@@ -100,7 +109,9 @@ namespace SpreadsheetEngine
                     return;
                 }
 
-                this.BeforePropertyChanged?.Invoke(this, new BeforeCellChangedEventArgs(this.Clone()));
+                this.BeforePropertyChanged?.Invoke(this, new BeforeCellChangedEventArgs(
+                    $"Undo change of cell {nameof(this.BackgroundColor)}",
+                    this.Clone()));
                 this.InternalBackgroundColor = value;
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.BackgroundColor)));
             }
