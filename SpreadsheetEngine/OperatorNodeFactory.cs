@@ -46,9 +46,9 @@ namespace SpreadsheetEngine
             if (this.operators.ContainsKey(@operator))
             {
                 object operatorNodeObject = System.Activator.CreateInstance(this.operators[@operator]);
-                if (operatorNodeObject is OperatorNode)
+                if (operatorNodeObject is OperatorNode node)
                 {
-                    return (OperatorNode)operatorNodeObject;
+                    return node;
                 }
             }
 
@@ -77,9 +77,9 @@ namespace SpreadsheetEngine
                 if (propertyInfo != null)
                 {
                     object propertyValue = propertyInfo.GetValue(type);
-                    if (propertyValue is ushort)
+                    if (propertyValue is ushort value)
                     {
-                        precedenceValue = (ushort)propertyValue;
+                        precedenceValue = value;
                     }
                 }
             }
@@ -102,9 +102,9 @@ namespace SpreadsheetEngine
                 if (propertyInfo != null)
                 {
                     object propertyValue = propertyInfo.GetValue(type);
-                    if (propertyValue is OperatorNode.Associative)
+                    if (propertyValue is OperatorNode.Associative value)
                     {
-                        associative = (OperatorNode.Associative)propertyValue;
+                        associative = value;
                     }
                 }
             }
@@ -148,10 +148,8 @@ namespace SpreadsheetEngine
                             object value = operatorField.GetValue(type);
 
                             // If the property is not static, use the following code instead: object value = operatorField.GetValue(Activator.CreateInstance(type, new ConstantNode("0"), new ConstantNode("0")));
-                            if (value is char)
+                            if (value is char operatorSymbol)
                             {
-                                char operatorSymbol = (char)value;
-
                                 // And invoke the function passed as parameter
                                 // with the operator symbol and the operator class
                                 onOperator(operatorSymbol, type);

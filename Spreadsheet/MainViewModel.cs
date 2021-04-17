@@ -121,16 +121,25 @@ namespace SpreadsheetApp
 
             uint chosenColor = (uint)colorDialog.Color.ToArgb();
 
-            foreach (DataGridViewCell cell in this.MainForm.spreadsheetViewUI.SelectedCells)
-            {
-                this.Sheet[cell.ColumnIndex, cell.RowIndex].BackgroundColor = (uint)chosenColor;
-            }
+            IEnumerable<Cell> cells = this.MainForm.spreadsheetViewUI.SelectedCells.Cast<DataGridViewCell>().Select(item =>
+                this.Sheet[item.ColumnIndex, item.RowIndex]);
+            this.Sheet.SetBackgroundColor(cells, chosenColor);
         }
 
+        /// <summary>
+        /// Runs when the undo button is clicked.
+        /// </summary>
+        /// <param name="sender">The object that is triggering this.</param>
+        /// <param name="e">The event handler.</param>
         public void UndoButton_Click(object sender, System.EventArgs e)
         {
         }
 
+        /// <summary>
+        /// Runs when the redo button is clicked.
+        /// </summary>
+        /// <param name="sender">The sending object.</param>
+        /// <param name="e">The event sending argument.</param>
         public void RedoButton_Click(object sender, System.EventArgs e)
         {
         }
