@@ -16,10 +16,14 @@ namespace SpreadsheetEngine
     /// </summary>
     public partial class Spreadsheet
     {
+        private EventHandler<BeforeCellChangedEventArgs> BeforeCellPropertyChangedEventHandler { get; init; }
+
         /// <summary>
         /// Event handler to connect to UI level.
         /// </summary>
         public event PropertyChangedEventHandler? OnCellPropertyChanged;
+
+        private Stack<SpreadsheetCell> UndoStack { get; } = new();
 
         private SpreadsheetCell[,] CellsOfSpreadsheet { get; set; }
 
@@ -32,6 +36,7 @@ namespace SpreadsheetEngine
         /// <param name="rows">Number of rows.</param>
         public Spreadsheet(int columns, int rows)
         {
+            this.BeforeCellPropertyChangedEventHandler = new EventHandler<BeforeCellChangedEventArgs>(this.BeforeCellPropertyChanged);
             this.InitializeSpreadsheet(columns, rows);
         }
 
@@ -75,7 +80,7 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="sender">Object that called object.</param>
         /// <param name="e">The property changed arg.</param>
-        public void CellPropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void CellPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is SpreadsheetCell evaluatingCell)
             {
@@ -224,11 +229,15 @@ namespace SpreadsheetEngine
                 for (int colNum = 0; colNum < columns; colNum++)
                 {
                     this.CellsOfSpreadsheet[colNum, rowNum] = new SpreadsheetCell(colNum, rowNum, this);
-#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
                     this.CellsOfSpreadsheet[colNum, rowNum].PropertyChanged += this.CellPropertyChanged;
-#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+                    this.CellsOfSpreadsheet[colNum, rowNum].BeforePropertyChanged += this.BeforeCellPropertyChangedEventHandler;
                 }
             }
+        }
+
+        private void BeforeCellPropertyChanged(object? sender, BeforeCellChangedEventArgs e)
+        {
+            this.UndoStack.Push((SpreadsheetCell)e.CellBeforeChange);
         }
 
         /// <summary>
@@ -264,5 +273,23 @@ namespace SpreadsheetEngine
         /// <param name="rowIndex">The row of the location of the cell.</param>
         /// <returns>A Cell.</returns>
         public Cell this[int columnIndex, int rowIndex] => this.CellsOfSpreadsheet[columnIndex, rowIndex];
+
+        /// <summary>
+        /// Allows undo of a command.
+        /// </summary>
+        public void Undo()
+        {
+            if (this.UndoStack.Count > 0)
+            {
+                SpreadsheetCell cellsPreviousState = this.UndoStack.Pop();
+                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex]
+                    .BeforePropertyChanged -= this.BeforeCellPropertyChangedEventHandler;
+                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex].Text = cellsPreviousState.Text;
+                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex].BackgroundColor = cellsPreviousState.BackgroundColor;
+                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex].ErrorMessage = cellsPreviousState.ErrorMessage;
+                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex]
+                    .BeforePropertyChanged += this.BeforeCellPropertyChangedEventHandler;
+            }
+        }
     }
 }

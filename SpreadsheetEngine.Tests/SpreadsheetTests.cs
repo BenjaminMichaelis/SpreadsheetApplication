@@ -148,14 +148,14 @@ namespace SpreadsheetEngine.Tests
             sut[1, 0].BackgroundColor = 0xFF8000;
             sut.SaveSpreadsheet(path);
             Assert.Equal(
-                 "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-                         "\r\n<Spreadsheet>\r\n" +
-                         "  <SpreadsheetCell IndexName=\"B1\">\r\n" +
-                         "    <BackgroundColor>16744448</BackgroundColor>\r\n" +
-                         "    <Text>=A1+6</Text>\r\n" +
-                         "  </SpreadsheetCell>\r\n" +
-                         "</Spreadsheet>",
-                 File.ReadAllText(path));
+                "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+                "\r\n<Spreadsheet>\r\n" +
+                "  <SpreadsheetCell IndexName=\"B1\">\r\n" +
+                "    <BackgroundColor>16744448</BackgroundColor>\r\n" +
+                "    <Text>=A1+6</Text>\r\n" +
+                "  </SpreadsheetCell>\r\n" +
+                "</Spreadsheet>",
+                File.ReadAllText(path));
         }
 
         /// <summary>
@@ -249,6 +249,59 @@ namespace SpreadsheetEngine.Tests
             sut = new Spreadsheet(2, 3);
             sut.LoadSpreadsheet(path);
             Assert.Equal(string.Empty, sut[1, 0].Text);
+        }
+
+        /// <summary>
+        /// Test undo a command.
+        /// </summary>
+        [Fact]
+        public void UndoCommand_ToPrevious()
+        {
+            Spreadsheet sut = new(5, 5);
+            sut[0, 0].Text = "=88";
+            sut[0, 0].Text = "=12";
+            sut.Undo();
+            Assert.Equal("=88", sut[0, 0].Text);
+            Assert.Equal("88", sut[0, 0].Value);
+        }
+
+        /// <summary>
+        /// Test undo a command.
+        /// </summary>
+        [Fact]
+        public void UndoCommandToEmpty()
+        {
+            Spreadsheet sut = new(5, 5);
+            sut[0, 0].Text = "=88";
+            sut.Undo();
+            Assert.Equal(string.Empty, sut[0, 0].Text);
+            Assert.Equal(string.Empty, sut[0, 0].Value);
+        }
+
+        /// <summary>
+        /// Test undo a command when it can't be undone anymore.
+        /// </summary>
+        [Fact]
+        public void UndoCommandNoMoreUndoCommands()
+        {
+            Spreadsheet sut = new(5, 5);
+            sut[0, 0].Text = "=88";
+            sut.Undo();
+            sut.Undo();
+            Assert.Equal(string.Empty, sut[0, 0].Text);
+            Assert.Equal(string.Empty, sut[0, 0].Value);
+        }
+
+        /// <summary>
+        /// Test undo a command when it can't be undone anymore.
+        /// </summary>
+        [Fact]
+        public void SetCellTextToNull()
+        {
+            Spreadsheet sut = new(5, 5);
+            sut[0, 0].Text = null!;
+            Assert.Equal(string.Empty, sut[0, 0].Text);
+            Assert.Equal(string.Empty, sut[0, 0].Value);
         }
     }
 }
