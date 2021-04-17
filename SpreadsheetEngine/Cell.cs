@@ -51,28 +51,21 @@ namespace SpreadsheetEngine
         public event EventHandler<BeforeCellChangedEventArgs>? BeforePropertyChanged;
 
         /// <summary>
-        /// Stores protected string text.
-        /// </summary>
-#pragma warning disable SA1401 // Fields should be private - We want it private in this case.
-        protected string? _text;
-#pragma warning restore SA1401 // Fields should be private
-
-        /// <summary>
         /// Gets or Sets Text that's typed into the cell.
         /// </summary>
         public string Text
         {
-            get => this._text is { } result ? result : string.Empty;
+            get => this.InternalText is { } result ? result : string.Empty;
 
             set
             {
-                if (this._text == value)
+                if (this.InternalText == value)
                 {
                     return;
                 }
 
                 this.BeforePropertyChanged?.Invoke(this, new BeforeCellChangedEventArgs(this.Clone()));
-                this._text = value;
+                this.InternalText = value;
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Text)));
             }
         }
@@ -95,27 +88,20 @@ namespace SpreadsheetEngine
         public bool IsErrored => !string.IsNullOrWhiteSpace(this.ErrorMessage);
 
         /// <summary>
-        /// Stores cell background color.
-        /// </summary>
-#pragma warning disable SA1401 // Fields should be private - We want it private in this case.
-        protected uint _backgroundColor = 0xFFFFFFFF;
-#pragma warning restore SA1401 // Fields should be private - We want it private in this case.
-
-        /// <summary>
         /// Gets or sets cell background color.
         /// </summary>
         public uint BackgroundColor
         {
-            get => this._backgroundColor;
+            get => this.InternalBackgroundColor;
             set
             {
-                if (this._backgroundColor == value)
+                if (this.InternalBackgroundColor == value)
                 {
                     return;
                 }
 
                 this.BeforePropertyChanged?.Invoke(this, new BeforeCellChangedEventArgs(this.Clone()));
-                this._backgroundColor = value;
+                this.InternalBackgroundColor = value;
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.BackgroundColor)));
             }
         }
@@ -176,6 +162,11 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        /// Gets or sets protected string text.
+        /// </summary>
+        protected string? InternalText { get; set; }
+
+        /// <summary>
         /// Gets or sets the internal value of the cell that can invoke an event.
         /// </summary>
         protected string? InternalValue
@@ -190,6 +181,11 @@ namespace SpreadsheetEngine
                 }
             }
         }
+
+        /// <summary>
+        /// Gets or sets cell background color.
+        /// </summary>
+        protected uint InternalBackgroundColor { get; set; } = 0xFFFFFFFF;
 
         /// <summary>
         /// Allows for cell info to be displayed in debug watch window.

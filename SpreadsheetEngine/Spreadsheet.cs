@@ -16,6 +16,8 @@ namespace SpreadsheetEngine
     /// </summary>
     public partial class Spreadsheet
     {
+        private EventHandler<BeforeCellChangedEventArgs> BeforeCellPropertyChangedEventHandler { get; init; }
+
         /// <summary>
         /// Event handler to connect to UI level.
         /// </summary>
@@ -34,6 +36,7 @@ namespace SpreadsheetEngine
         /// <param name="rows">Number of rows.</param>
         public Spreadsheet(int columns, int rows)
         {
+            this.BeforeCellPropertyChangedEventHandler = new EventHandler<BeforeCellChangedEventArgs>(this.BeforeCellPropertyChanged);
             this.InitializeSpreadsheet(columns, rows);
         }
 
@@ -77,7 +80,7 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="sender">Object that called object.</param>
         /// <param name="e">The property changed arg.</param>
-        public void CellPropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void CellPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is SpreadsheetCell evaluatingCell)
             {
@@ -226,10 +229,8 @@ namespace SpreadsheetEngine
                 for (int colNum = 0; colNum < columns; colNum++)
                 {
                     this.CellsOfSpreadsheet[colNum, rowNum] = new SpreadsheetCell(colNum, rowNum, this);
-#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
                     this.CellsOfSpreadsheet[colNum, rowNum].PropertyChanged += this.CellPropertyChanged;
-                    this.CellsOfSpreadsheet[colNum, rowNum].BeforePropertyChanged += this.BeforeCellPropertyChanged;
-#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+                    this.CellsOfSpreadsheet[colNum, rowNum].BeforePropertyChanged += this.BeforeCellPropertyChangedEventHandler;
                 }
             }
         }
@@ -281,9 +282,13 @@ namespace SpreadsheetEngine
             if (this.UndoStack.Count > 0)
             {
                 SpreadsheetCell cellsPreviousState = this.UndoStack.Pop();
+                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex]
+                    .BeforePropertyChanged -= this.BeforeCellPropertyChangedEventHandler;
                 this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex].Text = cellsPreviousState.Text;
                 this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex].BackgroundColor = cellsPreviousState.BackgroundColor;
                 this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex].ErrorMessage = cellsPreviousState.ErrorMessage;
+                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex]
+                    .BeforePropertyChanged += this.BeforeCellPropertyChangedEventHandler;
             }
         }
     }
