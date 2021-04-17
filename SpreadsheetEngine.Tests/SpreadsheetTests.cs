@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
@@ -302,6 +303,30 @@ namespace SpreadsheetEngine.Tests
             sut[0, 0].Text = null!;
             Assert.Equal(string.Empty, sut[0, 0].Text);
             Assert.Equal(string.Empty, sut[0, 0].Value);
+        }
+
+        /// <summary>
+        /// Test undo multiple cell color changes at once.
+        /// </summary>
+        [Fact]
+        public void SetMultipleCellBackgroundColors()
+        {
+            Spreadsheet sut = new(5, 5);
+            List<Cell> cells = new List<Cell>()
+            {
+                sut[0, 0],
+                sut[1, 1],
+                sut[2, 1],
+                sut[2, 3],
+                sut[4, 4],
+            };
+            sut.SetBackgroundColor(cells, 0xFF8000);
+            sut.Undo();
+            Assert.Equal(0xFFFFFFFF, sut[0, 0].BackgroundColor);
+            Assert.Equal(0xFFFFFFFF, sut[1, 1].BackgroundColor);
+            Assert.Equal(0xFFFFFFFF, sut[2, 1].BackgroundColor);
+            Assert.Equal(0xFFFFFFFF, sut[2, 3].BackgroundColor);
+            Assert.Equal(0xFFFFFFFF, sut[4, 4].BackgroundColor);
         }
     }
 }
