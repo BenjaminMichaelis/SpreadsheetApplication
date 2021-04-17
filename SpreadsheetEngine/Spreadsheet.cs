@@ -264,5 +264,10 @@ namespace SpreadsheetEngine
         /// <param name="rowIndex">The row of the location of the cell.</param>
         /// <returns>A Cell.</returns>
         public Cell this[int columnIndex, int rowIndex] => this.CellsOfSpreadsheet[columnIndex, rowIndex];
+
+        public void Undo()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

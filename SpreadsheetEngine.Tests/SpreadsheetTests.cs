@@ -250,5 +250,32 @@ namespace SpreadsheetEngine.Tests
             sut.LoadSpreadsheet(path);
             Assert.Equal(string.Empty, sut[1, 0].Text);
         }
+
+        /// <summary>
+        /// Test undo a command.
+        /// </summary>
+        [Fact]
+        public void UndoCommand_ToPrevious()
+        {
+            Spreadsheet sut = new(5, 5);
+            sut[0, 0].Text = "=88";
+            sut[0, 0].Text = "=12";
+            sut.Undo();
+            Assert.Equal("=88", sut[0, 0].Text);
+            Assert.Equal("88", sut[0, 0].Value);
+        }
+
+        /// <summary>
+        /// Test undo a command.
+        /// </summary>
+        [Fact]
+        public void UndoCommandToEmpty()
+        {
+            Spreadsheet sut = new(5, 5);
+            sut[0, 0].Text = "=88";
+            sut.Undo();
+            Assert.Equal("", sut[0, 0].Text);
+            Assert.Equal("", sut[0, 0].Value);
+        }
     }
 }
