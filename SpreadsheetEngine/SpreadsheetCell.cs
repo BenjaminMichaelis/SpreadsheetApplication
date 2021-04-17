@@ -77,7 +77,7 @@ namespace SpreadsheetEngine
                                             {
                                                 if (item != null)
                                                 {
-                                                    item.ErrorMessage = CircularReferenceException.Message;
+                                                    item.ErrorMessage = Cell.CellErrorMessage;
                                                 }
                                             }
 
@@ -121,9 +121,9 @@ namespace SpreadsheetEngine
                                                     this.SetCellValue("#error: reference cell is null");
                                                     return;
                                                 }
-                                                catch (CircularReferenceException)
+                                                catch (CircularReferenceException exception)
                                                 {
-                                                    this.SetCellValue(CircularReferenceException.Message);
+                                                    this.SetCellValue(exception.Message);
                                                     return;
                                                 }
                                                 catch (ArgumentNullException)
@@ -178,9 +178,9 @@ namespace SpreadsheetEngine
                                             evaluatedString = newEvaluationTree.Evaluate().ToString();
                                             this.SetCellValue(evaluatedString);
                                         }
-                                        catch (CircularReferenceException)
+                                        catch (CircularReferenceException exception)
                                         {
-                                            this.ErrorMessage = CircularReferenceException.Message;
+                                            this.ErrorMessage = exception.Message;
                                         }
                                         catch (Exception exception)
                                         {
