@@ -294,6 +294,55 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
+        /// Test undo multiple commands.
+        /// </summary>
+        [Fact]
+        public void UndoMultipleCommandsToPreviousState()
+        {
+            Spreadsheet sut = new(5, 5);
+            sut[0, 0].Text = "=88";
+            sut[1, 1].Text = "=99";
+            sut.Undo();
+            sut.Undo();
+            Assert.Equal(string.Empty, sut[0, 0].Text);
+            Assert.Equal(string.Empty, sut[0, 0].Value);
+            Assert.Equal(string.Empty, sut[1, 1].Text);
+            Assert.Equal(string.Empty, sut[1, 1].Value);
+        }
+
+        /// <summary>
+        /// Test undo multiple commands.
+        /// </summary>
+        [Fact]
+        public void UndoMultipleTypesOfCommandsToPreviousState()
+        {
+            Spreadsheet sut = new(5, 5);
+            sut[0, 0].Text = "=88";
+            sut[1, 1].Text = "=99";
+            List<Cell> cells = new List<Cell>()
+            {
+                sut[0, 0],
+                sut[1, 1],
+                sut[2, 1],
+                sut[2, 3],
+                sut[4, 4],
+            };
+            sut.SetBackgroundColor(cells, 0xFF8000);
+            sut.Undo();
+            sut.Undo();
+            sut.Undo();
+            Assert.Equal(string.Empty, sut[0, 0].Text);
+            Assert.Equal(string.Empty, sut[0, 0].Value);
+            Assert.Equal(string.Empty, sut[1, 1].Text);
+            Assert.Equal(string.Empty, sut[1, 1].Value);
+            Assert.Equal(0xFFFFFFFF, sut[0, 0].BackgroundColor);
+            Assert.Equal(0xFFFFFFFF, sut[1, 1].BackgroundColor);
+            Assert.Equal(0xFFFFFFFF, sut[2, 1].BackgroundColor);
+            Assert.Equal(0xFFFFFFFF, sut[2, 3].BackgroundColor);
+            Assert.Equal(0xFFFFFFFF, sut[4, 4].BackgroundColor);
+        }
+
+        /// <summary>
         /// Test undo a command when it can't be undone anymore.
         /// </summary>
         [Fact]
