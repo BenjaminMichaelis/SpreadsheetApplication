@@ -201,6 +201,7 @@ namespace SpreadsheetEngine
             {
                 case nameof(Spreadsheet):
                 {
+                    this.UndoStack.Clear();
                     IEnumerable<XElement> spreadsheetCells = this.SrcTree.Root.Elements(nameof(SpreadsheetCell));
                     foreach (XElement cell in spreadsheetCells)
                     {
