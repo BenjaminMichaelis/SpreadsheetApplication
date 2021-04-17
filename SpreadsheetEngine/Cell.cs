@@ -13,6 +13,8 @@ namespace SpreadsheetEngine
     /// </summary>
     public abstract class Cell : INotifyPropertyChanged
     {
+        public abstract Cell Clone();
+
         /// <summary>
         /// Error Message if circular reference occurs.
         /// </summary>
@@ -46,6 +48,8 @@ namespace SpreadsheetEngine
         /// </summary>
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        public event EventHandler<BeforeCellChangedEventArgs>? BeforePropertyChanged;
+
         /// <summary>
         /// Stores protected string text.
         /// </summary>
@@ -67,6 +71,7 @@ namespace SpreadsheetEngine
                     return;
                 }
 
+                this.BeforePropertyChanged?.Invoke(this, new BeforeCellChangedEventArgs(this.Clone()));
                 this._text = value;
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Text)));
             }
@@ -109,6 +114,7 @@ namespace SpreadsheetEngine
                     return;
                 }
 
+                this.BeforePropertyChanged?.Invoke(this, new BeforeCellChangedEventArgs(this.Clone()));
                 this._backgroundColor = value;
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.BackgroundColor)));
             }

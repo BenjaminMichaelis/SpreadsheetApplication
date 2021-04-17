@@ -27,6 +27,11 @@ namespace SpreadsheetEngine.Tests
                 : base(columnIndex, rowIndex)
             {
             }
+
+            public override Cell Clone()
+            {
+                throw new NotImplementedException();
+            }
         }
 
         /// <summary>

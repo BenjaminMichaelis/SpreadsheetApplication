@@ -205,6 +205,17 @@ namespace SpreadsheetEngine
                     }
                 }
             }
+
+            public override Cell Clone()
+            {
+                SpreadsheetCell cellCopy = new(this.ColumnIndex, this.RowIndex, this.SpreadsheetReference)
+                {
+                    BackgroundColor = this.BackgroundColor,
+                    Text = this.Text,
+                    ErrorMessage = this.ErrorMessage,
+                };
+                return cellCopy;
+            }
         }
     }
 }

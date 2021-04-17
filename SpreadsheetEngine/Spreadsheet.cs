@@ -21,6 +21,8 @@ namespace SpreadsheetEngine
         /// </summary>
         public event PropertyChangedEventHandler? OnCellPropertyChanged;
 
+        private Stack<SpreadsheetCell> UndoStack { get; } = new();
+
         private SpreadsheetCell[,] CellsOfSpreadsheet { get; set; }
 
         private XDocument? SrcTree { get; set; }
@@ -226,9 +228,15 @@ namespace SpreadsheetEngine
                     this.CellsOfSpreadsheet[colNum, rowNum] = new SpreadsheetCell(colNum, rowNum, this);
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
                     this.CellsOfSpreadsheet[colNum, rowNum].PropertyChanged += this.CellPropertyChanged;
+                    this.CellsOfSpreadsheet[colNum, rowNum].BeforePropertyChanged += this.BeforeCellPropertyChanged;
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
                 }
             }
+        }
+
+        private void BeforeCellPropertyChanged(object? sender, BeforeCellChangedEventArgs e)
+        {
+            this.UndoStack.Push((SpreadsheetCell)e.CellBeforeChange);
         }
 
         /// <summary>
@@ -265,9 +273,18 @@ namespace SpreadsheetEngine
         /// <returns>A Cell.</returns>
         public Cell this[int columnIndex, int rowIndex] => this.CellsOfSpreadsheet[columnIndex, rowIndex];
 
+        /// <summary>
+        /// Allows undo of a command.
+        /// </summary>
         public void Undo()
         {
-            throw new NotImplementedException();
+            if (this.UndoStack.Count > 0)
+            {
+                SpreadsheetCell cellsPreviousState = this.UndoStack.Pop();
+                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex].Text = cellsPreviousState.Text;
+                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex].BackgroundColor = cellsPreviousState.BackgroundColor;
+                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex].ErrorMessage = cellsPreviousState.ErrorMessage;
+            }
         }
     }
 }
