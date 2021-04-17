@@ -23,9 +23,9 @@ namespace SpreadsheetEngine
         /// </summary>
         public event PropertyChangedEventHandler? OnCellPropertyChanged;
 
-        private Stack<SpreadsheetCell> UndoStack { get; } = new();
+        private Stack<Command> UndoStack { get; } = new();
 
-        private SpreadsheetCell[,] CellsOfSpreadsheet { get; set; }
+        private SpreadsheetCell[,] CellsOfSpreadsheet { get; set; } = null!;
 
         private XDocument? SrcTree { get; set; }
 
@@ -150,6 +150,26 @@ namespace SpreadsheetEngine
             this.LoadSpreadsheet(doc);
         }
 
+        /// <summary>
+        /// Set a group of cells background color.
+        /// </summary>
+        /// <param name="cells">The cells to change the background of.</param>
+        /// <param name="color">The color to change the cells color to.</param>
+        public void SetBackgroundColor(IEnumerable<Cell> cells, uint color)
+        {
+            List<Cell> clonedCells = new List<Cell>();
+            foreach (Cell cell in cells)
+            {
+                clonedCells.Add(cell.Clone());
+                cell.BeforePropertyChanged -= this.BeforeCellPropertyChangedEventHandler;
+                cell.BackgroundColor = color;
+                cell.BeforePropertyChanged += this.BeforeCellPropertyChangedEventHandler;
+            }
+
+            Command undoCommand = new Command($"Undo cell background color change", clonedCells.ToArray());
+            this.UndoStack.Push(undoCommand);
+        }
+
         private void SaveSpreadsheet()
         {
             this.SrcTree = new XDocument();
@@ -237,7 +257,7 @@ namespace SpreadsheetEngine
 
         private void BeforeCellPropertyChanged(object? sender, BeforeCellChangedEventArgs e)
         {
-            this.UndoStack.Push((SpreadsheetCell)e.CellBeforeChange);
+            this.UndoStack.Push(new Command(e.Description, e.CellsBeforeChange));
         }
 
         /// <summary>
@@ -281,14 +301,17 @@ namespace SpreadsheetEngine
         {
             if (this.UndoStack.Count > 0)
             {
-                SpreadsheetCell cellsPreviousState = this.UndoStack.Pop();
-                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex]
-                    .BeforePropertyChanged -= this.BeforeCellPropertyChangedEventHandler;
-                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex].Text = cellsPreviousState.Text;
-                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex].BackgroundColor = cellsPreviousState.BackgroundColor;
-                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex].ErrorMessage = cellsPreviousState.ErrorMessage;
-                this.CellsOfSpreadsheet[cellsPreviousState.ColumnIndex, cellsPreviousState.RowIndex]
-                    .BeforePropertyChanged += this.BeforeCellPropertyChangedEventHandler;
+                Command command = this.UndoStack.Pop();
+                foreach (SpreadsheetCell cell in command.ChangedCells.Cast<SpreadsheetCell>())
+                {
+                    this.CellsOfSpreadsheet[cell.ColumnIndex, cell.RowIndex]
+                        .BeforePropertyChanged -= this.BeforeCellPropertyChangedEventHandler;
+                    this.CellsOfSpreadsheet[cell.ColumnIndex, cell.RowIndex].Text = cell.Text;
+                    this.CellsOfSpreadsheet[cell.ColumnIndex, cell.RowIndex].BackgroundColor = cell.BackgroundColor;
+                    this.CellsOfSpreadsheet[cell.ColumnIndex, cell.RowIndex].ErrorMessage = cell.ErrorMessage;
+                    this.CellsOfSpreadsheet[cell.ColumnIndex, cell.RowIndex]
+                        .BeforePropertyChanged += this.BeforeCellPropertyChangedEventHandler;
+                }
             }
         }
     }
