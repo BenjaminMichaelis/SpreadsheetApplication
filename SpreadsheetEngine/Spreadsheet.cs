@@ -390,5 +390,10 @@ namespace SpreadsheetEngine
                 }
             }
         }
+
+        public void Redo()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
