@@ -86,15 +86,25 @@ namespace SpreadsheetEngine
 
         private string? _internalValue;
 
+        private string? _errorMessage;
+
         /// <summary>
         /// Gets or sets the error message to the cell.
         /// </summary>
-        public string? ErrorMessage { get; set; }
+        public string? ErrorMessage
+        {
+            get => this._errorMessage;
+            set
+            {
+                this._errorMessage = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ErrorMessage)));
+            }
+        }
 
         /// <summary>
-        /// Gets a value indicating whether gets bool; True if is an error message, false if not.
-        /// </summary>
-        public bool IsErrored => !string.IsNullOrWhiteSpace(this.ErrorMessage);
+    /// Gets a value indicating whether gets bool; True if is an error message, false if not.
+    /// </summary>
+    public bool IsErrored => !string.IsNullOrWhiteSpace(this.ErrorMessage);
 
         /// <summary>
         /// Gets or sets cell background color.

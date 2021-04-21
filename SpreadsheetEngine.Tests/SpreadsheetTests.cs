@@ -1,4 +1,4 @@
-// <copyright file="SpreadsheetTests.cs" company="Benjamin Michaelis">
+﻿// <copyright file="SpreadsheetTests.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -57,19 +57,69 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
-        /// Test Circular references.
+        /// Test Circular reference, that it displays an error in the cell when a circular reference appears.
         /// </summary>
         [Fact]
-        public void CircularReference()
+        public void CircularReference_GivenCircularReference_SetCellValueToError()
         {
             Spreadsheet sut = new(1, 2);
             sut[0, 0].Text = "=A2";
             sut[0, 1].Text = "=A1";
-            Assert.Equal("#error", sut[0, 0].Value);
-            Assert.Equal("#error", sut[0, 1].Value);
+            Assert.Equal(CircularReferenceException.DefaultMessage, sut[0, 0].Value);
+            Assert.Equal(CircularReferenceException.DefaultMessage, sut[0, 1].Value);
+        }
+
+        /// <summary>
+        /// Test Circular reference, that when you fix the circular reference problem, all the cells get updated.
+        /// </summary>
+        [Fact]
+        public void CircularReference_GivenCircularReferenceError_ResetValues()
+        {
+            Spreadsheet sut = new(1, 2);
+            sut[0, 0].Text = "=A2";
+            sut[0, 1].Text = "=A1";
+
+            // Error should be thrown above here as tested elsewhere.
             sut[0, 0].Text = "=10";
             Assert.Equal("10", sut[0, 0].Value);
             Assert.Equal("10", sut[0, 1].Value);
+        }
+
+        /// <summary>
+        /// Test Circular references when a cell circular reference is multiple "steps" or cells away.
+        /// </summary>
+        [Fact]
+        public void CircularReference_GivenMultipleStepsAway_SetCellValueToError()
+        {
+            Spreadsheet sut = new(5, 5);
+            sut[0, 0].Text = "=B1"; // This = A1
+            sut[1, 0].Text = "=B2"; // This = B1
+            sut[1, 1].Text = "=A2"; // This = B2
+            sut[0, 1].Text = "=A1"; // This = A2
+            Assert.Equal(CircularReferenceException.DefaultMessage, sut[0, 0].Value); // This = A1
+            Assert.Equal(CircularReferenceException.DefaultMessage, sut[1, 0].Value); // This = B1
+            Assert.Equal(CircularReferenceException.DefaultMessage, sut[1, 1].Value); // This = B2
+            Assert.Equal(CircularReferenceException.DefaultMessage, sut[0, 1].Value); // This = A2
+        }
+
+        /// <summary>
+        /// Test Circular references when a cell circular reference is multiple "steps" or cells away, that when you fix the circular problem, all the cells get updated.
+        /// </summary>
+        [Fact]
+        public void CircularReference_GivenCircularReferenceMultipleStepsAway_ResetValues()
+        {
+            Spreadsheet sut = new(5, 5);
+            sut[0, 0].Text = "=B1"; // This = A1
+            sut[1, 0].Text = "=B2"; // This = B1
+            sut[1, 1].Text = "=A2"; // This = B2
+            sut[0, 1].Text = "=A1"; // This = A2
+
+            // Error should be thrown above here as tested elsewhere.
+            sut[0, 0].Text = "=10";
+            Assert.Equal("10", sut[0, 0].Value); // This = A1
+            Assert.Equal("10", sut[1, 0].Value); // This = B1
+            Assert.Equal("10", sut[1, 1].Value); // This = B2
+            Assert.Equal("10", sut[0, 1].Value); // This = A2
         }
 
         /// <summary>
