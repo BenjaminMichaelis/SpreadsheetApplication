@@ -60,7 +60,7 @@ namespace SpreadsheetEngine
         /// </summary>
         public void Demo()
         {
-            Random random = new Random();
+            Random random = new();
 
             for (int i = 0; i < 50; i++)
             {
@@ -165,7 +165,7 @@ namespace SpreadsheetEngine
         /// <param name="color">The color to change the cells color to.</param>
         public void SetBackgroundColor(IEnumerable<Cell> cells, uint color)
         {
-            List<Cell> clonedCells = new List<Cell>();
+            List<Cell> clonedCells = new();
             foreach (Cell cell in cells)
             {
                 clonedCells.Add(cell.Clone());
@@ -174,7 +174,7 @@ namespace SpreadsheetEngine
                 cell.BeforePropertyChanged += this.BeforeCellPropertyChangedEventHandler;
             }
 
-            Command undoCommand = new Command($"Undo cell background color change", clonedCells.ToArray());
+            Command undoCommand = new($"Undo cell background color change", clonedCells.ToArray());
             this.UndoStack.Push(undoCommand);
         }
 
@@ -308,8 +308,7 @@ namespace SpreadsheetEngine
         /// <summary>
         /// Try get the cell at the specified location.
         /// </summary>
-        /// <param name="columnIndex">The column at which the cell is at.</param>
-        /// <param name="rowIndex">The row at which the cell is at.</param>
+        /// <param name="cellName">The name of the cell location.</param>
         /// <param name="cell">The desired cell, returns default if not obtained.</param>
         /// <returns>Returns true is desired cell is obtained, false if not.</returns>
         public bool TryGetCell(string cellName, out Cell? cell)

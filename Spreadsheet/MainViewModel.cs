@@ -105,7 +105,7 @@ namespace SpreadsheetApp
         /// <param name="e">The event sending argument.</param>
         public void BackgroundColorButton_Click(object sender, System.EventArgs e)
         {
-            using ColorDialog colorDialog = new ColorDialog
+            using ColorDialog colorDialog = new()
             {
                 AllowFullOpen = true,
                 ShowHelp = true,

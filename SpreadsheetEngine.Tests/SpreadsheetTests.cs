@@ -465,7 +465,7 @@ namespace SpreadsheetEngine.Tests
             Spreadsheet sut = new(5, 5);
             sut[0, 0].Text = "=88";
             sut[1, 1].Text = "=99";
-            List<Cell> cells = new List<Cell>()
+            List<Cell> cells = new()
             {
                 sut[0, 0],
                 sut[1, 1],
@@ -507,7 +507,7 @@ namespace SpreadsheetEngine.Tests
         public void SetMultipleCellBackgroundColors()
         {
             Spreadsheet sut = new(5, 5);
-            List<Cell> cells = new List<Cell>()
+            List<Cell> cells = new()
             {
                 sut[0, 0],
                 sut[1, 1],

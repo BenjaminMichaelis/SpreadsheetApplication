@@ -74,7 +74,7 @@ namespace SpreadsheetEngine.Tests
         [InlineData("A*B ", 35)]
         public void EvaluateTests(string expression, double expected)
         {
-            ExpressionTree tree = new ExpressionTree(expression);
+            ExpressionTree tree = new(expression);
             tree.SetVariable("A", 5);
             tree.SetVariable("B", 7);
             tree.SetVariable("C", 2);
@@ -90,7 +90,7 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void VariablesDictUpToDate()
         {
-            ExpressionTree tree = new ExpressionTree("=A1+A2");
+            ExpressionTree tree = new("=A1+A2");
             Assert.Equal(2, tree.Values.Count);
             tree.Values.TryGetValue("A1", out double temp);
             Assert.Equal(0.0, temp);

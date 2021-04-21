@@ -84,7 +84,6 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void ColumnLetterToNumber_XFD_return16384()
         {
-            SpreadsheetCellTests sut = new(1, 1);
             Assert.Equal(16384, Cell.ColumnLetterToInt("XFD"));
         }
 
@@ -94,7 +93,6 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void ColumnLetterToNumber_XFD99_return16384()
         {
-            SpreadsheetCellTests sut = new(1, 1);
             Assert.Equal(16384, Cell.ColumnLetterToInt("XFD99"));
         }
 
@@ -104,7 +102,6 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void ColumnLetterToNumber_Z_return26()
         {
-            SpreadsheetCellTests sut = new(1, 1);
             Assert.Equal(26, Cell.ColumnLetterToInt("Z"));
         }
 
@@ -114,7 +111,6 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void ColumnLetterToNumber_A_return1()
         {
-            Spreadsheet sut = new(1, 1);
             Assert.Equal(1, Cell.ColumnLetterToInt("A"));
         }
 
@@ -124,7 +120,6 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void ColumnLetterToNumber_AH_return34()
         {
-            Spreadsheet sut = new(1, 1);
             Assert.Equal(34, Cell.ColumnLetterToInt("AH"));
         }
     }
