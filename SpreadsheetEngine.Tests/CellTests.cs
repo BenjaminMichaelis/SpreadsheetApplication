@@ -85,7 +85,17 @@ namespace SpreadsheetEngine.Tests
         public void ColumnLetterToNumber_XFD_return16384()
         {
             SpreadsheetCellTests sut = new(1, 1);
-            Assert.Equal(16384, sut.ColumnLetterToInt("XFD"));
+            Assert.Equal(16384, Cell.ColumnLetterToInt("XFD"));
+        }
+
+        /// <summary>
+        /// Test that when given the int 34 for a column number it returns AH.
+        /// </summary>
+        [Fact]
+        public void ColumnLetterToNumber_XFD99_return16384()
+        {
+            SpreadsheetCellTests sut = new(1, 1);
+            Assert.Equal(16384, Cell.ColumnLetterToInt("XFD99"));
         }
 
         /// <summary>
@@ -95,7 +105,27 @@ namespace SpreadsheetEngine.Tests
         public void ColumnLetterToNumber_Z_return26()
         {
             SpreadsheetCellTests sut = new(1, 1);
-            Assert.Equal(26, sut.ColumnLetterToInt("Z"));
+            Assert.Equal(26, Cell.ColumnLetterToInt("Z"));
+        }
+
+        /// <summary>
+        /// Test that when given the letter A for a column number, it returns 1.
+        /// </summary>
+        [Fact]
+        public void ColumnLetterToNumber_A_return1()
+        {
+            Spreadsheet sut = new(1, 1);
+            Assert.Equal(1, Cell.ColumnLetterToInt("A"));
+        }
+
+        /// <summary>
+        /// Test that when given the letter AH for a column number, it returns 34.
+        /// </summary>
+        [Fact]
+        public void ColumnLetterToNumber_AH_return34()
+        {
+            Spreadsheet sut = new(1, 1);
+            Assert.Equal(34, Cell.ColumnLetterToInt("AH"));
         }
     }
 }

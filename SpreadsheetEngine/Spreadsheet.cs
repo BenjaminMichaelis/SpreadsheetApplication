@@ -56,19 +56,6 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        /// Converts the first letters in a string to numbers.
-        /// </summary>
-        /// <param name="cellName">The name of the cell (ex: AA33).</param>
-        /// <returns>Int of SpreadsheetCell.</returns>
-        /// regexr.com/5r82v
-        public int ColumnLetterToInt(string cellName)
-        {
-            string columnLetters = string.Concat(cellName.TakeWhile(char.IsLetter));
-            int columnLocation = columnLetters.ToCharArray().Select(c => c - 'A' + 1).Reverse().Select((v, i) => v * (int)Math.Pow(26, i)).Sum();
-            return columnLocation;
-        }
-
-        /// <summary>
         /// Runs a demo of the code with 50 cells displaying "Hello World".
         /// </summary>
         public void Demo()
@@ -291,7 +278,7 @@ namespace SpreadsheetEngine
         {
             get
             {
-                int columnLocation = this.ColumnLetterToInt(cellName);
+                int columnLocation = Cell.ColumnLetterToInt(cellName);
                 string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
                 int rowLocation = int.Parse(rowLocationString);
                 return (SpreadsheetCell)this[columnLocation - 1, rowLocation - 1];
@@ -300,7 +287,7 @@ namespace SpreadsheetEngine
 
         public bool IsValidCellName(string cellName)
         {
-            int columnLocation = this.ColumnLetterToInt(cellName);
+            int columnLocation = Cell.ColumnLetterToInt(cellName);
             string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
             if (int.TryParse(rowLocationString, out int rowLocation))
             {

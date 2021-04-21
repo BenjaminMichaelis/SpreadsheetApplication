@@ -5,6 +5,7 @@
 using System;
 using System.ComponentModel;
 using System.Data;
+using System.Linq;
 
 namespace SpreadsheetEngine
 {
@@ -150,17 +151,12 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="columnLetter">Letter to be switched to int.</param>
         /// <returns>Returns an int of the column int.</returns>
-        public int ColumnLetterToInt(string columnLetter)
+        /// regexr.com/5r82v
+        public static int ColumnLetterToInt(string columnLetter)
         {
-            int sum = 0;
-            columnLetter = columnLetter.ToUpperInvariant(); // Convert to uppercase if not already.
-            foreach (char c in columnLetter)
-            {
-                sum *= 26;
-                sum += c - 'A' + 1;
-            }
-
-            return sum;
+            int columnLocation = string.Concat(columnLetter.TakeWhile(char.IsLetter)).ToUpperInvariant().ToCharArray().Select(c => c - 'A' + 1).
+                Reverse().Select((v, i) => v * (int)Math.Pow(26, i)).Sum();
+            return columnLocation;
         }
 
         /// <summary>
