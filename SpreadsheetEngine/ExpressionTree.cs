@@ -81,12 +81,8 @@ namespace SpreadsheetEngine
                     // 1.
                     if (operandStart != -1)
                     {
-                        if (operandStart >= 0 && expression.Length > operandStart)
-                        {
-                            string operand = expression[operandStart..i];
-                            postfixExpression.Add(operand);
-                        }
-
+                        string operand = expression.Substring(operandStart, i - operandStart);
+                        postfixExpression.Add(operand);
                         operandStart = -1;
                     }
 
@@ -116,20 +112,23 @@ namespace SpreadsheetEngine
                         }
 
                         // 5.
-                        else if (this.IsHigherPrecedence(c, operators.Peek()) || (this.IsSamePrecedence(c, operators.Peek()) && this.IsRightAssociative(c)))
+                        else if (this.IsHigherPrecedence(c, operators.Peek())
+                                 || (this.IsSamePrecedence(c, operators.Peek()) && this.IsRightAssociative(c)))
                         {
                             operators.Push(c);
                         }
 
                         // 6.
-                        else if (this.IsLowerPrecedence(c, operators.Peek()) || (this.IsSamePrecedence(c, operators.Peek()) && this.IsLeftAssociative(c)))
+                        else if (this.IsLowerPrecedence(c, operators.Peek())
+                                 || (this.IsSamePrecedence(c, operators.Peek()) && this.IsLeftAssociative(c)))
                         {
                             do
                             {
                                 char op = operators.Pop();
                                 postfixExpression.Add(op.ToString());
                             }
-                            while (operators.Count > 0 && (this.IsLowerPrecedence(c, operators.Peek()) || (this.IsSamePrecedence(c, operators.Peek()) && this.IsLeftAssociative(c))));
+                            while (operators.Count > 0 && (this.IsLowerPrecedence(c, operators.Peek())
+                                                           || (this.IsSamePrecedence(c, operators.Peek()) && this.IsLeftAssociative(c))));
 
                             operators.Push(c);
                         }
@@ -143,11 +142,7 @@ namespace SpreadsheetEngine
 
             if (operandStart != -1)
             {
-                if (operandStart >= 0 && expression.Length > operandStart)
-                {
-                    postfixExpression.Add(expression[operandStart..]);
-                }
-
+                postfixExpression.Add(expression.Substring(operandStart, expression.Length - operandStart));
                 operandStart = -1;
             }
 
