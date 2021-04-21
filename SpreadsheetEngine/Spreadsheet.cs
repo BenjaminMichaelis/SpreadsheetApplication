@@ -23,11 +23,22 @@ namespace SpreadsheetEngine
         /// </summary>
         public event PropertyChangedEventHandler? OnCellPropertyChanged;
 
+        /// <summary>
+        /// Gets or sets list containing the cells that are currently being calculated.
+        /// </summary>
+        private List<SpreadsheetCell> IsCalculating { get; set; } = new();
+
+        /// <summary>
+        /// Gets or sets list containing the cells that are currently being calculated.
+        /// </summary>
+        private List<SpreadsheetCell> IsErrored { get; set; } = new();
+
         private Stack<Command> UndoStack { get; } = new();
 
         private SpreadsheetCell[,] CellsOfSpreadsheet { get; set; } = null!;
 
         private XDocument? SrcTree { get; set; }
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
@@ -90,6 +101,7 @@ namespace SpreadsheetEngine
                         if (!string.IsNullOrEmpty(evaluatingCell.Text))
                         {
                             this.OnCellPropertyChanged?.Invoke(sender, e);
+                            this.IsCalculating.Clear();
                         }
 
                         break;
@@ -97,6 +109,7 @@ namespace SpreadsheetEngine
                         if (!string.IsNullOrEmpty(evaluatingCell.Value))
                         {
                             this.OnCellPropertyChanged?.Invoke(sender, e);
+                            this.IsCalculating.Clear();
                         }
 
                         break;
