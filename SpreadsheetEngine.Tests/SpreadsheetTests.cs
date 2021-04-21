@@ -182,6 +182,20 @@ namespace SpreadsheetEngine.Tests
             Assert.Equal("21", sut[0, 2].Value);
         }
 
+        [Fact]
+        public void IsValidCellName_GivenValidCellName_ReturnTrue()
+        {
+            Spreadsheet sut = new(1, 3);
+            Assert.True(sut.IsValidCellName("A1"));
+        }
+
+        [Fact]
+        public void IsValidCellName_GivenInvalidCellName_ReturnFalse()
+        {
+            Spreadsheet sut = new(1, 3);
+            Assert.False(sut.IsValidCellName("ZZ1"));
+        }
+
         /// <summary>
         /// Test background color changing.
         /// </summary>

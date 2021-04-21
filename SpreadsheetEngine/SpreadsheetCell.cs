@@ -94,21 +94,10 @@ namespace SpreadsheetEngine
                         string evaluatedString = this.Text[1..];
                         ExpressionTree newEvaluationTree = new(evaluatedString);
                         if (newEvaluationTree.Values.Any(item =>
-                            {
-                                try
-                                {
-                                    _ = this.SpreadsheetReference[item.Key];
-                                }
-                                catch (IndexOutOfRangeException)
-                                {
-                                    this.ErrorMessage = Cell.CellErrorMessage;
-                                    return true;
-                                }
-
-                                return false;
-                            }
+                            !this.SpreadsheetReference.IsValidCellName(item.Key)
                         ))
                         {
+                            this.ErrorMessage = Cell.CellErrorMessage;
                             return;
                         }
 

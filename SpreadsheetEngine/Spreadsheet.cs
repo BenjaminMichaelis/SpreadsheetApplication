@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
@@ -59,6 +60,7 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="cellName">The name of the cell (ex: AA33).</param>
         /// <returns>Int of SpreadsheetCell.</returns>
+        /// regexr.com/5r82v
         public int ColumnLetterToInt(string cellName)
         {
             string columnLetters = string.Concat(cellName.TakeWhile(char.IsLetter));
@@ -285,7 +287,7 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="cellName">Letter/number combo of cell.</param>
         /// <returns>Returns cell in spreadsheet that matches the index of the cell.</returns>
-        private SpreadsheetCell? this[string cellName]
+        private SpreadsheetCell this[string cellName]
         {
             get
             {
@@ -294,6 +296,33 @@ namespace SpreadsheetEngine
                 int rowLocation = int.Parse(rowLocationString);
                 return (SpreadsheetCell)this[columnLocation - 1, rowLocation - 1];
             }
+        }
+
+        public bool IsValidCellName(string cellName)
+        {
+            int columnLocation = this.ColumnLetterToInt(cellName);
+            string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
+            if (int.TryParse(rowLocationString, out int rowLocation))
+            {
+                return this.IsValidIndex(columnLocation-1, rowLocation-1);
+            }
+
+            return false;
+        }
+
+        public bool IsValidIndex(int columnIndex, int rowIndex) =>
+            columnIndex >=0 && columnIndex < CellsOfSpreadsheet.GetLength(0) &&
+            rowIndex >=0 && rowIndex < CellsOfSpreadsheet.GetLength(1);
+
+        public bool TryGetCell(int columnIndex, int rowIndex, out Cell cell)
+        {
+            cell = default;
+            if (IsValidIndex(columnIndex, rowIndex))
+            {
+                cell = this[columnIndex, rowIndex];
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
