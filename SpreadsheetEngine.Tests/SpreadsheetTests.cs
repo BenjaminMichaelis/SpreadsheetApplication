@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -153,6 +154,17 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
+        /// Check that the valid cell name regex works.
+        /// </summary>
+        [Fact]
+        public void ValidCellNameRegexWorks()
+        {
+            // https://regexr.com/5r9fa
+            Regex lettersThenNumbersRegex = new(@"[A-Za-z]+\d+$");
+            Assert.Matches(lettersThenNumbersRegex, "A1");
+    }
+
+        /// <summary>
         /// If cell name is valid, return true from method.
         /// </summary>
         [Fact]
@@ -163,23 +175,33 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
-        /// Test that when given the letter AH for a column number, it true.
+        /// If cell name is valid, return true from method.
         /// </summary>
         [Fact]
-        public void IsValidCellName_AH_return34True()
+        public void IsValidCellName_GivenValidLowercaseCellName_ReturnTrue()
         {
             Spreadsheet sut = new(1, 3);
-            Assert.True(sut.IsValidCellName("AH"));
+            Assert.True(sut.IsValidCellName("a1"));
+        }
+
+        /// <summary>
+        /// Test that when given the letter AH for a column number, it false.
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_AH_returnsFalse()
+        {
+            Spreadsheet sut = new(1, 3);
+            Assert.False(sut.IsValidCellName("AH"));
         }
 
         /// <summary>
         /// Test that when given the letters lowercase ah for a column number, it returns true.
         /// </summary>
         [Fact]
-        public void IsValidCellName_ah_return34True()
+        public void IsValidCellName_ah_returnFalse()
         {
             Spreadsheet sut = new(1, 3);
-            Assert.True(sut.IsValidCellName("ah"));
+            Assert.False(sut.IsValidCellName("ah"));
         }
 
         /// <summary>

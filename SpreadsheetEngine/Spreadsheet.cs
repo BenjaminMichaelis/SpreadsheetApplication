@@ -293,7 +293,7 @@ namespace SpreadsheetEngine
         public bool IsValidCellName(string cellName)
         {
             // https://regexr.com/5r9fa
-            Regex lettersThenNumbersRegex = new Regex(@"^([A - Za - z] +[\d] +)$");
+            Regex lettersThenNumbersRegex = new(@"[A-Za-z]+\d+$");
             bool isValidCellName = lettersThenNumbersRegex.IsMatch(cellName);
             int columnLocation = Cell.ColumnLetterToInt(cellName);
             string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
