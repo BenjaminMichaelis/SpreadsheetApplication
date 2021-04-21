@@ -99,7 +99,7 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
-        /// Tests the algoritm for removing whitespace from a string.
+        /// Tests the algorithm for removing whitespace from a string.
         /// </summary>
         /// <param name="expression">The expression to have whitespace removed from.</param>
         /// <param name="expected">The expected string with no whitespace.</param>
