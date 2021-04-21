@@ -194,7 +194,17 @@ namespace SpreadsheetApp
         /// <param name="e">Property changed event.</param>
         private void DataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            string? newCellText = this.MainForm.spreadsheetViewUI.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+            string newCellText;
+            var spreadsheetViewValue = this.MainForm.spreadsheetViewUI.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+            if (spreadsheetViewValue != null)
+            {
+                newCellText = spreadsheetViewValue.ToString();
+            }
+            else
+            {
+                this.Sheet[e.ColumnIndex, e.RowIndex].Text = string.Empty;
+                return;
+            }
 
             try
             {
