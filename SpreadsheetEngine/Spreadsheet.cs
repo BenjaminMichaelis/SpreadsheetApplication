@@ -26,12 +26,15 @@ namespace SpreadsheetEngine
         /// <summary>
         /// Gets or sets list containing the cells that are currently being calculated.
         /// </summary>
-        private List<SpreadsheetCell> IsCalculating { get; set; } = new();
+        private HashSet<SpreadsheetCell> IsCalculating { get; set; } = new();
 
         /// <summary>
         /// Gets or sets list containing the cells that are currently being calculated.
         /// </summary>
-        private List<SpreadsheetCell> IsErrored { get; set; } = new();
+        private IEnumerable<SpreadsheetCell> IsErrored
+        {
+            get => CellsOfSpreadsheet.Cast<SpreadsheetCell>().Where(item => item.IsErrored);
+        } 
 
         private Stack<Command> UndoStack { get; } = new();
 
