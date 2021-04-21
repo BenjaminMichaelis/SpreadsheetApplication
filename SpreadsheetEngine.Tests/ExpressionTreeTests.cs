@@ -85,6 +85,22 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
+        /// Tests Evaluate with normal and edge cases such as divide by zero.
+        /// </summary>
+        /// <param name="expression">The expression passed into the test.</param>
+        /// <param name="expected">The expected result from the input.</param>
+        [Theory]
+        [InlineData("(322*B2/A1)", 5)]
+        public void EvaluateCellNameTests(string expression, double expected)
+        {
+            ExpressionTree tree = new ExpressionTree(expression);
+            tree.SetVariable("B2", 2);
+            tree.SetVariable("A1", 2);
+
+            Assert.Equal(expected, tree.Evaluate());
+        }
+
+        /// <summary>
         /// Test cell adding another cell reference.
         /// </summary>
         [Fact]

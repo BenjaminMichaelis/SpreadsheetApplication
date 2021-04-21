@@ -216,25 +216,21 @@ namespace SpreadsheetApp
                 switch (newCellText.Length)
                 {
                     case > 0:
+                    {
+                        if (newCellText.StartsWith("="))
                         {
-                            if (newCellText.StartsWith("="))
-                            {
-                                this.Sheet[e.ColumnIndex, e.RowIndex].Text = newCellText;
-                                this.MainForm.spreadsheetViewUI.Rows[e.RowIndex].Cells[e.ColumnIndex].Value =
-                                    this.Sheet[e.ColumnIndex, e.RowIndex].Value;
-                            }
-
-                            break;
+                            this.Sheet[e.ColumnIndex, e.RowIndex].Text = newCellText;
+                            this.MainForm.spreadsheetViewUI.Rows[e.RowIndex].Cells[e.ColumnIndex].Value =
+                                this.Sheet[e.ColumnIndex, e.RowIndex].Value;
                         }
+
+                        break;
+                    }
                 }
             }
-            catch (NullReferenceException)
+            catch (IndexOutOfRangeException)
             {
-                this.MainForm.spreadsheetViewUI.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = string.Empty;
-            }
-            catch (Exception)
-            {
-                throw new Exception("cellValue has been set to null or empty unexpectedly during cell editing.");
+                this.MainForm.spreadsheetViewUI.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = Cell.CellErrorMessage;
             }
         }
 
