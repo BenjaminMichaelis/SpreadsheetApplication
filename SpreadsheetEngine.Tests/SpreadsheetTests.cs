@@ -170,7 +170,7 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void IsValidCellName_GivenValidCellName_ReturnTrue()
         {
-            Spreadsheet sut = new(1, 3);
+            Spreadsheet sut = new(1, 1);
             Assert.True(sut.IsValidCellName("A1"));
         }
 
@@ -180,7 +180,7 @@ namespace SpreadsheetEngine.Tests
         [Fact]
         public void IsValidCellName_GivenValidLowercaseCellName_ReturnTrue()
         {
-            Spreadsheet sut = new(1, 3);
+            Spreadsheet sut = new(1, 1);
             Assert.True(sut.IsValidCellName("a1"));
         }
 
@@ -235,13 +235,24 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
+        /// Test that when given the letter * for a column number, it returns false (invalid string).
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_SZ1InRange_returnTrue()
+        {
+            // 'SZ' is column number 520
+            Spreadsheet sut = new(520, 1);
+            Assert.True(sut.IsValidCellName("SZ1"));
+        }
+
+        /// <summary>
         /// If cell name is out of range, return false from method.
         /// </summary>
         [Fact]
         public void IsValidCellName_GivenOutOfRangeCellName_ReturnFalse()
         {
-            Spreadsheet sut = new(1, 3);
-            Assert.False(sut.IsValidCellName("ZZ1"));
+            Spreadsheet sut = new(1, 1);
+            Assert.False(sut.IsValidCellName("SZ1"));
         }
 
         /// <summary>
