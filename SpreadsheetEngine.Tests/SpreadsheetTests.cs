@@ -152,6 +152,9 @@ namespace SpreadsheetEngine.Tests
             Assert.Equal("21", sut[0, 2].Value);
         }
 
+        /// <summary>
+        /// If cell name is valid, return true from method.
+        /// </summary>
         [Fact]
         public void IsValidCellName_GivenValidCellName_ReturnTrue()
         {
@@ -159,6 +162,9 @@ namespace SpreadsheetEngine.Tests
             Assert.True(sut.IsValidCellName("A1"));
         }
 
+        /// <summary>
+        /// If cell name is valid, return true from method.
+        /// </summary>
         [Fact]
         public void IsValidCellName_GivenInvalidCellName_ReturnFalse()
         {

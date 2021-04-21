@@ -30,19 +30,18 @@ namespace SpreadsheetEngine
         private HashSet<SpreadsheetCell> IsCalculating { get; set; } = new();
 
         /// <summary>
-        /// Gets or sets list containing the cells that are currently being calculated.
+        /// Gets list containing the cells that are currently being calculated.
         /// </summary>
         private IEnumerable<SpreadsheetCell> IsErrored
         {
-            get => CellsOfSpreadsheet.Cast<SpreadsheetCell>().Where(item => item.IsErrored);
-        } 
+            get => this.CellsOfSpreadsheet.Cast<SpreadsheetCell>().Where(item => item.IsErrored);
+        }
 
         private Stack<Command> UndoStack { get; } = new();
 
         private SpreadsheetCell[,] CellsOfSpreadsheet { get; set; } = null!;
 
         private XDocument? SrcTree { get; set; }
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
@@ -285,30 +284,49 @@ namespace SpreadsheetEngine
             }
         }
 
+        /// <summary>
+        /// Check to see if a cell name is valid.
+        /// </summary>
+        /// <param name="cellName">The name of the cell.</param>
+        /// <returns>Returns true if the cell name is valid and can be obtained, false if not.</returns>
         public bool IsValidCellName(string cellName)
         {
             int columnLocation = Cell.ColumnLetterToInt(cellName);
             string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
             if (int.TryParse(rowLocationString, out int rowLocation))
             {
-                return this.IsValidIndex(columnLocation-1, rowLocation-1);
+                return this.IsValidIndex(columnLocation - 1, rowLocation - 1);
             }
 
             return false;
         }
 
+        /// <summary>
+        /// Checks if the desired row and column are within the bounds of the current spreadsheet.
+        /// </summary>
+        /// <param name="columnIndex">The desired column.</param>
+        /// <param name="rowIndex">The desired row.</param>
+        /// <returns>Returns true if cell could be obtained at the specified location, false if not.</returns>
         public bool IsValidIndex(int columnIndex, int rowIndex) =>
-            columnIndex >=0 && columnIndex < CellsOfSpreadsheet.GetLength(0) &&
-            rowIndex >=0 && rowIndex < CellsOfSpreadsheet.GetLength(1);
+            columnIndex >= 0 && columnIndex < this.CellsOfSpreadsheet.GetLength(0) &&
+            rowIndex >= 0 && rowIndex < this.CellsOfSpreadsheet.GetLength(1);
 
-        public bool TryGetCell(int columnIndex, int rowIndex, out Cell cell)
+        /// <summary>
+        /// Try get the cell at the specified location.
+        /// </summary>
+        /// <param name="columnIndex">The column at which the cell is at.</param>
+        /// <param name="rowIndex">The row at which the cell is at.</param>
+        /// <param name="cell">The desired cell, returns default if not obtained.</param>
+        /// <returns>Returns true is desired cell is obtained, false if not.</returns>
+        public bool TryGetCell(int columnIndex, int rowIndex, out Cell? cell)
         {
             cell = default;
-            if (IsValidIndex(columnIndex, rowIndex))
+            if (this.IsValidIndex(columnIndex, rowIndex))
             {
                 cell = this[columnIndex, rowIndex];
                 return true;
             }
+
             return false;
         }
 

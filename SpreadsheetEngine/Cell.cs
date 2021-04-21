@@ -1,4 +1,4 @@
-﻿// <copyright file="Cell.cs" company="Benjamin Michaelis">
+// <copyright file="Cell.cs" company="Benjamin Michaelis">
 // Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
 // </copyright>
 
@@ -103,9 +103,9 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-    /// Gets a value indicating whether gets bool; True if is an error message, false if not.
-    /// </summary>
-    public bool IsErrored => !string.IsNullOrWhiteSpace(this.ErrorMessage);
+        /// Gets a value indicating whether gets bool; True if is an error message, false if not.
+        /// </summary>
+        public bool IsErrored => !string.IsNullOrWhiteSpace(this.ErrorMessage);
 
         /// <summary>
         /// Gets or sets cell background color.
@@ -149,13 +149,13 @@ namespace SpreadsheetEngine
         /// <summary>
         /// Converts an associated Letter to int value for Index Name.
         /// </summary>
-        /// <param name="columnLetter">Letter to be switched to int.</param>
+        /// <param name="cellName">Letter to be switched to int.</param>
         /// <returns>Returns an int of the column int.</returns>
-        /// regexr.com/5r82v
-        public static int ColumnLetterToInt(string columnLetter)
+        public static int ColumnLetterToInt(string cellName)
         {
-            int columnLocation = string.Concat(columnLetter.TakeWhile(char.IsLetter)).ToUpperInvariant().ToCharArray().Select(c => c - 'A' + 1).
-                Reverse().Select((v, i) => v * (int)Math.Pow(26, i)).Sum();
+            int columnLocation = string.Concat(cellName.TakeWhile(char.IsLetter)) // Get the letters from the cell name.
+                .ToUpperInvariant() // Make all the letters in the cell name uppercase.
+                .ToCharArray().Select(c => c - 'A' + 1).Reverse().Select((v, i) => v * (int)Math.Pow(26, i)).Sum(); // Calculate the number the letter(s) associate too.
             return columnLocation;
         }
 
