@@ -46,58 +46,33 @@ namespace SpreadsheetEngine
                 return cellCopy;
             }
 
-            private void SetCellValue(string value)
-            {
-                // this. or base.
-                this.InternalValue = value;
-            }
-
-            /// <summary>
-            /// Notifies for  when any property for any cell in the worksheet has changed.
-            /// </summary>
-            /// <param name="sender">Object that called object.</param>
-            /// <param name="e">The property changed arg.</param>
-            private void CellPropertyChanged(object? sender, PropertyChangedEventArgs e)
-            {
-                switch (sender)
-                {
-                    case SpreadsheetCell evaluatingCell:
-                    {
-                        switch (e.PropertyName)
-                        {
-                            case nameof(Cell.Text):
-                            case nameof(Cell.Value) when this != evaluatingCell:
-                            {
-                                this.UpdateCellValue();
-
-                                break;
-                            }
-
-                            case nameof(Cell.BackgroundColor):
-                                break;
-                        }
-
-                        break;
-                    }
-                }
-            }
-
             public void UpdateCellValue()
             {
                 bool wasErrored = this.IsErrored;
+
                 // If evaluating cell text starts with = then we will have to evaluate all the text to set the value appropriately.
                 if (this.Text.StartsWith("=") && this.Text.Length > 1)
-                { 
+                {
                     try
                     {
+                        IEnumerable<SpreadsheetCell?> referencedCells;
                         string evaluatedString = this.Text[1..];
                         ExpressionTree newEvaluationTree = new(evaluatedString);
-                        IEnumerable<SpreadsheetCell?> referencedCells = newEvaluationTree.Values.Select(
+                        if (newEvaluationTree.Values.Any(item =>
+                            !this.SpreadsheetReference.IsValidCellName(item.Key)
+                        ))
+                        {
+                            this.ErrorMessage = Cell.CellErrorMessage;
+                            return;
+                        }
+
+                        referencedCells = newEvaluationTree.Values.Select(
                             item => this.SpreadsheetReference[item.Key]
                         );
                         referencedCells = referencedCells.Where(
                             item => item is { }
                         );
+
                         this.ErrorMessage = null;
 
                         bool circularReference = this.SpreadsheetReference.IsCalculating.Contains(this);
@@ -176,10 +151,6 @@ namespace SpreadsheetEngine
                         evaluatedString = newEvaluationTree.Evaluate().ToString();
                         this.SetCellValue(evaluatedString);
                     }
-                    catch (CircularReferenceException)
-                    {
-                        this.ErrorMessage = CircularReferenceException.DefaultMessage;
-                    }
                     catch (Exception exception)
                     {
                         Console.WriteLine(exception);
@@ -189,6 +160,42 @@ namespace SpreadsheetEngine
                 else
                 {
                     this.SetCellValue(this.Text);
+                }
+            }
+
+            private void SetCellValue(string value)
+            {
+                // this. or base.
+                this.InternalValue = value;
+            }
+
+            /// <summary>
+            /// Notifies for  when any property for any cell in the worksheet has changed.
+            /// </summary>
+            /// <param name="sender">Object that called object.</param>
+            /// <param name="e">The property changed arg.</param>
+            private void CellPropertyChanged(object? sender, PropertyChangedEventArgs e)
+            {
+                switch (sender)
+                {
+                    case SpreadsheetCell evaluatingCell:
+                    {
+                        switch (e.PropertyName)
+                        {
+                            case nameof(Cell.Text):
+                            case nameof(Cell.Value) when this != evaluatingCell:
+                            {
+                                this.UpdateCellValue();
+
+                                break;
+                            }
+
+                            case nameof(Cell.BackgroundColor):
+                                break;
+                        }
+
+                        break;
+                    }
                 }
             }
         }

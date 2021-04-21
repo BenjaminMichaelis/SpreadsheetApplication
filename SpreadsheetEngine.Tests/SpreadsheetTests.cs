@@ -4,7 +4,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SpreadsheetEngine.Tests
@@ -14,36 +17,6 @@ namespace SpreadsheetEngine.Tests
     /// </summary>
     public class SpreadsheetTests
     {
-        /// <summary>
-        /// Test that when given the letter A for a column number, it returns 1.
-        /// </summary>
-        [Fact]
-        public void ColumnLetterToNumber_A_return1()
-        {
-            Spreadsheet sut = new(1, 1);
-            Assert.Equal(1, sut.ColumnLetterToInt("A"));
-        }
-
-        /// <summary>
-        /// Test that when given the letter AH for a column number, it returns 34.
-        /// </summary>
-        [Fact]
-        public void ColumnLetterToNumber_AH_return34()
-        {
-            Spreadsheet sut = new(1, 1);
-            Assert.Equal(34, sut.ColumnLetterToInt("AH"));
-        }
-
-        /// <summary>
-        /// Test that when given the letter XFD for a column number, it returns 16384.
-        /// </summary>
-        [Fact]
-        public void ColumnLetterToNumber_XFD_return16384()
-        {
-            Spreadsheet sut = new(1, 1);
-            Assert.Equal(16384, sut.ColumnLetterToInt("XFD"));
-        }
-
         /// <summary>
         /// Test references.
         /// </summary>
@@ -134,6 +107,27 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
+        /// Test Referencing a cell that doesn't exist.
+        /// </summary>
+        [Fact]
+        public void Indexer_GivenNonexistentIndex_ThrowIndexOutOfRangeException()
+        {
+            Spreadsheet sut = new(1, 2);
+            Assert.Throws<IndexOutOfRangeException>(() => _ = sut[0, 42]);
+        }
+
+        /// <summary>
+        /// Test Referencing a cell that doesn't exist.
+        /// </summary>
+        [Fact]
+        public void ReferenceNonExistingCell()
+        {
+            Spreadsheet sut = new(1, 2);
+            sut[0, 0].Text = "=ZZ1";
+            Assert.Equal(Cell.CellErrorMessage, sut[0, 0].Value);
+        }
+
+        /// <summary>
         /// Test Referencing Empty Cell Multiplied by 2.
         /// </summary>
         [Fact]
@@ -157,6 +151,108 @@ namespace SpreadsheetEngine.Tests
             Assert.Equal("10", sut[0, 0].Value);
             Assert.Equal("11", sut[0, 1].Value);
             Assert.Equal("21", sut[0, 2].Value);
+        }
+
+        /// <summary>
+        /// Check that the valid cell name regex works.
+        /// </summary>
+        [Fact]
+        public void ValidCellNameRegexWorks()
+        {
+            // https://regexr.com/5r9fa
+            Regex lettersThenNumbersRegex = new(@"[A-Za-z]+\d+$");
+            Assert.Matches(lettersThenNumbersRegex, "A1");
+    }
+
+        /// <summary>
+        /// If cell name is valid, return true from method.
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_GivenValidCellName_ReturnTrue()
+        {
+            Spreadsheet sut = new(1, 1);
+            Assert.True(sut.IsValidCellName("A1"));
+        }
+
+        /// <summary>
+        /// If cell name is valid, return true from method.
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_GivenValidLowercaseCellName_ReturnTrue()
+        {
+            Spreadsheet sut = new(1, 1);
+            Assert.True(sut.IsValidCellName("a1"));
+        }
+
+        /// <summary>
+        /// Test that when given the letter AH for a column number, it false.
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_AH_returnsFalse()
+        {
+            Spreadsheet sut = new(1, 3);
+            Assert.False(sut.IsValidCellName("AH"));
+        }
+
+        /// <summary>
+        /// Test that when given the letters lowercase ah for a column number, it returns true.
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_ah_returnFalse()
+        {
+            Spreadsheet sut = new(1, 3);
+            Assert.False(sut.IsValidCellName("ah"));
+        }
+
+        /// <summary>
+        /// Test that when given the letter 1AH for a column number, it returns false (invalid string).
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_1AH_returnFalse()
+        {
+            Spreadsheet sut = new(1, 3);
+            Assert.False(sut.IsValidCellName("1AH"));
+        }
+
+        /// <summary>
+        /// Test that when given the letter AH11A for a column number, it returns false (invalid string).
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_AH11A_returnFalse()
+        {
+            Spreadsheet sut = new(1, 3);
+            Assert.False(sut.IsValidCellName("AH11A"));
+        }
+
+        /// <summary>
+        /// Test that when given the letter * for a column number, it returns false (invalid string).
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_Star_returnFalse()
+        {
+            Spreadsheet sut = new(1, 3);
+            Assert.False(sut.IsValidCellName("*"));
+        }
+
+        /// <summary>
+        /// Test that when given the letter * for a column number, it returns false (invalid string).
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_SZ1InRange_returnTrue()
+        {
+            // 'SZ' is column number 520
+            Spreadsheet sut = new(520, 1);
+            Assert.True(sut.IsValidCellName("SZ1"));
+        }
+
+        /// <summary>
+        /// If cell name is out of range, return false from method.
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_GivenOutOfRangeCellName_ReturnFalse()
+        {
+            Spreadsheet sut = new(1, 1);
+            Assert.False(sut.IsValidCellName("SZ1"));
         }
 
         /// <summary>
