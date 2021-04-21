@@ -297,6 +297,14 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        /// Indexer to pass back a Spreadsheet Cell.
+        /// </summary>
+        /// <param name="columnIndex">The column of the location of the cell.</param>
+        /// <param name="rowIndex">The row of the location of the cell.</param>
+        /// <returns>A Cell.</returns>
+        public Cell this[int columnIndex, int rowIndex] => this.CellsOfSpreadsheet[columnIndex, rowIndex];
+
+        /// <summary>
         /// Gets number of columns in spreadsheet.
         /// </summary>
         public int ColumnCount => this.CellsOfSpreadsheet.GetLength(0);
@@ -305,14 +313,6 @@ namespace SpreadsheetEngine
         /// Gets number of rows in spreadsheet.
         /// </summary>
         public int RowCount => this.CellsOfSpreadsheet.GetLength(1);
-
-        /// <summary>
-        /// Indexer to pass back a Spreadsheet Cell.
-        /// </summary>
-        /// <param name="columnIndex">The column of the location of the cell.</param>
-        /// <param name="rowIndex">The row of the location of the cell.</param>
-        /// <returns>A Cell.</returns>
-        public Cell this[int columnIndex, int rowIndex] => this.CellsOfSpreadsheet[columnIndex, rowIndex];
 
         /// <summary>
         /// Allows undo of a command.

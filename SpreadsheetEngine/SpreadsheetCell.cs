@@ -87,17 +87,38 @@ namespace SpreadsheetEngine
                 bool wasErrored = this.IsErrored;
                 // If evaluating cell text starts with = then we will have to evaluate all the text to set the value appropriately.
                 if (this.Text.StartsWith("=") && this.Text.Length > 1)
-                { 
+                {
                     try
                     {
+                        IEnumerable<SpreadsheetCell?> referencedCells;
                         string evaluatedString = this.Text[1..];
                         ExpressionTree newEvaluationTree = new(evaluatedString);
-                        IEnumerable<SpreadsheetCell?> referencedCells = newEvaluationTree.Values.Select(
+                        if (newEvaluationTree.Values.Any(item =>
+                            {
+                                try
+                                {
+                                    _ = this.SpreadsheetReference[item.Key];
+                                }
+                                catch (IndexOutOfRangeException)
+                                {
+                                    this.ErrorMessage = Cell.CellErrorMessage;
+                                    return true;
+                                }
+
+                                return false;
+                            }
+                        ))
+                        {
+                            return;
+                        }
+
+                        referencedCells = newEvaluationTree.Values.Select(
                             item => this.SpreadsheetReference[item.Key]
                         );
                         referencedCells = referencedCells.Where(
                             item => item is { }
                         );
+
                         this.ErrorMessage = null;
 
                         bool circularReference = this.SpreadsheetReference.IsCalculating.Contains(this);

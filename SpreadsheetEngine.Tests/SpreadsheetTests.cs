@@ -4,7 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SpreadsheetEngine.Tests
@@ -131,6 +133,27 @@ namespace SpreadsheetEngine.Tests
             Spreadsheet sut = new(1, 2);
             sut[0, 0].Text = "=A2";
             Assert.Equal("0", sut[0, 0].Value);
+        }
+
+        /// <summary>
+        /// Test Referencing a cell that doesn't exist.
+        /// </summary>
+        [Fact]
+        public void Indexer_GivenNonexistentIndex_ThrowIndexOutOfRangeException()
+        {
+            Spreadsheet sut = new(1, 2);
+            Assert.Throws<IndexOutOfRangeException>(() => _ = sut[0, 42]);
+        }
+
+        /// <summary>
+        /// Test Referencing a cell that doesn't exist.
+        /// </summary>
+        [Fact]
+        public void ReferenceNonExistingCell()
+        {
+            Spreadsheet sut = new(1, 2);
+            sut[0, 0].Text = "=ZZ1";
+            Assert.Equal(Cell.CellErrorMessage, sut[0, 0].Value);
         }
 
         /// <summary>
