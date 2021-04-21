@@ -162,7 +162,10 @@ namespace SpreadsheetApp
                         case nameof(Cell.BackgroundColor):
                             this.MainForm.spreadsheetViewUI.Rows[senderCell.RowIndex].Cells[senderCell.ColumnIndex].Style.BackColor = System.Drawing.Color.FromArgb((int)senderCell.BackgroundColor);
                             break;
-                    }
+                        case nameof(Cell.ErrorMessage):
+                            this.MainForm.spreadsheetViewUI.Rows[senderCell.RowIndex].Cells[senderCell.ColumnIndex].Value = senderCell.Value;
+                            break;
+}
 
                     break;
                 }

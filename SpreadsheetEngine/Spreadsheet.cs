@@ -116,6 +116,9 @@ namespace SpreadsheetEngine
                         }
 
                         break;
+                    case nameof(Cell.ErrorMessage):
+                        this.OnCellPropertyChanged?.Invoke(sender, e);
+                        break;
                     case nameof(Cell.BackgroundColor):
                         this.OnCellPropertyChanged?.Invoke(sender, e);
                         break;
