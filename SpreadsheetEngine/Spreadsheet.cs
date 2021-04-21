@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
@@ -291,11 +292,33 @@ namespace SpreadsheetEngine
         /// <returns>Returns true if the cell name is valid and can be obtained, false if not.</returns>
         public bool IsValidCellName(string cellName)
         {
+            // https://regexr.com/5r9fa
+            Regex lettersThenNumbersRegex = new Regex(@"^([A - Za - z] +[\d] +)$");
+            bool isValidCellName = lettersThenNumbersRegex.IsMatch(cellName);
             int columnLocation = Cell.ColumnLetterToInt(cellName);
             string rowLocationString = string.Join(null, System.Text.RegularExpressions.Regex.Split(cellName, "[^\\d]"));
-            if (int.TryParse(rowLocationString, out int rowLocation))
+            if (int.TryParse(rowLocationString, out int rowLocation) && isValidCellName)
             {
                 return this.IsValidIndex(columnLocation - 1, rowLocation - 1);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Try get the cell at the specified location.
+        /// </summary>
+        /// <param name="columnIndex">The column at which the cell is at.</param>
+        /// <param name="rowIndex">The row at which the cell is at.</param>
+        /// <param name="cell">The desired cell, returns default if not obtained.</param>
+        /// <returns>Returns true is desired cell is obtained, false if not.</returns>
+        public bool TryGetCell(string cellName, out Cell? cell)
+        {
+            cell = default;
+            if (this.IsValidCellName(cellName))
+            {
+                cell = this[cellName];
+                return true;
             }
 
             return false;

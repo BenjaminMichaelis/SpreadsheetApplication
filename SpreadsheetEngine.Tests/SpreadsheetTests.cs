@@ -163,10 +163,60 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
-        /// If cell name is valid, return true from method.
+        /// Test that when given the letter AH for a column number, it true.
         /// </summary>
         [Fact]
-        public void IsValidCellName_GivenInvalidCellName_ReturnFalse()
+        public void IsValidCellName_AH_return34True()
+        {
+            Spreadsheet sut = new(1, 3);
+            Assert.True(sut.IsValidCellName("AH"));
+        }
+
+        /// <summary>
+        /// Test that when given the letters lowercase ah for a column number, it returns true.
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_ah_return34True()
+        {
+            Spreadsheet sut = new(1, 3);
+            Assert.True(sut.IsValidCellName("ah"));
+        }
+
+        /// <summary>
+        /// Test that when given the letter 1AH for a column number, it returns false (invalid string).
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_1AH_returnFalse()
+        {
+            Spreadsheet sut = new(1, 3);
+            Assert.False(sut.IsValidCellName("1AH"));
+        }
+
+        /// <summary>
+        /// Test that when given the letter AH11A for a column number, it returns false (invalid string).
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_AH11A_returnFalse()
+        {
+            Spreadsheet sut = new(1, 3);
+            Assert.False(sut.IsValidCellName("AH11A"));
+        }
+
+        /// <summary>
+        /// Test that when given the letter * for a column number, it returns false (invalid string).
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_Star_returnFalse()
+        {
+            Spreadsheet sut = new(1, 3);
+            Assert.False(sut.IsValidCellName("*"));
+        }
+
+        /// <summary>
+        /// If cell name is out of range, return false from method.
+        /// </summary>
+        [Fact]
+        public void IsValidCellName_GivenOutOfRangeCellName_ReturnFalse()
         {
             Spreadsheet sut = new(1, 3);
             Assert.False(sut.IsValidCellName("ZZ1"));
