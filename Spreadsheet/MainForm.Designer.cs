@@ -125,7 +125,7 @@ namespace SpreadsheetApp
             this.Controls.Add(this.mainMenu);
             this.MainMenuStrip = this.mainMenu;
             this.Name = "MainForm";
-            this.Text = "Benjamin Michaelis - 11620581";
+            this.Text = "Spreadsheet Application";
             this.ResumeLayout(false);
             this.PerformLayout();
 
