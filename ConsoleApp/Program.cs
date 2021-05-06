@@ -3,7 +3,6 @@
 // </copyright>
 
 using System;
-using CptS321;
 using SpreadsheetEngine;
 
 namespace ConsoleApp
