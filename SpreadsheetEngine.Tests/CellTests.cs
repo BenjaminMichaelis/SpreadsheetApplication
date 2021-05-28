@@ -1,5 +1,5 @@
 ﻿// <copyright file="CellTests.cs" company="Benjamin Michaelis">
-// Copyright (c) Benjamin Michaelis. ID: 11620581. All rights reserved.
+// Copyright (c) Benjamin Michaelis. All rights reserved.
 // </copyright>
 
 using System;
@@ -15,7 +15,7 @@ namespace SpreadsheetEngine.Tests
         /// <summary>
         /// Constructs class for abstract Class Cell.
         /// </summary>
-        public class SpreadsheetCellTests : Cell
+        private class SpreadsheetCellTests : Cell
         {
             /// <summary>
             /// Initializes a new instance of the <see cref="SpreadsheetCellTests"/> class.
