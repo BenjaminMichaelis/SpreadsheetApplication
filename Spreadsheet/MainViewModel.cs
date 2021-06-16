@@ -143,6 +143,7 @@ namespace SpreadsheetApp
         /// <param name="e">The event sending argument.</param>
         public void RedoButton_Click(object sender, System.EventArgs e)
         {
+            this.Sheet.Redo();
         }
 
         private void ColorDialog_HelpRequest(object sender, System.EventArgs e) => MessageBox.Show("Please select a color by clicking it. This will change the background color of a cell box.");

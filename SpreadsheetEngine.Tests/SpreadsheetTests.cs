@@ -523,5 +523,55 @@ namespace SpreadsheetEngine.Tests
             Assert.Equal(0xFFFFFFFF, sut[2, 3].BackgroundColor);
             Assert.Equal(0xFFFFFFFF, sut[4, 4].BackgroundColor);
         }
+
+        /// <summary>
+        /// Test redo a command.
+        /// </summary>
+        [Fact]
+        public void RedoCommandToPreviousState()
+        {
+            Spreadsheet sut = new(5, 5);
+            sut[0, 0].Text = "=88";
+            sut.Undo();
+            sut.Redo();
+            Assert.Equal("=88", sut[0, 0].Text);
+            Assert.Equal("88", sut[0, 0].Value);
+        }
+
+        /// <summary>
+        /// Test that the redo stack clears after performing another operation.
+        /// </summary>
+        [Fact]
+        public void RedoCommandStackClear()
+        {
+            Spreadsheet sut = new(5, 5);
+            sut[0, 0].Text = "=88";
+            sut.Undo();
+            sut[1, 1].Text = "=99";
+            sut.Redo();
+            Assert.Equal(string.Empty, sut[0, 0].Text);
+            Assert.Equal(string.Empty, sut[0, 0].Value);
+            Assert.Equal("=99", sut[1, 1].Text);
+            Assert.Equal("99", sut[1, 1].Value);
+        }
+
+        /// <summary>
+        /// Test redo a command.
+        /// </summary>
+        [Fact]
+        public void RedoMultipleCommandsToPreviousState()
+        {
+            Spreadsheet sut = new(5, 5);
+            sut[0, 0].Text = "=88";
+            sut[1, 1].Text = "=99";
+            sut.Undo();
+            sut.Undo();
+            sut.Redo();
+            sut.Redo();
+            Assert.Equal("=88", sut[0, 0].Text);
+            Assert.Equal("88", sut[0, 0].Value);
+            Assert.Equal("=99", sut[1, 1].Text);
+            Assert.Equal("99", sut[1, 1].Value);
+        }
     }
 }
