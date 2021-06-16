@@ -552,7 +552,7 @@ namespace SpreadsheetEngine.Tests
             Assert.Equal(string.Empty, sut[0, 0].Text);
             Assert.Equal(string.Empty, sut[0, 0].Value);
             Assert.Equal("=99", sut[1, 1].Text);
-            Assert.Equal("=99", sut[1, 1].Value);
+            Assert.Equal("99", sut[1, 1].Value);
         }
 
         /// <summary>

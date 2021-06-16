@@ -39,6 +39,7 @@ namespace SpreadsheetEngine
         }
 
         private Stack<Command> UndoStack { get; } = new();
+        private Stack<Command> RedoStack { get; } = new();
 
         private SpreadsheetCell[,] CellsOfSpreadsheet { get; set; } = null!;
 
@@ -176,6 +177,7 @@ namespace SpreadsheetEngine
 
             Command undoCommand = new($"Undo cell background color change", clonedCells.ToArray());
             this.UndoStack.Push(undoCommand);
+            this.RedoStack.Clear();
         }
 
         private void SaveSpreadsheet()
@@ -210,6 +212,7 @@ namespace SpreadsheetEngine
                 case nameof(Spreadsheet):
                 {
                     this.UndoStack.Clear();
+                    this.RedoStack.Clear();
                     IEnumerable<XElement> spreadsheetCells = this.SrcTree.Root.Elements(nameof(SpreadsheetCell));
                     foreach (XElement cell in spreadsheetCells)
                     {
@@ -267,6 +270,7 @@ namespace SpreadsheetEngine
         private void BeforeCellPropertyChanged(object? sender, BeforeCellChangedEventArgs e)
         {
             this.UndoStack.Push(new Command(e.Description, e.CellsBeforeChange));
+            this.RedoStack.Clear();
         }
 
         /// <summary>
@@ -378,6 +382,32 @@ namespace SpreadsheetEngine
             if (this.UndoStack.Count > 0)
             {
                 Command command = this.UndoStack.Pop();
+                List<Cell> ClonedCellsForRedo = new();
+                foreach (SpreadsheetCell cell in command.ChangedCells.Cast<SpreadsheetCell>())
+                {
+                    ClonedCellsForRedo.Add(this.CellsOfSpreadsheet[cell.ColumnIndex, cell.RowIndex].Clone());
+                    this.CellsOfSpreadsheet[cell.ColumnIndex, cell.RowIndex]
+                        .BeforePropertyChanged -= this.BeforeCellPropertyChangedEventHandler;
+                    this.CellsOfSpreadsheet[cell.ColumnIndex, cell.RowIndex].Text = cell.Text;
+                    this.CellsOfSpreadsheet[cell.ColumnIndex, cell.RowIndex].BackgroundColor = cell.BackgroundColor;
+                    this.CellsOfSpreadsheet[cell.ColumnIndex, cell.RowIndex].ErrorMessage = cell.ErrorMessage;
+                    this.CellsOfSpreadsheet[cell.ColumnIndex, cell.RowIndex]
+                        .BeforePropertyChanged += this.BeforeCellPropertyChangedEventHandler;
+                }
+
+                Command redoCommand = new(command.Description, ClonedCellsForRedo.ToArray());
+                this.RedoStack.Push(redoCommand);
+            }
+        }
+
+        /// <summary>
+        /// Allows redo of a command.
+        /// </summary>
+        public void Redo()
+        {
+            if (this.RedoStack.Count > 0)
+            {
+                Command command = this.RedoStack.Pop();
                 foreach (SpreadsheetCell cell in command.ChangedCells.Cast<SpreadsheetCell>())
                 {
                     this.CellsOfSpreadsheet[cell.ColumnIndex, cell.RowIndex]
@@ -389,11 +419,6 @@ namespace SpreadsheetEngine
                         .BeforePropertyChanged += this.BeforeCellPropertyChangedEventHandler;
                 }
             }
-        }
-
-        public void Redo()
-        {
-            throw new NotImplementedException();
         }
     }
 }
