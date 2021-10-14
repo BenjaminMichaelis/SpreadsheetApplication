@@ -78,10 +78,12 @@ jobs:
       
     - name: Restore dependencies
       run: dotnet restore
-
+    - name: Build
+      run: dotnet build --no-restore
+      
     # Execute all unit tests in the solution
     - name: Execute unit tests
-      run: dotnet test
+      run: dotnet test --no-build --verbosity normal
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     - name: Restore the application
