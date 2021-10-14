@@ -14,5 +14,13 @@ namespace SpreadsheetApp.Tests
     /// </summary>
     public class MainViewModelTests
     {
+        /// <summary>
+        /// General test template to work on github continuous integration.
+        /// </summary>
+        [Fact]
+        public void TestTemplate()
+        {
+            Assert.True(true);
+        }
     }
 }
