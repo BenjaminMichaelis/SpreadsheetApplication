@@ -55,8 +55,6 @@
     <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-    <EntryPointProjectUniqueName>..\Spreadsheet\SpreadsheetApp.csproj</EntryPointProjectUniqueName>
-    <PackageCertificateKeyFile>WindowsPackagingProject_TemporaryKey.pfx</PackageCertificateKeyFile>
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
@@ -64,6 +62,8 @@
     <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
     <AppInstallerUri>https://github.com/BenjaminMichaelis/SpreadsheetApplication/releases</AppInstallerUri>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+    <PackageCertificateThumbprint>0F6FF2F8D3E0C24B3E4DFFF50DC12111715AA20D</PackageCertificateThumbprint>
+    <EntryPointProjectUniqueName>..\Spreadsheet\Spreadsheet.csproj</EntryPointProjectUniqueName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <AppxBundle>Always</AppxBundle>
@@ -152,6 +152,7 @@
     <Content Include="Images\Wide310x150Logo.scale-150.png" />
     <Content Include="Images\Wide310x150Logo.scale-200.png" />
     <Content Include="Images\Wide310x150Logo.scale-400.png" />
+    <None Include="SigningCertificate.pfx" />
     <None Include="WindowsPackagingProject_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
@@ -159,6 +160,6 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.19041.8" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Spreadsheet\SpreadsheetApp.csproj" />
+    <ProjectReference Include="..\Spreadsheet\Spreadsheet.csproj" />
   </ItemGroup>
 </Project>

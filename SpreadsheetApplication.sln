@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpreadsheetApp", "Spreadsheet\SpreadsheetApp.csproj", "{03381C65-F428-42D7-B582-8CEF2FE495C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spreadsheet", "Spreadsheet\Spreadsheet.csproj", "{03381C65-F428-42D7-B582-8CEF2FE495C8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpreadsheetApp.Tests", "SpreadsheetApp.Tests\SpreadsheetApp.Tests.csproj", "{26B7D7C5-8328-4A5E-AA28-DBDD73E5B2F7}"
 EndProject
