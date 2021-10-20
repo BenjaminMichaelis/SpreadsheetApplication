@@ -14,7 +14,7 @@
     </ItemGroup>
     <!-- StyleCop Analyzers configuration -->
     <ItemGroup>
-        <AdditionalFiles Include="../stylecop.json" />
-        <PackageReference Include="StyleCop.Analyzers" Version="$(StyleCopAnalyzersVersion)" PrivateAssets="all" />
+        <!--<AdditionalFiles Include="../stylecop.json" />
+        <PackageReference Include="StyleCop.Analyzers" Version="$(StyleCopAnalyzersVersion)" PrivateAssets="all" />-->
     </ItemGroup>
 </Project>
