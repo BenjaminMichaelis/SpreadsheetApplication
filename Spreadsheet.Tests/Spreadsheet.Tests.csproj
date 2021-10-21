@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Spreadsheet\SpreadsheetApp.csproj" />
+    <ProjectReference Include="..\Spreadsheet\Spreadsheet.csproj" />
   </ItemGroup>
 
 </Project>
