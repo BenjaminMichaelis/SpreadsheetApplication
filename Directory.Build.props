@@ -8,7 +8,8 @@
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    </PropertyGroup>
+        <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
+	</PropertyGroup>
     <ItemGroup>
         <AdditionalFiles Include="../.editorconfig" />
     </ItemGroup>
