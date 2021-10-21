@@ -178,9 +178,39 @@ jobs:
       env:
         SigningCertificate: BenjaminMichaelis.pfx # For UWP package signing
 
+    # ZIP up the sideload packages for GitHub release using Powershell
+    - name: Create SideLoadPackages.zip
+      run: Compress-Archive -Path ${{ env.Wap_Project_Directory }}\AppPackages\* -DestinationPath ${{ env.Wap_Project_Directory }}\AppPackages\SideLoadPackages.zip
+
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload build artifacts
       uses: actions/upload-artifact@v2
       with:
         name: MSIX Package
         path: ${{ env.Wap_Project_Directory }}\AppPackages
+        
+    # Create a new GitHub Release tagged with the build version number (via https://github.com/actions/create-release)
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v.${{ env.APP_VERSION }}
+        release_name: Spreadsheet Application v.${{ env.APP_VERSION }}
+        draft: True
+        prerelease: True
+        body_path: README.md
+
+
+   # Add SideLoad artifacts to GitHub Release (via https://github.com/actions/upload-release-asset)
+    - name: Uploading SideLoad Release asset
+      id: upload-sideload-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ env.Wap_Project_Directory }}\AppPackages\SideLoadPackages.zip
+        asset_name: SideLoadPackages.zip
+        asset_content_type: application/zip
