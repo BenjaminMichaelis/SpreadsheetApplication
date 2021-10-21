@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -7,12 +7,12 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="3c023962-535b-47f9-a693-c0e9d2684d3f"
+    Name="BenjaminMichaelis.SpreadsheetApplication"
     Publisher="CN=Benjamin Michaelis"
     Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>WindowsPackagingProject</DisplayName>
+    <DisplayName>Spreadsheet Application</DisplayName>
     <PublisherDisplayName>Benjamin Michaelis</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
