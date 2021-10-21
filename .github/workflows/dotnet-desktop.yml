@@ -48,10 +48,10 @@ jobs:
 
   build:
 
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
-        targetplatform: [x86, x64]
+    #strategy:
+      # matrix:
+       # configuration: [Debug, Release]
+       # targetplatform: [x86, x64]
 
     runs-on: windows-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
@@ -81,42 +81,53 @@ jobs:
     - name: Decode the pfx
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
-        $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath GitHubActionsWorkflow.pfx
+        $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath $env:SigningCertificate
+        dir
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+      env:
+        SigningCertificate: BenjaminMichaelis.pfx # For UWP package signing
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     - name: Restore the application
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
       env:
-        Configuration: ${{ matrix.configuration }}
+        Configuration: Release
       
       # In order to generate project.assets.json, we need to use nuget.exe for the wapproject
     - name: Run 'nuget restore' for Packaging Project (to ensure assets.json is available)
       run: nuget restore WindowsPackagingProject\WindowsPackagingProject.wapproj
         
-      # Build the WPF project to restore the OBJ folder
-    - name: Build the WPF application to populate the obj folder
-      run: msbuild "Spreadsheet\Spreadsheet.csproj" /t:Restore /p:Configuration=Debug /p:RuntimeIdentifier=$env:RID
+      # Restore the WPF project to restore the OBJ folder
+    - name: Restore the Wpf application to populate the obj folder
+      run: msbuild $env:WpfProjectPath /t:Restore /p:Configuration=$env:Configuration /p:RuntimeIdentifier=$env:RID
       env:
-        RIC: ${{ matrix.targetplatform }}
+        RID: win-x86
+        Configuration: Release
+        WpfProjectPath: Spreadsheet\Spreadsheet.csproj
        
    # TODO: Reinstate tests before merge
     # Execute all unit tests in the solution
     # - name: Execute unit tests
    # run: dotnet test
 
-    # Create the app package by building and packaging the Windows Application Packaging project
     - name: Create the app package
-      run: msbuild $env:Wap_Project_Path /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
+      run: msbuild $env:Solution_Path /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=BenjaminMichaelis.pfx /p:PackageCertificatePassword=$env:CertPrivateKey
       env:
         Appx_Bundle: Always
-        Appx_Bundle_Platforms: x86|x64
-        Appx_Package_Build_Mode: StoreUpload
-        Configuration: ${{ matrix.configuration }}
+        Appx_Bundle_Platforms: x86
+        Appx_Package_Build_Mode: SideloadOnly
+        Configuration: Release
+        SigningCertificate: BenjaminMichaelis.pfx
+        CertPrivateKey: ${{ secrets.Pfx_Key }}
 
     # Remove the pfx
     - name: Remove the pfx
-      run: Remove-Item -path $env:Wap_Project_Directory\$env:Signing_Certificate
+      run: |
+        dir $env:Wap_Project_Directory
+        $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath $env:SigningCertificate
+        Remove-Item $certificatePath
+      env:
+        SigningCertificate: BenjaminMichaelis.pfx # For UWP package signing
 
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload build artifacts
