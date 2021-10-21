@@ -51,6 +51,7 @@ jobs:
     strategy:
       matrix:
         configuration: [Debug, Release]
+        targetplatform: [x86, x64]
 
     runs-on: windows-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
@@ -75,23 +76,33 @@ jobs:
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
-
-    # Execute all unit tests in the solution
-    - name: Execute unit tests
-      run: dotnet test
-
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
-
+      
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
         $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath GitHubActionsWorkflow.pfx
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+
+    # Restore the application to populate the obj folder with RuntimeIdentifiers
+    - name: Restore the application
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+      env:
+        Configuration: ${{ matrix.configuration }}
+      
+      # In order to generate project.assets.json, we need to use nuget.exe for the wapproject
+    - name: Run 'nuget restore' for Packaging Project (to ensure assets.json is available)
+      run: nuget restore WindowsPackagingProject\WindowsPackagingProject.wapproj
+        
+      # Build the WPF project to restore the OBJ folder
+    - name: Build the WPF application to populate the obj folder
+      run: msbuild "Spreadsheet\Spreadsheet.csproj" /t:Restore /p:Configuration=Debug /p:RuntimeIdentifier=$env:RID
+      env:
+        RIC: ${{ matrix.targetplatform }}
+        
+    # Execute all unit tests in the solution
+    - name: Execute unit tests
+      run: dotnet test
 
     # Create the app package by building and packaging the Windows Application Packaging project
     - name: Create the app package
