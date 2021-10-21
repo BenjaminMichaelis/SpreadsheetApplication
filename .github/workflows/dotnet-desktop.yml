@@ -66,6 +66,55 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+        
+    # Create my own version number with a specific format using date. ex: 2020.805.1.0
+    - uses: Amadevus/pwsh-script@v2
+      id: version-creator
+      with:
+        script: |
+          $buildDay = Get-Date -Format "yyyy.Mdd"
+          $ver = $buildDay + "." + $env:GITHUB_RUN_NUMBER + ".0"
+          Set-ActionVariable APP_VERSION $ver
+          
+    # Update the appxmanifest for SideLoad (and signing with PFX)
+    - name: Update manifest version
+      run: |
+        $maifestPath = Join-Path -Path $env:Wap_Project_Directory -ChildPath Package.appxmanifest
+        [xml]$manifest = get-content "$maifestPath"
+        $manifest.Package.Identity.Version = "$env:APP_VERSION"
+        $manifest.Package.Identity.Name = $env:PackageIdentity_Name
+        $manifest.Package.Identity.Publisher = $env:PackageIdentity_Publisher
+        $manifest.Package.Properties.DisplayName = $env:PackageProperties_DisplayName
+        $manifest.Package.Properties.PublisherDisplayName = $env:PackageProperties_PublisherDisplayName
+        $manifest.Package.Applications.Application.VisualElements.DisplayName = $env:ApplicationVisualElements_DisplayName
+        $manifest.save("$maifestPath")
+      env:
+        PackageIdentity_Name: "BenjaminMichaelis.SpreadsheetApplication"
+        PackageIdentity_Publisher: "CN='Benjamin Michaelis', S=Washington, C=US"
+        PackageProperties_DisplayName: "Spreadsheet Application"
+        PackageProperties_PublisherDisplayName: "Benjamin Michaelis"
+        ApplicationVisualElements_DisplayName: "Spreadsheet Application"
+        
+    # Updates the WPF project's assembly version number.
+    - name: Update WPF Assembly version
+      run: |
+        function SetAssemblyFileVersion([string]$pathToFile, [string]$newVersion) {
+          $newFile = Get-Content $pathToFile -encoding "UTF8" | foreach-object {
+            if ($_.StartsWith("[assembly: AssemblyFileVersion")) {
+              $verStart = $_.IndexOf("(")
+              $verEnd = $_.IndexOf(")", $verStart)
+              $origVersion = $_.SubString($verStart+2, $verEnd-$verStart-3)
+              $newVersion = "$env:APP_VERSION"
+              write-host "Setting AssemblyFileVersion from $origVersion to $newVersion"
+              $_.Replace($origVersion, $newVersion)
+            }  else {
+              $_
+            } 
+          }
+          $newfile | Set-Content $assemblyInfoPath -encoding "UTF8"
+        }
+        $assemblyInfoPath = "Spreadsheet\Properties\AssemblyInfo(Framework).cs"
+        SetAssemblyFileVersion $assemblyInfoPath $env:APP_VERSION
 
     # Install the .NET Core workload
     - name: Install .NET Core
