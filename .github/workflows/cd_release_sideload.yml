@@ -104,35 +104,14 @@ jobs:
 
     # ************************| BUILD AND CREATE PACKAGE |************************ #
 
-    # Decode the base 64 encoded pfx and save the Signing_Certificate
-    - name: Decode the pfx
-      run: |
-        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
-        $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath $env:SigningCertificate
-        dir
-        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-      env:
-        SigningCertificate: BenjaminMichaelis.pfx # For UWP package signing
-
     # Build using SideLoad
     - name: Create the app package
-      run: msbuild $env:Solution_Path /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=BenjaminMichaelis.pfx /p:PackageCertificatePassword=$env:CertPrivateKey
+      run: msbuild $env:Solution_Path /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle
       env:
         Appx_Bundle: Always
         Appx_Bundle_Platforms: x86
         Appx_Package_Build_Mode: SideloadOnly
         Configuration: Release
-        SigningCertificate: BenjaminMichaelis.pfx
-        CertPrivateKey: ${{ secrets.Pfx_Key }}
-
-    # Remove the .pfx
-    - name: Remove the pfx
-      run: |
-        dir $env:Wap_Project_Directory
-        $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath $env:SigningCertificate
-        Remove-Item $certificatePath
-      env:
-        SigningCertificate: BenjaminMichaelis.pfx # For UWP package signing
 
     # ZIP up the sideload packages for GitHub release using Powershell
     - name: Create SideLoadPackages.zip
