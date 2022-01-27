@@ -1,0 +1,44 @@
+version: 2
+updates:
+  - package-ecosystem: "nuget" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+  - package-ecosystem: "nuget"
+    directory: "/SpreadsheetEngine"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+  - package-ecosystem: "nuget"
+    directory: "/SpreadsheetEngine.tests"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+  - package-ecosystem: "nuget"
+    directory: "/Spreadsheet"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+  - package-ecosystem: "nuget"
+    directory: "/Spreadsheet.tests"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+  - package-ecosystem: "nuget"
+    directory: "/ConsoleApp"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+  - package-ecosystem: "nuget"
+    directory: "/ConsoleApp.Tests"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
