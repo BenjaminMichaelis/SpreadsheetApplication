@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Clowd.Squirrel" Version="2.9.42" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Update="StyleCop.Analyzers" Version="1.1.118" />
   </ItemGroup>
 </Project>
