@@ -5,11 +5,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using System.Xml.XPath;
 
 namespace SpreadsheetEngine
 {
@@ -210,46 +208,46 @@ namespace SpreadsheetEngine
             switch (this.SrcTree.Root.Name.ToString())
             {
                 case nameof(Spreadsheet):
-                {
-                    this.UndoStack.Clear();
-                    this.RedoStack.Clear();
-                    IEnumerable<XElement> spreadsheetCells = this.SrcTree.Root.Elements(nameof(SpreadsheetCell));
-                    foreach (XElement cell in spreadsheetCells)
                     {
-                        if (cell.FirstAttribute is null)
+                        this.UndoStack.Clear();
+                        this.RedoStack.Clear();
+                        IEnumerable<XElement> spreadsheetCells = this.SrcTree.Root.Elements(nameof(SpreadsheetCell));
+                        foreach (XElement cell in spreadsheetCells)
                         {
-                            break;
-                        }
-
-                        string cellName = cell.FirstAttribute.Value;
-                        bool colorParseSuccessful = uint.TryParse(
-                            cell.Element(nameof(Cell.BackgroundColor))?.Value,
-                            out uint cellBackgroundColor);
-                        string? cellText = cell.Element(nameof(Cell.Text))?.Value;
-                        if (cellText is { })
-                        {
-                            if (cellText != string.Empty)
+                            if (cell.FirstAttribute is null)
                             {
-                                this[cellName].Text = cellText;
-                            }
-                        }
-
-                        switch (colorParseSuccessful)
-                        {
-                            case true:
-                            {
-                                if (cellBackgroundColor != 0xFFFFFFFF)
-                                {
-                                    this[cellName].BackgroundColor = cellBackgroundColor;
-                                }
-
                                 break;
                             }
-                        }
-                    }
 
-                    break;
-                }
+                            string cellName = cell.FirstAttribute.Value;
+                            bool colorParseSuccessful = uint.TryParse(
+                                cell.Element(nameof(Cell.BackgroundColor))?.Value,
+                                out uint cellBackgroundColor);
+                            string? cellText = cell.Element(nameof(Cell.Text))?.Value;
+                            if (cellText is { })
+                            {
+                                if (cellText != string.Empty)
+                                {
+                                    this[cellName].Text = cellText;
+                                }
+                            }
+
+                            switch (colorParseSuccessful)
+                            {
+                                case true:
+                                    {
+                                        if (cellBackgroundColor != 0xFFFFFFFF)
+                                        {
+                                            this[cellName].BackgroundColor = cellBackgroundColor;
+                                        }
+
+                                        break;
+                                    }
+                            }
+                        }
+
+                        break;
+                    }
             }
         }
 

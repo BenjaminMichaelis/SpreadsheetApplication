@@ -2,8 +2,8 @@
 // Copyright (c) Benjamin Michaelis. All rights reserved.
 // </copyright>
 
-using System;
 using SpreadsheetEngine;
+using System;
 
 namespace ConsoleApp
 {

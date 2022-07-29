@@ -6,8 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpreadsheetEngine
 {
@@ -179,23 +177,23 @@ namespace SpreadsheetEngine
                 switch (sender)
                 {
                     case SpreadsheetCell evaluatingCell:
-                    {
-                        switch (e.PropertyName)
                         {
-                            case nameof(Cell.Text):
-                            case nameof(Cell.Value) when this != evaluatingCell:
+                            switch (e.PropertyName)
                             {
-                                this.UpdateCellValue();
+                                case nameof(Cell.Text):
+                                case nameof(Cell.Value) when this != evaluatingCell:
+                                    {
+                                        this.UpdateCellValue();
 
-                                break;
+                                        break;
+                                    }
+
+                                case nameof(Cell.BackgroundColor):
+                                    break;
                             }
 
-                            case nameof(Cell.BackgroundColor):
-                                break;
+                            break;
                         }
-
-                        break;
-                    }
                 }
             }
         }

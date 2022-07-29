@@ -2,7 +2,6 @@
 // Copyright (c) Benjamin Michaelis. All rights reserved.
 // </copyright>
 
-using System;
 using Xunit;
 
 namespace ConsoleApp.Tests

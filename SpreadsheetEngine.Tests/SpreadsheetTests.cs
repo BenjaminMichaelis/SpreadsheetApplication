@@ -4,10 +4,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace SpreadsheetEngine.Tests
@@ -162,7 +160,7 @@ namespace SpreadsheetEngine.Tests
             // https://regexr.com/5r9fa
             Regex lettersThenNumbersRegex = new(@"[A-Za-z]+\d+$");
             Assert.Matches(lettersThenNumbersRegex, "A1");
-    }
+        }
 
         /// <summary>
         /// If cell name is valid, return true from method.
