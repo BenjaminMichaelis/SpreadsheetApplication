@@ -31,9 +31,12 @@ namespace SpreadsheetApp
         onInitialInstall: OnAppInstall,
         onAppUninstall: OnAppUninstall,
         onEveryRun: OnAppRun);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Initialize();
+
+
         }
 
         private static void Initialize()
@@ -45,9 +48,9 @@ namespace SpreadsheetApp
             // if (attributes.Length > 0 && (attributes[0] as ViewModelAttribute).Activated == true)
             MainForm mainForm = new MainForm();
             MainViewModel viewModel = new(mainForm);
-
             Application.Run(mainForm);
         }
+
         private static void OnAppInstall(SemanticVersion version, IAppTools tools)
         {
             tools.CreateShortcutForThisExe(ShortcutLocation.StartMenu | ShortcutLocation.Desktop);
@@ -61,8 +64,12 @@ namespace SpreadsheetApp
         private static void OnAppRun(SemanticVersion version, IAppTools tools, bool firstRun)
         {
             tools.SetProcessAppUserModelId();
+
             // show a welcome message when the app is first installed
-            if (firstRun) MessageBox.Show("Thanks for installing my application!");
+            if (firstRun)
+            {
+                MessageBox.Show("Thanks for installing this Spreadsheet Application!");
+            }
         }
     }
 }
