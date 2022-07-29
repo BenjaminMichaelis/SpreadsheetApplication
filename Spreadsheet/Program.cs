@@ -21,6 +21,7 @@ namespace SpreadsheetApp
     /// </summary>
     public static class Program
     {
+        public static SemanticVersion? Version { get; set; }
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -63,6 +64,7 @@ namespace SpreadsheetApp
 
         private static void OnAppRun(SemanticVersion version, IAppTools tools, bool firstRun)
         {
+            Version = version;
             tools.SetProcessAppUserModelId();
 
             // show a welcome message when the app is first installed

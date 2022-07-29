@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SpreadsheetEngine;
+using Squirrel;
 
 namespace SpreadsheetApp
 {
@@ -28,7 +29,10 @@ namespace SpreadsheetApp
         public MainViewModel(MainForm mainForm)
         {
             this.MainForm = mainForm;
-
+            if (Program.Version is { } version)
+            {
+                this.MainForm.Text += $" - {version.Major}.{version.Minor}.{version.Build}";
+            }
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
             this.MainForm.DemoButton.Click += new System.EventHandler(this.DemoButton_Click);
             this.MainForm.changeBackgroundColorButton.Click += new System.EventHandler(this.BackgroundColorButton_Click);
