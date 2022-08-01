@@ -26,13 +26,14 @@ jobs:
     - name: Get semantic version from tag
       run: |
         "${{ github.ref_name }}" -Match "((?:[\dx])+(?:\.[\dx]+)+(?:\.[\dx]+))"
-        echo '::set-output name=SEMANTIC_VERSION::'$matches[0]
-        id: version-parser
+        $version = $matches[0]
+        "SEMANTIC_VERSION=$version" >> $env:GITHUB_ENV
+      id: version-parser
       shell: pwsh
-    - name: Clowd.Squirrel
+    - name: Using Clowd.Squirrel for version ${{ steps.version-parser.outputs.SEMANTIC_VERSION }}
       run: |
         Set-Alias Squirrel ($env:USERPROFILE + "\.nuget\packages\clowd.squirrel\2.9.42\tools\Squirrel.exe");
-        Squirrel pack --framework net5 --packId "SpreadsheetApplication" --packVersion ${{ steps.version-parser.outputs.SEMANTIC_VERSION }} --packAuthors "Benjamin Michaelis" --packDir .\publish\ --releaseDir .\Release
+        Squirrel pack --framework net5 --packId "SpreadsheetApplication" --packVersion $env:SEMANTIC_VERSION --packAuthors "Benjamin Michaelis" --packDir .\publish\ --releaseDir .\Release
     - name: Upload artifact for deployment job
       if: github.event_name != 'pull_request'
       uses: actions/upload-artifact@v2
