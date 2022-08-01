@@ -4,13 +4,6 @@
 
 using Squirrel;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SpreadsheetApp
@@ -42,17 +35,14 @@ namespace SpreadsheetApp
             using var mgr = new UpdateManager(urlOrPath: null);
             if (mgr.IsInstalledApp)
             {
-                if (mgr.IsInstalledApp)
-                {
-                    const string channel = "production";
-                    using var remoteManager = new UpdateManager($"https://localhost:7155/Squirrel/{mgr.AppId}/{channel}");
-                    var newVersion = await remoteManager.UpdateApp();
+                const string channel = "production";
+                using var remoteManager = new UpdateManager($"https://localhost:7155/Squirrel/{mgr.AppId}/{channel}");
+                var newVersion = await remoteManager.UpdateApp();
 
-                    // optionally restart the app automatically, or ask the user if/when they want to restart
-                    if (newVersion != null)
-                    {
-                        UpdateManager.RestartApp();
-                    }
+                // optionally restart the app automatically, or ask the user if/when they want to restart
+                if (newVersion != null)
+                {
+                    UpdateManager.RestartApp();
                 }
             }
         }
