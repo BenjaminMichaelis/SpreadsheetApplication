@@ -25,7 +25,7 @@ jobs:
       run: dotnet publish --configuration Release -o ./publish
     - name: Get semantic version from tag
       run: |
-        ${{ github.ref_name }} -Match "((?:[\dx])+(?:\.[\dx]+)+(?:\.[\dx]+))"
+        "${{ github.ref_name }}" -Match "((?:[\dx])+(?:\.[\dx]+)+(?:\.[\dx]+))"
         echo '::set-output name=SEMANTIC_VERSION::'$matches[0]
         id: version-parser
       shell: pwsh
