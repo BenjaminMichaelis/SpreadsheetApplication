@@ -23,9 +23,11 @@ jobs:
       run: dotnet build --no-restore --configuration Release
     - name: dotnet publish
       run: dotnet publish --configuration Release -o ./publish
+      # Regex testing: https://regexr.com/6qtrf
     - name: Get semantic version from tag
       run: |
-        "${{ github.ref_name }}" -Match "((?:[\dx])+(?:\.[\dx]+)+(?:\.[\dx]+))"
+        Write-Output "Regex tests located at https://regexr.com/6qtrf"
+        "${{ github.ref_name }}" -Match "((?:[\dx]{1,2}?)+(?:\.[\dx]{1,2}?)+(?:\.[\dx]{1,2}?))"
         $version = $matches[0]
         "SEMANTIC_VERSION=$version" >> $env:GITHUB_ENV
       id: version-parser
