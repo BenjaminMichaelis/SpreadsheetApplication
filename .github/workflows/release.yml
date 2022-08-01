@@ -30,7 +30,7 @@ jobs:
         "SEMANTIC_VERSION=$version" >> $env:GITHUB_ENV
       id: version-parser
       shell: pwsh
-    - name: Using Clowd.Squirrel for version ${{ steps.version-parser.outputs.SEMANTIC_VERSION }}
+    - name: Clowd.Squirrel
       run: |
         Set-Alias Squirrel ($env:USERPROFILE + "\.nuget\packages\clowd.squirrel\2.9.42\tools\Squirrel.exe");
         Squirrel pack --framework net5 --packId "SpreadsheetApplication" --packVersion $env:SEMANTIC_VERSION --packAuthors "Benjamin Michaelis" --packDir .\publish\ --releaseDir .\Release
@@ -49,5 +49,5 @@ jobs:
         generate_release_notes: true
         files: |
           ./Release/RELEASES
-          ./Release/SpreadsheetApplication-${{ github.ref_name }}-full.nupkg
+          ./Release/SpreadsheetApplication-${{ env.SEMANTIC_VERSION }}-full.nupkg
           ./Release/SpreadsheetApplicationSetup.exe
