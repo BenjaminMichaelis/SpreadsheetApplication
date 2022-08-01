@@ -1,6 +1,6 @@
 # Spreadsheet Application
 
-[![.NETBuild](https://github.com/BenjaminMichaelis/SpreadsheetApplication/actions/workflows/dotnetbuild.yml/badge.svg)](https://github.com/BenjaminMichaelis/SpreadsheetApplication/actions/workflows/dotnetbuild.yml)
+[![Build and Test](https://github.com/BenjaminMichaelis/SpreadsheetApplication/actions/workflows/build-and-test.yml/badge.svg?event=push)](https://github.com/BenjaminMichaelis/SpreadsheetApplication/actions/workflows/build-and-test.yml)
 
 Custom C# Spreadsheet application using WinForms to mock some of the functionality of an excel-like application.
 

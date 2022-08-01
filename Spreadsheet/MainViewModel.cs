@@ -2,15 +2,12 @@
 // Copyright (c) Benjamin Michaelis. All rights reserved.
 // </copyright>
 
+using SpreadsheetEngine;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using SpreadsheetEngine;
-using Squirrel;
 
 namespace SpreadsheetApp
 {
@@ -157,23 +154,23 @@ namespace SpreadsheetApp
             switch (sender)
             {
                 case Cell senderCell:
-                {
-                    switch (e.PropertyName)
                     {
-                        case nameof(Cell.Value):
-                        case nameof(Cell.Text):
-                            this.MainForm.spreadsheetViewUI.Rows[senderCell.RowIndex].Cells[senderCell.ColumnIndex].Value = senderCell.Value;
-                            break;
-                        case nameof(Cell.BackgroundColor):
-                            this.MainForm.spreadsheetViewUI.Rows[senderCell.RowIndex].Cells[senderCell.ColumnIndex].Style.BackColor = System.Drawing.Color.FromArgb((int)senderCell.BackgroundColor);
-                            break;
-                        case nameof(Cell.ErrorMessage):
-                            this.MainForm.spreadsheetViewUI.Rows[senderCell.RowIndex].Cells[senderCell.ColumnIndex].Value = senderCell.Value;
-                            break;
-}
+                        switch (e.PropertyName)
+                        {
+                            case nameof(Cell.Value):
+                            case nameof(Cell.Text):
+                                this.MainForm.spreadsheetViewUI.Rows[senderCell.RowIndex].Cells[senderCell.ColumnIndex].Value = senderCell.Value;
+                                break;
+                            case nameof(Cell.BackgroundColor):
+                                this.MainForm.spreadsheetViewUI.Rows[senderCell.RowIndex].Cells[senderCell.ColumnIndex].Style.BackColor = System.Drawing.Color.FromArgb((int)senderCell.BackgroundColor);
+                                break;
+                            case nameof(Cell.ErrorMessage):
+                                this.MainForm.spreadsheetViewUI.Rows[senderCell.RowIndex].Cells[senderCell.ColumnIndex].Value = senderCell.Value;
+                                break;
+                        }
 
-                    break;
-                }
+                        break;
+                    }
             }
         }
 

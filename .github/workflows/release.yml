@@ -1,0 +1,52 @@
+name: Release
+
+permissions:
+  contents: write
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 5.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+    - name: dotnet publish
+      run: dotnet publish --configuration Release -o ./publish
+    - name: Get semantic version from tag
+      run: |
+        ${{ github.ref_name }} -Match "((?:[\dx])+(?:\.[\dx]+)+(?:\.[\dx]+))"
+        echo '::set-output name=SEMANTIC_VERSION::'$matches[0]
+        id: version-parser
+      shell: pwsh
+    - name: Clowd.Squirrel
+      run: |
+        Set-Alias Squirrel ($env:USERPROFILE + "\.nuget\packages\clowd.squirrel\2.9.42\tools\Squirrel.exe");
+        Squirrel pack --framework net5 --packId "SpreadsheetApplication" --packVersion ${{ steps.version-parser.outputs.SEMANTIC_VERSION }} --packAuthors "Benjamin Michaelis" --packDir .\publish\ --releaseDir .\Release
+    - name: Upload artifact for deployment job
+      if: github.event_name != 'pull_request'
+      uses: actions/upload-artifact@v2
+      with:
+        name: Installer
+        path: ./Release
+    
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      #if: startsWith(github.ref, 'refs/tags/')
+      with:
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        files: |
+          ./Release/RELEASES
+          ./Release/SpreadsheetApplication-${{ github.ref_name }}-full.nupkg
+          ./Release/SpreadsheetApplicationSetup.exe
