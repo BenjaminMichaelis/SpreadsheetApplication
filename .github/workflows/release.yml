@@ -27,9 +27,8 @@ jobs:
     - name: Get semantic version from tag
       run: |
         Write-Output "Regex tests located at https://regexr.com/6qtrf"
-        "${{ github.ref_name }}" -Match "((?:[\dx]{1,2}?)+(?:\.[\dx]{1,2}?)+(?:\.[\dx]{1,2}?))"
-        $version = $matches[0]
-        "SEMANTIC_VERSION=$version" >> $env:GITHUB_ENV
+        "${{ github.ref_name }}" -Match "(?<VersionNumber>(?:[\dx])+(?:\.[\dx]+)+(?:\.[\dx]+))"
+        "SEMANTIC_VERSION=$($matches.VersionNumber)" >> $env:GITHUB_ENV
       id: version-parser
       shell: pwsh
     - name: Clowd.Squirrel
