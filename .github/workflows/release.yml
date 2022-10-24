@@ -37,7 +37,7 @@ jobs:
         Squirrel pack --framework net5 --packId "SpreadsheetApplication" --packVersion $env:SEMANTIC_VERSION --packAuthors "Benjamin Michaelis" --packDir .\publish\ --releaseDir .\Release
     - name: Upload artifact for deployment job
       if: github.event_name != 'pull_request'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Installer
         path: ./Release
